@@ -1,0 +1,294 @@
+body,
+html {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+body {
+	background: #f6f9fe !important;
+	width: 100%;
+	position: relative;
+	display: table;
+}
+
+#foot {
+	display: table-row;
+	width: 100%;
+	height: 350px;
+}
+
+footer {
+	min-height: 350px;
+	background-color: #123ea6;
+}
+
+.wrapper {
+	margin-top: 80px;
+	margin-bottom: 80px;
+}
+
+.form-signin-heading,
+.checkbox {
+	margin-bottom: 30px;
+}
+
+.checkbox {
+	font-weight: normal;
+}
+
+.form-control {
+	position: relative;
+	font-size: 16px;
+	height: auto;
+	padding: 10px;
+}
+
+:focus {
+	z-index: 2;
+}
+
+input[type="text"] {
+	margin-bottom: 10px;
+}
+
+input[type="password"] {
+	margin-bottom: 20px;
+}
+
+input[type="submit"] {
+	margin-top: 20px;
+}
+
+.carac {
+	text-decoration: underline;
+	font-weight: 600;
+	color: #000;
+}
+
+#listechoix {
+	width: fit-content;
+	min-width: 220px;
+	height: 40px;
+	margin-top: 15px;
+	border-radius: 5px;
+}
+
+#listemotif {
+	width: 100%;
+	height: 40px;
+	margin-top: 0px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+}
+
+#work_banner {
+	height: auto;
+}
+
+.py-12 {
+	padding-top: 3rem !important;
+	padding-bottom: 3rem !important;
+}
+
+.rapport {
+	margin: auto;
+	padding: 35px 35px 45px;
+	padding-bottom: 20px;
+	background-color: #fff;
+	border: 1px solid;
+	min-width: 500px;
+	max-width: 500px;
+}
+
+.navbar-nav {
+	max-width: 1000px;
+	width: 100%;
+}
+
+@media (max-width: 1399px) {
+	.text-rapport {
+		width: fit-content !important;
+	}
+}
+
+@media (max-width: 991px) {
+	.rapport {
+		margin: auto;
+		padding: 35px 35px 45px;
+		padding-bottom: 20px;
+		background-color: #fff;
+		border: 1px solid;
+		min-width: 400px;
+		max-width: 400px;
+	}
+	.formulaire {
+		width: 300px;
+		min-width: fit-content;
+	}
+	.navbar-nav {
+		width: fit-content;
+	}
+	.flex-fill {
+		display: flex;
+		justify-content: center !important;
+	}
+}
+@media (max-width: 575px) {
+	.rapport {
+		margin: auto;
+		margin-bottom: 50px;
+		padding: 35px 35px 45px;
+		padding-bottom: 20px;
+		background-color: #fff;
+		border: 1px solid;
+		min-width: 80%;
+		max-width: 80%;
+	}
+}
+
+textarea {
+	resize: none;
+	width: 100%;
+	margin-bottom: 15px;
+	height: 80px;
+}
+
+.valider {
+	display: block;
+	margin-right: auto;
+	margin-left: auto;
+	height: fit-content;
+}
+
+.rediger {
+	min-height: 350px;
+}
+
+.max-rediger {
+	max-height: 375px;
+}
+
+.infos {
+	height: 550px;
+}
+
+.max-infos {
+	max-height: 550px;
+}
+
+.retour-rap {
+	background-color: #fff;
+}
+
+.test {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.titre {
+	font-weight: 600;
+	padding-bottom: 1rem;
+}
+
+.text {
+	font-size: 20;
+	font-weight: 400;
+	color: #555555;
+}
+
+.formulaire-recherche {
+	background-color: white;
+	padding: 2em;
+	box-shadow: 1px 1px 10px black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.formulaire {
+	background-color: white;
+	padding: 2em;
+	box-shadow: 1px 1px 10px black;
+	width: 100%;
+}
+
+.space {
+	margin-bottom: 1em;
+}
+
+.title-formulaire {
+	font-weight: 500;
+	text-align: center;
+	font-size: 2em;
+}
+
+.image-size {
+	max-width: 80%;
+	height: auto;
+}
+
+.bg-light {
+	background-color: #f6f9fe;
+}
+
+.afficher-info {
+	padding: 1em;
+}
+
+.background-error {
+	box-shadow: 1px 1px 10px black;
+	padding-left: 15%;
+	padding-right: 15%;
+	padding-top: 10%;
+	padding-bottom: 10%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.title-error {
+	font-size: 50;
+	padding-bottom: 30px;
+	text-align: center;
+}
+
+.link-error {
+	text-decoration: none;
+	font-size: 20;
+	color: white;
+	background-color: #3f3f3f;
+	border-radius: 10px;
+	padding-bottom: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.link-error:hover {
+	color: white;
+}
+
+.text-error {
+	font-size: 20;
+	padding-bottom: 30px;
+}
+
+.titre-formulaire {
+	font-size: 22;
+	font-weight: bolder;
+}
+
+.size-img-page {
+	width: auto;
+	max-height: 300px;
+}
+
+.structure-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.fit {
+	width: fit-content;
+}
