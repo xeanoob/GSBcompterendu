@@ -1,0 +1,237 @@
+================================================================================
+RAPPORT DE VERIFICATION DE LA BASE DE DONNEES GSB
+================================================================================
+Date de verification : 03/11/2025
+Base concernee : gsbcr0 (version v0v3)
+Fichier SQL analyse : gsbv0v3complet.sql
+
+================================================================================
+1. VERIFICATION DES DOUBLONS DANS LA TABLE LOGIN
+================================================================================
+
+RESULTAT : ✅ AUCUN DOUBLON DETECTE
+
+Details :
+---------
+- Nombre total de logins : 67
+- Tous les LOG_LOGIN sont UNIQUES
+- Tous les COL_MATRICULE sont UNIQUES
+- Plage d'identifiants : LOG_ID de 1 a 67
+
+⚠️ ANOMALIE DETECTEE :
+- Il MANQUE le LOG_ID = 16 dans la sequence
+- La numerotation saute de 15 (dephi) a 17 (debjea)
+- Le collaborateur d13 est present mais son login est l'ID 17
+
+EXPLICATION SIMPLE :
+Un login a ete supprime ou il y a eu une erreur lors de la creation.
+Ce n'est pas grave pour le fonctionnement, mais ca cree un "trou" dans
+la numerotation.
+
+IMPACT : Aucun (juste esthetique)
+
+Liste des logins (extrait) :
+- villou (a131)
+- anddav (a17)
+- bedchr (a55)
+- tuslou (a93)
+- benpas (b13)
+... (67 logins au total)
+
+
+================================================================================
+2. VERIFICATION DES DOUBLONS DANS LA TABLE COLLABORATEUR
+================================================================================
+
+RESULTAT : ✅ AUCUN DOUBLON DETECTE
+
+Details :
+---------
+- Nombre total de collaborateurs : 60
+- Tous les COL_MATRICULE sont UNIQUES
+- Tous les matricules suivent le format : lettre + chiffres
+
+Liste des matricules (extrait) :
+- a131, a17, a55, a93
+- b13, b16, b19, b25, b28, b34, b4, b50, b59
+- c14, c3
+- d13, d51
+- e22, e24, e39, e49, e5, e52
+... (60 collaborateurs au total)
+
+VERIFICATION SUPPLEMENTAIRE :
+- Pas de noms completement identiques
+- Quelques homonymes (c'est normal) :
+  * BUNISSET Francis (b19) et BUNISSET Denise (b25) - Meme famille
+  * GUINDON Caroline (g7) et GUINDON Francois (h13) - Meme famille
+  * RETAILLEAU Josselin (s10) et RETAILLEAU Pascal (s21) - Meme famille
+  * LECORNU Jean-Bernard (l46) et LECORNU Ludovic (l56) - Meme famille
+  * TUSSEAU Louis (a93) et TUSSEAU Josselin (t60) - Meme famille
+  * LE Noel (k53) et LE Jean (l14) - Nom de famille "Le"
+
+Ces doublons de noms sont NORMAUX car ce sont des personnes differentes
+avec des matricules differents.
+
+
+================================================================================
+3. VERIFICATION DES DOUBLONS DANS LA TABLE MEDICAMENT
+================================================================================
+
+RESULTAT : ✅ AUCUN DOUBLON DETECTE
+
+Details :
+---------
+- Nombre total de medicaments : 29
+- Tous les MED_DEPOTLEGAL (cle primaire) sont UNIQUES
+- Tous les MED_NOMCOMMERCIAL sont UNIQUES
+
+Liste des medicaments (extrait) :
+- 3MYC7 - TRIMYCINE
+- ADIMOL9 - ADIMOL
+- AMOPIL7 - AMOPIL
+- AMOX45 - AMOXAR
+- AMOXIG12 - AMOXI Ge
+- APATOUX22 - APATOUX Vitamine C
+- BACTIG10 - BACTIGEL
+... (29 medicaments au total)
+
+REMARQUE :
+Plusieurs medicaments ont des noms similaires mais ce sont bien des
+produits differents :
+- AMOPIL (AMOPIL7), AMOXAR (AMOX45), AMOXI Ge (AMOXIG12)
+  -> Tous a base d'Amoxicilline mais avec des dosages/compositions differents
+  -> C'est NORMAL dans le domaine pharmaceutique
+
+
+================================================================================
+4. VERIFICATION DE LA COHERENCE DES DONNEES
+================================================================================
+
+⚠️ INCOHERENCE DETECTEE : Plus de logins que de collaborateurs
+
+Details :
+---------
+- Nombre de collaborateurs : 60
+- Nombre de logins : 67
+- Difference : 7 logins en TROP
+
+EXPLICATION SIMPLE :
+Il y a 7 logins de plus que de collaborateurs. Cela peut avoir plusieurs
+raisons :
+
+POSSIBILITE 1 : Anciens employes
+  -> Des collaborateurs ont quitte l'entreprise
+  -> Leurs logins existent toujours mais pas leur fiche collaborateur
+  -> PROBLEME : Ils peuvent encore se connecter !
+
+POSSIBILITE 2 : Comptes de test
+  -> Des comptes ont ete crees pour tester l'application
+  -> Ils n'ont pas de fiche collaborateur associee
+
+POSSIBILITE 3 : Erreur de saisie
+  -> Des logins ont ete crees sans collaborateur par erreur
+
+QUESTION A SE POSER :
+Est-ce que les 67 logins ont tous un collaborateur associe ?
+
+VERIFICATION A FAIRE :
+Il faudrait verifier dans la base de donnees si chaque login a bien
+un COL_MATRICULE qui existe dans la table collaborateur.
+
+RISQUE :
+- Si ce sont d'anciens employes, ils peuvent encore acceder au site
+- Faille de securite potentielle
+
+RECOMMANDATION :
+- Identifier les 7 logins sans collaborateur
+- Les supprimer OU desactiver (ajouter un champ "actif" dans la table)
+
+
+================================================================================
+5. AUTRES VERIFICATIONS
+================================================================================
+
+✅ Structure des cles primaires :
+- Toutes les tables ont des PRIMARY KEY
+- Pas de risque de doublons grace aux contraintes
+
+✅ Contraintes d'integrite :
+- 27 contraintes FOREIGN KEY presentes
+- Les relations entre tables sont bien definies
+- La base est bien structuree
+
+⚠️ Point d'attention : Contrainte UNIQUE manquante
+- Le champ LOG_LOGIN n'a PAS de contrainte UNIQUE
+- RISQUE : Techniquement, on pourrait creer 2 logins identiques
+- CEPENDANT : La cle primaire LOG_ID empeche les vrais doublons
+- RECOMMANDATION : Ajouter UNIQUE sur LOG_LOGIN pour plus de securite
+
+
+================================================================================
+6. ANOMALIES MINEURES DANS LES DONNEES
+================================================================================
+
+1. Code postal incorrect :
+   - Ligne 100 du SQL : Collaborateur n59 (LAON)
+   - Code postal : '2000' au lieu de '02000'
+   - Impact : Mineur (juste un affichage)
+
+2. Secteurs NULL :
+   - Plusieurs collaborateurs ont SEC_CODE = NULL
+   - Exemple : a17, a55, a93, b13, b16, b19, b25, b28, etc.
+   - QUESTION : Est-ce normal ? Certains employes n'ont pas de secteur ?
+   - Impact : Depend de la logique metier
+
+
+================================================================================
+7. RESUME FINAL
+================================================================================
+
+DOUBLONS :
+✅ Aucun doublon dans les logins
+✅ Aucun doublon dans les matricules
+✅ Aucun doublon dans les medicaments
+
+QUALITE DE LA BASE :
+✅ Structure solide avec cles primaires et etrangeres
+✅ Donnees coherentes et bien formatees
+✅ Encodage UTF8 correct pour les accents francais
+
+POINTS D'ATTENTION :
+⚠️  7 logins de plus que de collaborateurs (a investiguer)
+⚠️  LOG_ID 16 manquant dans la sequence
+⚠️  Pas de contrainte UNIQUE sur LOG_LOGIN
+⚠️  Un code postal incorrect (2000 au lieu de 02000)
+⚠️  Beaucoup de secteurs NULL
+
+CONCLUSION :
+Votre base de donnees est BONNE et ne contient PAS de doublons.
+Les quelques anomalies detectees sont mineures et n'empechent pas
+le bon fonctionnement de l'application.
+
+
+================================================================================
+8. ACTIONS RECOMMANDEES (par ordre de priorite)
+================================================================================
+
+PRIORITE 1 - SECURITE :
+□ Verifier que les 67 logins ont tous un collaborateur valide
+□ Identifier les 7 logins "orphelins" (sans collaborateur)
+□ Decider : supprimer ou desactiver ces logins orphelins
+
+PRIORITE 2 - AMELIORATION :
+□ Ajouter une contrainte UNIQUE sur le champ LOG_LOGIN
+□ Corriger le code postal de LAON (2000 -> 02000)
+
+PRIORITE 3 - VERIFICATION :
+□ Verifier si les SEC_CODE NULL sont normaux
+□ Comprendre pourquoi le LOG_ID 16 est manquant
+
+
+================================================================================
+FIN DU RAPPORT
+================================================================================
+
+Ce rapport a ete genere en analysant le fichier SQL.
+Pour une verification complete, il faudrait executer des requetes SQL
+directement sur la base de donnees active.

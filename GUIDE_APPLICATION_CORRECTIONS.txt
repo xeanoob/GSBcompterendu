@@ -1,0 +1,329 @@
+================================================================================
+GUIDE COMPLET - APPLICATION DES CORRECTIONS BASE DE DONNEES GSB
+================================================================================
+Date : 03/11/2025
+Auteur : Assistant Claude
+Niveau : Debutant (explications simples)
+
+================================================================================
+FICHIERS CREES
+================================================================================
+
+Dossier : C:\xampp\htdocs\GSBcompterendu\
+
+FICHIERS DE DOCUMENTATION :
+1. RAPPORT_VERIFICATION_BASE_DONNEES.txt - Rapport d'analyse initial
+2. CORRECTIONS_A_APPLIQUER.txt - Plan detaille des corrections
+3. GUIDE_APPLICATION_CORRECTIONS.txt - Ce fichier (guide pas a pas)
+
+FICHIERS SQL (dans corrections_sql/) :
+1. correction_code_postal_laon.sql - Corriger le code postal 2000 -> 02000
+2. identification_logins_orphelins.sql - Trouver les 7 logins en trop
+3. correction_contrainte_unique_login.sql - Ajouter securite sur les logins
+4. verification_finale.sql - Verifier que tout est OK
+
+
+================================================================================
+AVANT DE COMMENCER - PRECAUTIONS IMPORTANTES
+================================================================================
+
+⚠️  TRES IMPORTANT - A LIRE AVANT TOUTE MODIFICATION ⚠️
+
+1. FAIRE UNE SAUVEGARDE DE LA BASE DE DONNEES
+   Pourquoi ? Si quelque chose se passe mal, vous pourrez revenir en arriere.
+
+   Comment faire ?
+   a) Ouvrir XAMPP Control Panel
+   b) Demarrer MySQL (si pas deja fait)
+   c) Ouvrir phpMyAdmin (http://localhost/phpmyadmin)
+   d) Cliquer sur la base "gsbcr0"
+   e) Onglet "Exporter"
+   f) Cliquer sur "Executer"
+   g) Sauvegarder le fichier gsbcr0.sql dans un endroit sur
+
+2. NE PAS TRAVAILLER SUR LA VERSION DE PRODUCTION
+   Si vous avez une version "production" et une version "test",
+   faites d'abord les corrections sur la version "test".
+
+3. TESTER CHAQUE CORRECTION UNE PAR UNE
+   Ne pas tout executer d'un coup. Faire etape par etape.
+
+4. VERIFIER APRES CHAQUE CORRECTION
+   Chaque fichier SQL contient des requetes de verification.
+   Utilisez-les !
+
+
+================================================================================
+METHODE 1 : UTILISER phpMyAdmin (RECOMMANDE POUR DEBUTANTS)
+================================================================================
+
+ETAPE 1 : Ouvrir phpMyAdmin
+----------------------------
+1. Ouvrir votre navigateur (Chrome, Firefox, etc.)
+2. Aller sur : http://localhost/phpmyadmin
+3. Dans la colonne de gauche, cliquer sur "gsbcr0"
+4. Cliquer sur l'onglet "SQL" en haut
+
+ETAPE 2 : Copier-coller les requetes SQL
+-----------------------------------------
+1. Ouvrir le premier fichier : correction_code_postal_laon.sql
+2. Copier UNIQUEMENT les lignes qui commencent par SELECT ou UPDATE
+   (PAS les commentaires avec --)
+3. Coller dans la zone de texte de phpMyAdmin
+4. Cliquer sur "Executer"
+5. Verifier le resultat
+
+
+================================================================================
+ORDRE D'EXECUTION DES CORRECTIONS
+================================================================================
+
+CORRECTION #1 : Code postal de LAON (facile, sans risque)
+----------------------------------------------------------
+
+Fichier : corrections_sql/correction_code_postal_laon.sql
+
+Etapes :
+1. Ouvrir phpMyAdmin -> gsbcr0 -> SQL
+2. Copier cette requete de verification AVANT :
+
+   SELECT COL_MATRICULE, COL_NOM, COL_PRENOM, COL_VILLE, COL_CP
+   FROM collaborateur
+   WHERE COL_MATRICULE = 'n59';
+
+3. Cliquer "Executer" -> Vous devez voir : LAON | 2000
+4. Copier cette requete de CORRECTION :
+
+   UPDATE collaborateur
+   SET COL_CP = '02000'
+   WHERE COL_MATRICULE = 'n59';
+
+5. Cliquer "Executer" -> Vous devez voir : "1 ligne affectee"
+6. Copier la requete de verification APRES (meme que l'etape 2)
+7. Cliquer "Executer" -> Vous devez voir : LAON | 02000
+
+✅ CORRECTION #1 TERMINEE !
+
+
+CORRECTION #2 : Identifier les logins orphelins (juste regarder)
+-----------------------------------------------------------------
+
+Fichier : corrections_sql/identification_logins_orphelins.sql
+
+Etapes :
+1. Ouvrir phpMyAdmin -> gsbcr0 -> SQL
+2. Copier cette requete :
+
+   SELECT l.LOG_ID, l.LOG_LOGIN, l.COL_MATRICULE
+   FROM login l
+   LEFT JOIN collaborateur c ON l.COL_MATRICULE = c.COL_MATRICULE
+   WHERE c.COL_MATRICULE IS NULL;
+
+3. Cliquer "Executer"
+4. NOTER les resultats (les 7 logins orphelins)
+
+EXEMPLE DE RESULTAT :
+LOG_ID | LOG_LOGIN | COL_MATRICULE
+16     | testuser  | x999
+...
+
+DECISION A PRENDRE :
+- Voulez-vous SUPPRIMER ces 7 logins ? (recommande)
+- OU les GARDER ? (pourquoi ?)
+
+Si vous voulez les SUPPRIMER :
+1. Pour CHAQUE login orphelin trouve, copier cette requete :
+
+   DELETE FROM login WHERE LOG_ID = 16;
+   (Remplacer 16 par le bon numero)
+
+2. Executer pour chaque login orphelin
+3. Verifier qu'il ne reste plus de logins orphelins :
+
+   SELECT COUNT(*) FROM login l
+   LEFT JOIN collaborateur c ON l.COL_MATRICULE = c.COL_MATRICULE
+   WHERE c.COL_MATRICULE IS NULL;
+
+   Resultat attendu : 0
+
+✅ CORRECTION #2 TERMINEE ! (si vous avez choisi de supprimer)
+
+
+CORRECTION #3 : Ajouter contrainte UNIQUE (important pour la securite)
+-----------------------------------------------------------------------
+
+Fichier : corrections_sql/correction_contrainte_unique_login.sql
+
+Etapes :
+1. Ouvrir phpMyAdmin -> gsbcr0 -> SQL
+2. D'ABORD verifier qu'il n'y a pas de doublons :
+
+   SELECT LOG_LOGIN, COUNT(*) as nb
+   FROM login
+   GROUP BY LOG_LOGIN
+   HAVING COUNT(*) > 1;
+
+3. Si la requete renvoie 0 ligne -> OK, continuer
+   Si elle renvoie des lignes -> Il y a des doublons, les corriger d'abord
+
+4. Copier cette requete pour AJOUTER la contrainte :
+
+   ALTER TABLE login
+   ADD CONSTRAINT login_unique_username UNIQUE (LOG_LOGIN);
+
+5. Cliquer "Executer"
+6. Vous devez voir : "Requete executee avec succes"
+
+7. Verifier que ca a marche :
+
+   SHOW CREATE TABLE login;
+
+   Chercher dans le resultat : UNIQUE KEY `login_unique_username`
+
+✅ CORRECTION #3 TERMINEE !
+
+
+CORRECTION #4 : Verification finale
+------------------------------------
+
+Fichier : corrections_sql/verification_finale.sql
+
+Etapes :
+1. Ouvrir le fichier verification_finale.sql
+2. Copier TOUTES les requetes SELECT une par une
+3. Executer chaque requete dans phpMyAdmin
+4. Verifier que tous les tests affichent "OK"
+
+Si un test affiche "ECHEC" ou "PROBLEME" :
+-> Retourner a la correction correspondante et la refaire
+
+✅ TOUTES LES CORRECTIONS SONT TERMINEES !
+
+
+================================================================================
+METHODE 2 : UTILISER LA LIGNE DE COMMANDE (POUR UTILISATEURS AVANCES)
+================================================================================
+
+Si vous etes a l'aise avec la ligne de commande :
+
+1. Ouvrir un terminal / invite de commandes
+2. Aller dans le dossier XAMPP :
+   cd C:\xampp\mysql\bin
+
+3. Se connecter a MySQL :
+   mysql -u root -P 3307 -h localhost
+
+4. Selectionner la base :
+   USE gsbcr0;
+
+5. Executer un fichier SQL :
+   source C:\xampp\htdocs\GSBcompterendu\corrections_sql\correction_code_postal_laon.sql
+
+6. Repeter pour chaque fichier de correction
+
+
+================================================================================
+VERIFICATION MANUELLE DANS phpMyAdmin
+================================================================================
+
+Apres toutes les corrections, vous pouvez verifier manuellement :
+
+1. Onglet "collaborateur" :
+   - Chercher le collaborateur n59
+   - Verifier que COL_CP = 02000
+
+2. Onglet "login" :
+   - Compter les lignes
+   - Si logins orphelins supprimes : doit avoir 60 lignes
+   - Si logins orphelins gardes : doit avoir 67 lignes
+
+3. Onglet "Structure" de la table "login" :
+   - Verifier qu'il y a bien une contrainte UNIQUE sur LOG_LOGIN
+
+
+================================================================================
+QUE FAIRE EN CAS DE PROBLEME ?
+================================================================================
+
+PROBLEME : "Erreur SQL 1062 - Duplicate entry"
+SOLUTION : Il y a deja un doublon. Utilisez la requete pour trouver
+           les doublons et supprimez-en un.
+
+PROBLEME : "Erreur SQL 1451 - Cannot delete"
+SOLUTION : Le login que vous essayez de supprimer est utilise ailleurs.
+           Verifiez les cles etrangeres.
+
+PROBLEME : "Erreur SQL 1146 - Table doesn't exist"
+SOLUTION : Vous n'etes pas sur la bonne base. Faites : USE gsbcr0;
+
+PROBLEME : J'ai fait une erreur, comment revenir en arriere ?
+SOLUTION : Restaurez la sauvegarde que vous avez faite au debut :
+           1. phpMyAdmin -> gsbcr0
+           2. Onglet "Importer"
+           3. Choisir votre fichier de sauvegarde
+           4. Executer
+
+
+================================================================================
+APRES LES CORRECTIONS - METTRE A JOUR LE FICHIER SQL
+================================================================================
+
+Une fois toutes les corrections appliquees et verifiees :
+
+1. Exporter la nouvelle version de la base :
+   phpMyAdmin -> gsbcr0 -> Exporter -> Executer
+
+2. Remplacer le fichier gsbv0v3complet.sql par la nouvelle version
+
+3. Renommer l'ancien fichier en gsbv0v3complet_OLD.sql (backup)
+
+4. La nouvelle version sera gsbv0v3complet.sql (corrigee)
+
+
+================================================================================
+CHECKLIST FINALE
+================================================================================
+
+Avant de considerer le travail termine, verifiez :
+
+□ Sauvegarde de la base effectuee
+□ Correction #1 appliquee (code postal LAON)
+□ Correction #2 appliquee ou decision prise (logins orphelins)
+□ Correction #3 appliquee (contrainte UNIQUE)
+□ Verification finale executee
+□ Tous les tests affichent "OK"
+□ Nouvelle version de la base exportee
+□ Ancien fichier SQL sauvegarde
+□ Application testee (connexion, affichage profil, etc.)
+
+
+================================================================================
+TEMPS ESTIME
+================================================================================
+
+Si vous suivez ce guide pas a pas :
+- Correction #1 : 5 minutes
+- Correction #2 : 10-15 minutes
+- Correction #3 : 5 minutes
+- Verification : 10 minutes
+
+TOTAL : Environ 30-40 minutes
+
+
+================================================================================
+BESOIN D'AIDE ?
+================================================================================
+
+Si vous rencontrez un probleme :
+1. Relisez la section correspondante de ce guide
+2. Verifiez que vous avez bien fait une sauvegarde
+3. Consultez le fichier CORRECTIONS_A_APPLIQUER.txt pour plus de details
+4. En dernier recours : restaurez la sauvegarde et recommencez
+
+
+================================================================================
+FIN DU GUIDE
+================================================================================
+
+Bon courage pour les corrections !
+Prenez votre temps et faites etape par etape.
