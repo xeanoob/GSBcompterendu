@@ -18,13 +18,13 @@ $messageSucces = "";
 
 switch ($action) {
 
-    // 1. Le délégué demande à gérer les praticiens (scénario nominal)
+    // Le délégué demande à gérer les praticiens (scénario nominal)
     case 'selection':
         // Juste la liste déroulante + bouton "Créer"
         include("vues/v_gererPraticien.php");
         break;
 
-    // 2. L’utilisateur choisit un praticien dans la liste
+    // L’utilisateur choisit un praticien dans la liste
     case 'afficher':
         if (!empty($_POST['praticien'])) {
             $num = (int) $_POST['praticien'];
@@ -40,14 +40,14 @@ switch ($action) {
         include("vues/v_gererPraticien.php");
         break;
 
-    // 2-a. Le délégué demande à créer un nouveau praticien (exception)
+    // Le délégué demande à créer un nouveau praticien 
     case 'nouveau':
         $mode = 'creation';
         // $praticien reste null → formulaire vierge
         include("vues/v_gererPraticien.php");
         break;
 
-    // 4. Le délégué saisit ou modifie les informations puis clique sur "Valider"
+    // Le délégué saisit ou modifie les informations puis clique sur "Valider"
     case 'enregistrer':
 
         // Bouton "Annuler" → exception 4-b
