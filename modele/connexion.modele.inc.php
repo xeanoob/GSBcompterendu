@@ -137,6 +137,31 @@ function getCountMatricule()
     }
 }
 
+function getRegionVisiteur($matricule)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = "SELECT REG_CODE 
+                FROM travailler 
+                WHERE VIS_MATRICULE = :mat 
+                LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':mat', $matricule, PDO::PARAM_STR);
+        $stmt->execute();
+        $ligne = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($ligne) {
+            return $ligne['REG_CODE'];
+        } else {
+            return null;
+        }
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+
 /* ANCIENNES FONCTIONS QUI A PERMIS DE SET LES LOGINS, LES HABILITATIONS ET LA MONNAIE DES MEDOCS
 
 function concatMotDePasseBrut($mat) : string {
