@@ -43,6 +43,18 @@
             include("vues/v_accueil.php");
             break;
         }
+
+        case 'praticiens' :
+        {   
+         
+            if (!empty($_SESSION['login'])) {
+                include("controleur/c_praticiens.php");
+            } else {
+                include("vues/v_accesInterdit.php");
+         }
+            break;
+        }
+
     }
 ?>
 <?php include("vues/v_footer.php") ;?>
