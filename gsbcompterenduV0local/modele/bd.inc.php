@@ -5,7 +5,7 @@ session_start();
 function connexionPDO() {
     $login = 'root';
     $mdp = '';
-    $bd = 'gsbcr0';
+    $bd = 'gsbv0v3';
     $serveur = 'localhost';
 
     try {

@@ -1,0 +1,111 @@
+================================================================================
+RAPPORT DE CORRECTION DE LA BASE DE DONNÉES GSB
+================================================================================
+Date : 04/11/2025
+Auteur : Gemini
+Base de données : gsbv0v3
+
+================================================================================
+INTRODUCTION
+================================================================================
+
+Ce rapport détaille les anomalies détectées dans la base de données "gsbv0v3" et
+propose un plan de correction. L'objectif est d'améliorer la cohérence,
+l'intégrité et la sécurité des données.
+
+================================================================================
+ANOMALIES DÉTECTÉES ET PLAN DE CORRECTION
+================================================================================
+
+--------------------------------------------------------------------------------
+ANOMALIE 1 : Logins Orphelins
+--------------------------------------------------------------------------------
+
+**Problème :**
+Il y a 67 enregistrements dans la table `login` mais seulement 60 dans la table
+`collaborateur`. Cela signifie qu'il y a 7 comptes utilisateurs (logins) qui ne
+sont associés à aucun employé.
+
+**Pourquoi c'est un problème ?**
+- **Sécurité :** Ces comptes pourraient être utilisés pour accéder à l'application
+  de manière illégitime.
+- **Intégrité des données :** Cela crée une incohérence entre les tables.
+- **Maintenance :** Ces données inutiles encombrent la base de données.
+
+**Solution proposée :**
+1.  **Identification :** Isoler les 7 logins qui n'ont pas de correspondance
+    dans la table `collaborateur`.
+2.  **Suppression :** Supprimer ces 7 logins de la table `login` pour ne conserver
+    que les comptes valides.
+
+--------------------------------------------------------------------------------
+ANOMALIE 2 : Code Postal Incorrect pour la ville de LAON
+--------------------------------------------------------------------------------
+
+**Problème :**
+Le collaborateur 'n59' (MAFFEZZOLI Thibaud), habitant à LAON, a le code postal
+'2000'. Le code postal correct pour LAON est '02000'.
+
+**Pourquoi c'est un problème ?**
+- **Exactitude des données :** L'adresse de l'employé est incorrecte.
+- **Fonctionnalités futures :** Un code postal erroné peut poser problème pour
+  des fonctionnalités de tri, de recherche ou de statistiques par département.
+
+**Solution proposée :**
+1.  **Mise à jour :** Modifier l'enregistrement du collaborateur 'n59' pour
+    remplacer le code postal '2000' par '02000'.
+
+--------------------------------------------------------------------------------
+ANOMALIE 3 : Absence de Contrainte d'Unicité sur le Login
+--------------------------------------------------------------------------------
+
+**Problème :**
+La colonne `LOG_LOGIN` de la table `login` ne possède pas de contrainte `UNIQUE`.
+Techniquement, il serait possible de créer plusieurs comptes avec le même nom
+d'utilisateur (par exemple, deux utilisateurs nommés 'test').
+
+**Pourquoi c'est un problème ?**
+- **Sécurité et confusion :** Lors de la connexion, le système pourrait ne pas
+  savoir quel compte utiliser si deux noms d'utilisateur sont identiques, ce qui
+  représente une faille de sécurité.
+- **Intégrité des données :** Chaque utilisateur devrait avoir un nom d'utilisateur
+  unique.
+
+**Solution proposée :**
+1.  **Vérification :** S'assurer qu'il n'existe pas déjà de doublons dans la
+    colonne `LOG_LOGIN`.
+2.  **Ajout de la contrainte :** Appliquer une contrainte `UNIQUE` à la colonne
+    `LOG_LOGIN` pour interdire la création de noms d'utilisateur en double à
+    l'avenir.
+
+--------------------------------------------------------------------------------
+ANOMALIE 4 : "Trou" dans la séquence des identifiants de login
+--------------------------------------------------------------------------------
+
+**Problème :**
+L'identifiant `LOG_ID` 16 est manquant dans la table `login`. La séquence passe
+directement de 15 à 17.
+
+**Analyse :**
+Ce "trou" est probablement dû à la suppression d'un enregistrement ou à une
+erreur d'insertion qui a été annulée.
+
+**Conclusion :**
+Ce n'est pas un problème bloquant. Les identifiants de type clé primaire
+auto-incrémentée n'ont pas besoin d'être séquentiels. Aucune action n'est
+nécessaire.
+
+================================================================================
+RÉSUMÉ DES ACTIONS À MENER
+================================================================================
+
+1.  Supprimer les 7 logins orphelins.
+2.  Corriger le code postal de LAON pour le collaborateur 'n59'.
+3.  Ajouter une contrainte `UNIQUE` sur la colonne `LOG_LOGIN` de la table `login`.
+
+Ces actions seront menées de manière sécurisée pour garantir l'intégrité de la
+base de données.
+
+================================================================================
+FIN DU RAPPORT
+================================================================================

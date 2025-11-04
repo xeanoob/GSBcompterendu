@@ -1,273 +1,63 @@
 ================================================================================
-PLAN DE CORRECTIONS - BASE DE DONNEES GSB
+PLAN DE CORRECTIONS - BASE DE DONNEES GSB - MIS À JOUR
 ================================================================================
-Date : 03/11/2025
-Fichiers concernes : gsbv0v3complet.sql et base de donnees gsbcr0
+Date de mise à jour : 04/11/2025
+Fichiers concernés : gsbv0v3complet.sql et base de données gsbv0v3
 
 ================================================================================
-PROBLEMES DETECTES ET SOLUTIONS
+PROBLÈMES DÉTECTÉS ET SOLUTIONS APPLIQUÉES
 ================================================================================
-
-PROBLEME 1 : 7 logins de plus que de collaborateurs
-PROBLEME 2 : Code postal incorrect pour LAON
-PROBLEME 3 : Pas de contrainte UNIQUE sur LOG_LOGIN
-PROBLEME 4 : LOG_ID 16 manquant dans la sequence
 
 --------------------------------------------------------------------------------
 CORRECTION #1 : IDENTIFIER ET NETTOYER LES LOGINS ORPHELINS
 --------------------------------------------------------------------------------
 
-QU'EST-CE QU'UN LOGIN ORPHELIN ?
-Un login orphelin est un compte de connexion qui existe dans la table login
-mais qui n'a PAS de collaborateur correspondant dans la table collaborateur.
+STATUT : TERMINÉ
 
-POURQUOI C'EST UN PROBLEME ?
-- Risque de securite : quelqu'un pourrait utiliser ce login
-- Incoherence dans la base de donnees
-- Prend de la place inutilement
-
-VERIFICATION EFFECTUEE :
-J'ai compare les 67 logins avec les 60 collaborateurs.
-
-LISTE DES LOGINS (67 au total) :
-- LOG_ID 1 a 67 (sauf le 16 qui manque)
-- Tous ont un COL_MATRICULE associe
-
-LISTE DES COLLABORATEURS (60 au total) :
-a131, a17, a55, a93, b13, b16, b19, b25, b28, b34, b4, b50, b59,
-c14, c3, d13, d51, e22, e24, e39, e49, e5, e52, f21, f39, f4,
-g19, g30, g53, g7, h13, h30, h35, h40, j45, j50, j8, k4, k53,
-l14, l23, l46, l56, m35, m45, n42, n58, n59, o26, p32, p40,
-p41, p42, p49, p6, p7, p8, q17, r24, r58, s10, s21, t43, t47,
-t55, t60
-
-ANALYSE :
-Pour savoir quels sont les 7 logins orphelins, il faut comparer les
-COL_MATRICULE de la table login avec ceux de la table collaborateur.
-
-SOLUTION PROPOSEE :
-Executer une requete SQL pour identifier les logins orphelins :
-
-    SELECT l.LOG_ID, l.LOG_LOGIN, l.COL_MATRICULE
-    FROM login l
-    LEFT JOIN collaborateur c ON l.COL_MATRICULE = c.COL_MATRICULE
-    WHERE c.COL_MATRICULE IS NULL;
-
-Cette requete va trouver tous les logins qui n'ont PAS de collaborateur.
-
-ACTIONS A FAIRE :
-1. Executer la requete pour identifier les 7 logins orphelins
-2. Decider : les supprimer OU les garder (avec justification)
-3. Si suppression : creer une requete DELETE pour les retirer
-
-FICHIER SQL A CREER :
-correction_supprimer_logins_orphelins.sql
-
+ACTION MENÉE :
+- Le script de correction a été exécuté.
+- RÉSULTAT : Aucun login orphelin n'a été trouvé. La base de données était déjà à jour sur ce point.
 
 --------------------------------------------------------------------------------
 CORRECTION #2 : CORRIGER LE CODE POSTAL DE LAON
 --------------------------------------------------------------------------------
 
-PROBLEME IDENTIFIE :
-Le collaborateur n59 (MAFFEZZOLI Thibaud) a un code postal incorrect :
-- Ville : LAON
-- Code postal actuel : '2000'
-- Code postal correct : '02000'
+STATUT : TERMINÉ
 
-POURQUOI C'EST IMPORTANT ?
-- Les codes postaux francais font 5 chiffres
-- LAON est dans l'Aisne (departement 02)
-- Le code postal doit commencer par 02
-
-IMPACT :
-- Affichage incorrect sur le profil utilisateur
-- Possible probleme pour trier par code postal
-- Incoherence avec les autres codes postaux
-
-SOLUTION :
-Modifier le code postal dans la table collaborateur.
-
-REQUETE SQL A EXECUTER :
-
-UPDATE collaborateur
-SET COL_CP = '02000'
-WHERE COL_MATRICULE = 'n59';
-
-EXPLICATION SIMPLE :
-Cette requete dit : "Pour le collaborateur avec le matricule n59,
-change son code postal pour le mettre a 02000"
-
-VERIFICATION APRES CORRECTION :
-SELECT COL_MATRICULE, COL_NOM, COL_PRENOM, COL_VILLE, COL_CP
-FROM collaborateur
-WHERE COL_MATRICULE = 'n59';
-
-Resultat attendu :
-n59 | MAFFEZZOLI | Thibaud | LAON | 02000
-
-FICHIER SQL A CREER :
-correction_code_postal_laon.sql
-
+ACTION MENÉE :
+- Le code postal du collaborateur 'n59' (MAFFEZZOLI Thibaud) a été corrigé de '2000' à '02000'.
+- VÉRIFICATION : La correction a été confirmée dans la base de données.
 
 --------------------------------------------------------------------------------
 CORRECTION #3 : AJOUTER CONTRAINTE UNIQUE SUR LOG_LOGIN
 --------------------------------------------------------------------------------
 
-PROBLEME IDENTIFIE :
-Actuellement, la table login a :
-- Une cle primaire sur LOG_ID (empeche les doublons d'ID)
-- Une contrainte UNIQUE sur COL_MATRICULE (empeche les doublons de matricule)
-- MAIS pas de contrainte UNIQUE sur LOG_LOGIN
+STATUT : TERMINÉ
 
-POURQUOI C'EST UN PROBLEME ?
-Sans contrainte UNIQUE, on pourrait techniquement creer deux comptes
-avec le meme login (ex: deux fois "villou").
-
-Exemple de ce qui pourrait arriver :
-INSERT INTO login VALUES (68, 'villou', 'motdepasse', 'x999');
--> Ca marcherait ! Mais on aurait 2 logins "villou"
-
-IMPACT SECURITE :
-- Risque de confusion lors de la connexion
-- Probleme : quel compte sera utilise si 2 logins identiques ?
-- Faille de securite potentielle
-
-SOLUTION :
-Ajouter une contrainte UNIQUE sur le champ LOG_LOGIN.
-
-REQUETE SQL A EXECUTER :
-
-ALTER TABLE login
-ADD CONSTRAINT login_unique UNIQUE (LOG_LOGIN);
-
-EXPLICATION SIMPLE :
-Cette requete dit : "A partir de maintenant, chaque LOG_LOGIN doit etre
-unique. On ne peut plus creer deux logins identiques."
-
-VERIFICATION AVANT :
-Verifier qu'il n'y a pas deja de doublons (sinon la contrainte echouera) :
-
-SELECT LOG_LOGIN, COUNT(*) as nb
-FROM login
-GROUP BY LOG_LOGIN
-HAVING COUNT(*) > 1;
-
-Si cette requete renvoie des resultats, il faut d'abord supprimer
-les doublons avant d'ajouter la contrainte.
-
-VERIFICATION APRES :
-Essayer d'inserer un doublon (ca doit echouer) :
-
-INSERT INTO login VALUES (999, 'villou', 'test', 'test');
--> Erreur attendue : "Duplicate entry 'villou' for key 'login_unique'"
-
-FICHIER SQL A CREER :
-correction_contrainte_unique_login.sql
-
+ACTION MENÉE :
+- Une contrainte d'unicité (`login_unique`) a été ajoutée à la colonne `LOG_LOGIN` de la table `login`.
+- VÉRIFICATION : La contrainte est maintenant active, empêchant la création de noms d'utilisateur en double.
 
 --------------------------------------------------------------------------------
 CORRECTION #4 : COMPRENDRE LE LOG_ID 16 MANQUANT
 --------------------------------------------------------------------------------
 
-PROBLEME IDENTIFIE :
-La sequence des LOG_ID saute de 15 a 17 :
-- LOG_ID 15 = 'dephi' (matricule c3)
-- LOG_ID 16 = MANQUANT
-- LOG_ID 17 = 'debjea' (matricule d13)
+STATUT : ANALYSÉ - AUCUNE ACTION REQUISE
 
-POURQUOI IL MANQUE ?
-Plusieurs hypotheses :
-1. Le login a ete supprime apres creation
-2. Erreur lors de l'insertion initiale des donnees
-3. Le matricule d13 devait avoir le LOG_ID 16 mais il a ete cree avec 17
-
-FAUT-IL CORRIGER ?
-NON, ce n'est pas necessaire de corriger ce probleme car :
-- Ca ne gene pas le fonctionnement de l'application
-- LOG_ID est une cle primaire auto-incrementee
-- Les "trous" dans la numerotation sont acceptables
-- Renumeroter casserait les relations avec d'autres tables
-
-IMPACT :
-Aucun. C'est juste un detail esthetique.
-
-CONCLUSION :
-On laisse tel quel. Pas de correction necessaire.
-
+ANALYSE :
+- Le "trou" dans la séquence des identifiants n'impacte pas le fonctionnement de l'application.
+- Aucune correction n'a été appliquée, conformément à l'analyse initiale.
 
 ================================================================================
-RESUME DES FICHIERS SQL A CREER
+RÉSUMÉ
 ================================================================================
 
-1. correction_supprimer_logins_orphelins.sql
-   -> Apres avoir identifie les 7 logins orphelins
+Toutes les corrections nécessaires ont été appliquées avec succès. La base de données
+est maintenant plus propre, cohérente et sécurisée.
 
-2. correction_code_postal_laon.sql
-   -> Correction immediate possible
-
-3. correction_contrainte_unique_login.sql
-   -> Correction immediate possible
-
-4. verification_post_corrections.sql
-   -> Pour verifier que tout est OK apres les corrections
-
+- Le fichier `apply_corrections.php` a été utilisé pour effectuer les modifications.
+- Le rapport `RAPPORT_CORRECTIONS_BDD.txt` a été créé pour documenter les anomalies et les solutions.
 
 ================================================================================
-ORDRE D'EXECUTION DES CORRECTIONS
+FIN DU DOCUMENT
 ================================================================================
-
-ETAPE 1 : PREPARATION
-□ Faire une sauvegarde complete de la base de donnees
-  Commande : mysqldump -u root -P 3307 gsbcr0 > sauvegarde_avant_corrections.sql
-
-ETAPE 2 : CORRECTIONS SIMPLES (sans risque)
-□ Executer : correction_code_postal_laon.sql
-□ Verifier : Le code postal de LAON est bien 02000
-
-ETAPE 3 : IDENTIFIER LES LOGINS ORPHELINS
-□ Executer la requete d'identification
-□ Noter les 7 logins orphelins trouves
-□ Decider : les supprimer ou les garder ?
-
-ETAPE 4 : NETTOYER LES LOGINS ORPHELINS (si decision = supprimer)
-□ Executer : correction_supprimer_logins_orphelins.sql
-□ Verifier : Il reste 60 logins (autant que de collaborateurs)
-
-ETAPE 5 : AJOUTER LA CONTRAINTE UNIQUE
-□ Verifier qu'il n'y a pas de doublons
-□ Executer : correction_contrainte_unique_login.sql
-□ Tester : Essayer d'inserer un login doublon (doit echouer)
-
-ETAPE 6 : VERIFICATION FINALE
-□ Executer : verification_post_corrections.sql
-□ Comparer avec le rapport initial
-□ Tout doit etre OK !
-
-
-================================================================================
-QUESTIONS A SE POSER AVANT DE CORRIGER
-================================================================================
-
-1. Les 7 logins en trop sont-ils des anciens employes ?
-   -> Si OUI : les supprimer
-   -> Si NON : les garder mais documenter pourquoi
-
-2. Faut-il prevenir quelqu'un avant de supprimer des logins ?
-   -> Verifier avec le responsable du projet
-
-3. Y a-t-il une sauvegarde recente de la base ?
-   -> OBLIGATOIRE avant toute modification
-
-4. Les corrections doivent-elles etre appliquees en production ou test ?
-   -> Toujours tester sur une copie d'abord !
-
-
-================================================================================
-FIN DU PLAN DE CORRECTIONS
-================================================================================
-
-Prochaine etape :
-1. Valider ce plan avec vous
-2. Creer les fichiers SQL de correction
-3. Executer les corrections une par une
-4. Verifier que tout fonctionne
