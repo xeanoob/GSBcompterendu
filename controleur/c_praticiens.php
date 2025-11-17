@@ -24,10 +24,26 @@ switch ($action) {
         include("vues/v_gererPraticien.php");
         break;
 
-    // L’utilisateur choisit un praticien dans la liste
+    // L'utilisateur choisit un praticien dans la liste
     case 'afficher':
         if (!empty($_POST['praticien'])) {
             $num = (int) $_POST['praticien'];
+            $praticien = getPraticienByNum($num);
+            if ($praticien) {
+                $mode = 'consultation';  // Mode consultation par défaut
+            } else {
+                $erreurs[] = "Le praticien sélectionné n'existe pas.";
+            }
+        } else {
+            $erreurs[] = "Vous devez choisir un praticien dans la liste.";
+        }
+        include("vues/v_gererPraticien.php");
+        break;
+
+    // Le délégué clique sur "Modifier" depuis le mode consultation
+    case 'modifier':
+        if (!empty($_GET['num'])) {
+            $num = (int) $_GET['num'];
             $praticien = getPraticienByNum($num);
             if ($praticien) {
                 $mode = 'modification';
@@ -35,7 +51,7 @@ switch ($action) {
                 $erreurs[] = "Le praticien sélectionné n'existe pas.";
             }
         } else {
-            $erreurs[] = "Vous devez choisir un praticien dans la liste.";
+            $erreurs[] = "Aucun praticien spécifié.";
         }
         include("vues/v_gererPraticien.php");
         break;

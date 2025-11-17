@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Structure de la table `collaborateur`
 --
 
-DROP TABLE IF EXISTS `collaborateur`;
+-- DROP TABLE IF EXISTS `collaborateur`;
 CREATE TABLE IF NOT EXISTS `collaborateur` (
   `COL_MATRICULE` varchar(10) NOT NULL,
   `COL_NOM` varchar(25) DEFAULT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `collaborateur` (
 -- D?chargement des donn?es de la table `collaborateur`
 --
 
-INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRESSE`, `COL_CP`, `COL_VILLE`, `COL_DATEEMBAUCHE`, `HAB_ID`, `SEC_CODE`, `REG_CODE`) VALUES
+INSERT IGNORE INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRESSE`, `COL_CP`, `COL_VILLE`, `COL_DATEEMBAUCHE`, `HAB_ID`, `SEC_CODE`, `REG_CODE`) VALUES
 ('a131', 'Villechalane', 'Louis', '8 cours Lafontaine', '29000', 'BREST', '1992-12-11 00:00:00', 1, 'E', 'BG'),
 ('a17', 'Andre', 'David', '1 r Aimon de Chiss?e', '38100', 'GRENOBLE', '1991-08-26 00:00:00', 1, NULL, 'RA'),
 ('a55', 'Bedos', 'Christian', '1 r B?n?dictins', '65000', 'TARBES', '1987-07-17 00:00:00', 1, NULL, 'OC'),
@@ -123,7 +123,7 @@ INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRE
 -- Structure de la table `departement`
 --
 
-DROP TABLE IF EXISTS `departement`;
+-- DROP TABLE IF EXISTS `departement`;
 CREATE TABLE IF NOT EXISTS `departement` (
   `NoDEPT` int(11) NOT NULL,
   `Departement` varchar(30) NOT NULL,
@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS `departement` (
 -- D?chargement des donn?es de la table `departement`
 --
 
-INSERT INTO `departement` (`NoDEPT`, `Departement`, `REG_CODE`) VALUES
+INSERT IGNORE INTO `departement` (`NoDEPT`, `Departement`, `REG_CODE`) VALUES
 (1, 'Ain', 'RA'),
 (2, 'Aisne', 'HF'),
 (3, 'Allier', 'RA'),
@@ -238,19 +238,19 @@ INSERT INTO `departement` (`NoDEPT`, `Departement`, `REG_CODE`) VALUES
 -- Structure de la table `dosage`
 --
 
-DROP TABLE IF EXISTS `dosage`;
+-- DROP TABLE IF EXISTS `dosage`;
 CREATE TABLE IF NOT EXISTS `dosage` (
   `DOS_CODE` int(11) NOT NULL AUTO_INCREMENT,
   `DOS_QUANTITE` float NOT NULL,
   `DOS_UNITE` int(11) NOT NULL,
   PRIMARY KEY (`DOS_CODE`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
 
 --
 -- D?chargement des donn?es de la table `dosage`
 --
 
-INSERT INTO `dosage` (`DOS_CODE`, `DOS_QUANTITE`, `DOS_UNITE`) VALUES
+INSERT IGNORE INTO `dosage` (`DOS_CODE`, `DOS_QUANTITE`, `DOS_UNITE`) VALUES
 (1, 500, 1),
 (2, 1000, 1),
 (3, 250, 1),
@@ -268,18 +268,18 @@ INSERT INTO `dosage` (`DOS_CODE`, `DOS_QUANTITE`, `DOS_UNITE`) VALUES
 -- Structure de la table `etat`
 --
 
-DROP TABLE IF EXISTS `etat`;
+-- DROP TABLE IF EXISTS `etat`;
 CREATE TABLE IF NOT EXISTS `etat` (
   `ETAT_CODE` int(11) NOT NULL,
   `ETAT_LIBELLE` varchar(50) NOT NULL,
   PRIMARY KEY (`ETAT_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
 
 --
 -- D?chargement des donn?es de la table `etat`
 --
 
-INSERT INTO `etat` (`ETAT_CODE`, `ETAT_LIBELLE`) VALUES
+INSERT IGNORE INTO `etat` (`ETAT_CODE`, `ETAT_LIBELLE`) VALUES
 (1, 'En cours de saisie'),
 (2, 'Saisie d?finitive / Valid?'),
 (3, 'Consult? par le d?l?gu?'),
@@ -291,7 +291,7 @@ INSERT INTO `etat` (`ETAT_CODE`, `ETAT_LIBELLE`) VALUES
 -- Structure de la table `famille`
 --
 
-DROP TABLE IF EXISTS `famille`;
+-- DROP TABLE IF EXISTS `famille`;
 CREATE TABLE IF NOT EXISTS `famille` (
   `FAM_CODE` varchar(3) NOT NULL,
   `FAM_LIBELLE` varchar(80) DEFAULT NULL,
@@ -302,7 +302,7 @@ CREATE TABLE IF NOT EXISTS `famille` (
 -- D?chargement des donn?es de la table `famille`
 --
 
-INSERT INTO `famille` (`FAM_CODE`, `FAM_LIBELLE`) VALUES
+INSERT IGNORE INTO `famille` (`FAM_CODE`, `FAM_LIBELLE`) VALUES
 ('AA', 'Antalgiques en association'),
 ('AAA', 'Antalgiques antipyr?tiques en association'),
 ('AAC', 'Antid?presseur d\'action centrale'),
@@ -330,7 +330,7 @@ INSERT INTO `famille` (`FAM_CODE`, `FAM_LIBELLE`) VALUES
 -- Structure de la table `formuler`
 --
 
-DROP TABLE IF EXISTS `formuler`;
+-- DROP TABLE IF EXISTS `formuler`;
 CREATE TABLE IF NOT EXISTS `formuler` (
   `MED_DEPOTLEGAL` varchar(10) NOT NULL,
   `PRE_CODE` varchar(2) NOT NULL,
@@ -342,7 +342,7 @@ CREATE TABLE IF NOT EXISTS `formuler` (
 -- D?chargement des donn?es de la table `formuler`
 --
 
-INSERT INTO `formuler` (`MED_DEPOTLEGAL`, `PRE_CODE`) VALUES
+INSERT IGNORE INTO `formuler` (`MED_DEPOTLEGAL`, `PRE_CODE`) VALUES
 ('ADIMOL9', 'CP'),
 ('AMOX45', 'CP'),
 ('APATOUX22', 'CP'),
@@ -386,7 +386,7 @@ INSERT INTO `formuler` (`MED_DEPOTLEGAL`, `PRE_CODE`) VALUES
 -- Structure de la table `habilitation`
 --
 
-DROP TABLE IF EXISTS `habilitation`;
+-- DROP TABLE IF EXISTS `habilitation`;
 CREATE TABLE IF NOT EXISTS `habilitation` (
   `HAB_ID` int(11) NOT NULL,
   `HAB_LIB` varchar(30) NOT NULL,
@@ -397,7 +397,7 @@ CREATE TABLE IF NOT EXISTS `habilitation` (
 -- D?chargement des donn?es de la table `habilitation`
 --
 
-INSERT INTO `habilitation` (`HAB_ID`, `HAB_LIB`) VALUES
+INSERT IGNORE INTO `habilitation` (`HAB_ID`, `HAB_LIB`) VALUES
 (1, 'Visiteur'),
 (2, 'D?l?gu? R?gional'),
 (3, 'Responsable Secteur');
@@ -408,7 +408,7 @@ INSERT INTO `habilitation` (`HAB_ID`, `HAB_LIB`) VALUES
 -- Structure de la table `interagir`
 --
 
-DROP TABLE IF EXISTS `interagir`;
+-- DROP TABLE IF EXISTS `interagir`;
 CREATE TABLE IF NOT EXISTS `interagir` (
   `MED_DEPOTLEGAL` varchar(10) NOT NULL,
   `MED_DEPOTLEGAL2` varchar(10) NOT NULL,
@@ -420,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `interagir` (
 -- D?chargement des donn?es de la table `interagir`
 --
 
-INSERT INTO `interagir` (`MED_DEPOTLEGAL`, `MED_DEPOTLEGAL2`) VALUES
+INSERT IGNORE INTO `interagir` (`MED_DEPOTLEGAL`, `MED_DEPOTLEGAL2`) VALUES
 ('DOLRIL7', 'CARTION6'),
 ('PARMOL16', 'CARTION6'),
 ('JOVAI8', 'CLAZER6'),
@@ -458,7 +458,7 @@ INSERT INTO `interagir` (`MED_DEPOTLEGAL`, `MED_DEPOTLEGAL2`) VALUES
 -- Structure de la table `login`
 --
 
-DROP TABLE IF EXISTS `login`;
+-- DROP TABLE IF EXISTS `login`;
 CREATE TABLE IF NOT EXISTS `login` (
   `LOG_ID` int(11) NOT NULL,
   `LOG_LOGIN` varchar(50) NOT NULL,
@@ -472,7 +472,7 @@ CREATE TABLE IF NOT EXISTS `login` (
 -- D?chargement des donn?es de la table `login`
 --
 
-INSERT INTO `login` (`LOG_ID`, `LOG_LOGIN`, `LOG_MOTDEPASSE`, `COL_MATRICULE`) VALUES
+INSERT IGNORE INTO `login` (`LOG_ID`, `LOG_LOGIN`, `LOG_MOTDEPASSE`, `COL_MATRICULE`) VALUES
 (1, 'villou', '6cf17e0501b8078722f316f094e230341b4f1b2d4d14cc082c41494d6b462024f031beff6fc25145ed02a58181fc90a7fca58f0d879b349638df19dca85efa7f', 'a131'),
 (2, 'anddav', 'ff781e873746adf59e3165b217034477ca29d4f2322720e05492ea90d21010378252a85f2d66025874647c6d162d45df2766e8003f33c885bbc3c4dbbe92141f', 'a17'),
 (3, 'bedchr', 'dbb65dd51a8348771883fae9cd7cc40ce1cf33e3756b4ca798bfcdcc37499b7e7236af7bd16d469bdaf8b039f3d5f414cb8a840d3675862675c0dc4a18fb5946', 'a55'),
@@ -546,7 +546,7 @@ INSERT INTO `login` (`LOG_ID`, `LOG_LOGIN`, `LOG_MOTDEPASSE`, `COL_MATRICULE`) V
 -- Structure de la table `medicament`
 --
 
-DROP TABLE IF EXISTS `medicament`;
+-- DROP TABLE IF EXISTS `medicament`;
 CREATE TABLE IF NOT EXISTS `medicament` (
   `MED_DEPOTLEGAL` varchar(10) NOT NULL,
   `MED_NOMCOMMERCIAL` varchar(25) DEFAULT NULL,
@@ -563,7 +563,7 @@ CREATE TABLE IF NOT EXISTS `medicament` (
 -- D?chargement des donn?es de la table `medicament`
 --
 
-INSERT INTO `medicament` (`MED_DEPOTLEGAL`, `MED_NOMCOMMERCIAL`, `MED_COMPOSITION`, `MED_EFFETS`, `MED_CONTREINDIC`, `MED_PRIXECHANTILLON`, `FAM_CODE`) VALUES
+INSERT IGNORE INTO `medicament` (`MED_DEPOTLEGAL`, `MED_NOMCOMMERCIAL`, `MED_COMPOSITION`, `MED_EFFETS`, `MED_CONTREINDIC`, `MED_PRIXECHANTILLON`, `FAM_CODE`) VALUES
 ('3MYC7', 'TRIMYCINE', 'Triamcinolone (ac?tonide) + N?omycine + Nystatine', 'Ce m?dicament est un cortico?de ? activit? forte ou tr?s forte associ? ? un antibiotique et un antifongique, utilis? en application locale dans certaines atteintes cutan?es surinfect?es.', 'Ce m?dicament est contre-indiqu? en cas d\'allergie ? l\'un des constituants, d\'infections de la peau ou de parasitisme non trait?s, d\'acn?. Ne pas appliquer sur une plaie, ni sous un pansement occlusif.', 78.99, 'CRT'),
 ('ADIMOL9', 'ADIMOL', 'Amoxicilline + Acide clavulanique', 'Ce m?dicament, plus puissant que les p?nicillines simples, est utilis? pour traiter des infections bact?riennes sp?cifiques.', 'Ce m?dicament est contre-indiqu? en cas d\'allergie aux p?nicillines ou aux c?phalosporines.', 40.99, 'ABP'),
 ('AMOPIL7', 'AMOPIL', 'Amoxicilline', 'Ce m?dicament, plus puissant que les p?nicillines simples, est utilis? pour traiter des infections bact?riennes sp?cifiques.', 'Ce m?dicament est contre-indiqu? en cas d\'allergie aux p?nicillines. Il doit ?tre administr? avec prudence en cas d\'allergie aux c?phalosporines.', 29.99, 'ABP'),
@@ -599,18 +599,18 @@ INSERT INTO `medicament` (`MED_DEPOTLEGAL`, `MED_NOMCOMMERCIAL`, `MED_COMPOSITIO
 -- Structure de la table `motif_visite`
 --
 
-DROP TABLE IF EXISTS `motif_visite`;
+-- DROP TABLE IF EXISTS `motif_visite`;
 CREATE TABLE IF NOT EXISTS `motif_visite` (
   `MOT_CODE` int(11) NOT NULL,
   `MOT_LIBELLE` varchar(50) NOT NULL,
   PRIMARY KEY (`MOT_CODE`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
 
 --
 -- D?chargement des donn?es de la table `motif_visite`
 --
 
-INSERT INTO `motif_visite` (`MOT_CODE`, `MOT_LIBELLE`) VALUES
+INSERT IGNORE INTO `motif_visite` (`MOT_CODE`, `MOT_LIBELLE`) VALUES
 (1, 'P?riodicit?'),
 (2, 'Nouveaut? / Actualisation'),
 (3, 'Remontage - Chute de prescription'),
@@ -623,7 +623,7 @@ INSERT INTO `motif_visite` (`MOT_CODE`, `MOT_LIBELLE`) VALUES
 -- Structure de la table `offrir`
 --
 
-DROP TABLE IF EXISTS `offrir`;
+-- DROP TABLE IF EXISTS `offrir`;
 CREATE TABLE IF NOT EXISTS `offrir` (
   `MED_DEPOTLEGAL` varchar(10) NOT NULL,
   `VIS_MATRICULE` varchar(10) NOT NULL,
@@ -637,7 +637,7 @@ CREATE TABLE IF NOT EXISTS `offrir` (
 -- D?chargement des donn?es de la table `offrir`
 --
 
-INSERT INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) VALUES
+INSERT IGNORE INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) VALUES
 ('3MYC7', 'a17', 1, 18),
 ('AMOPIL7', 'a131', 1, 12),
 ('AMOXIG12', 'a131', 3, 15),
@@ -663,7 +663,7 @@ INSERT INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) V
 -- Structure de la table `posseder`
 --
 
-DROP TABLE IF EXISTS `posseder`;
+-- DROP TABLE IF EXISTS `posseder`;
 CREATE TABLE IF NOT EXISTS `posseder` (
   `SPE_CODE` varchar(5) NOT NULL,
   `PRA_NUM` int(11) NOT NULL,
@@ -677,7 +677,7 @@ CREATE TABLE IF NOT EXISTS `posseder` (
 -- D?chargement des donn?es de la table `posseder`
 --
 
-INSERT INTO `posseder` (`SPE_CODE`, `PRA_NUM`, `POS_DIPLOME`, `POS_COEFPRESCRIPTIO`) VALUES
+INSERT IGNORE INTO `posseder` (`SPE_CODE`, `PRA_NUM`, `POS_DIPLOME`, `POS_COEFPRESCRIPTIO`) VALUES
 ('ACP', 1, 'DESC', 0.85),
 ('CPR', 1, 'DU', 0.7),
 ('CAC', 6, 'DESC', 0.9),
@@ -715,7 +715,7 @@ INSERT INTO `posseder` (`SPE_CODE`, `PRA_NUM`, `POS_DIPLOME`, `POS_COEFPRESCRIPT
 -- Structure de la table `praticien`
 --
 
-DROP TABLE IF EXISTS `praticien`;
+-- DROP TABLE IF EXISTS `praticien`;
 CREATE TABLE IF NOT EXISTS `praticien` (
   `PRA_NUM` int(11) NOT NULL,
   `PRA_PRENOM` varchar(30) DEFAULT NULL,
@@ -733,7 +733,7 @@ CREATE TABLE IF NOT EXISTS `praticien` (
 -- D?chargement des donn?es de la table `praticien`
 --
 
-INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA_CP`, `PRA_VILLE`, `PRA_COEFNOTORIETE`, `TYP_CODE`) VALUES
+INSERT IGNORE INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA_CP`, `PRA_VILLE`, `PRA_COEFNOTORIETE`, `TYP_CODE`) VALUES
 (1, 'Alain', 'Notini', '114 r Authie', '85000', 'LA ROCHE SUR YON', 290.03, 'MH'),
 (2, 'Albert', 'Gosselin', '13 r Devon', '41000', 'BLOIS', 307.49, 'MV'),
 (3, 'Andr?', 'Delahaye', '36 av 6 Juin', '25000', 'BESANCON', 185.79, 'PS'),
@@ -827,7 +827,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 -- Structure de la table `prescrire`
 --
 
-DROP TABLE IF EXISTS `prescrire`;
+-- DROP TABLE IF EXISTS `prescrire`;
 CREATE TABLE IF NOT EXISTS `prescrire` (
   `MED_DEPOTLEGAL` varchar(10) NOT NULL,
   `TIN_Code` int(11) NOT NULL,
@@ -842,7 +842,7 @@ CREATE TABLE IF NOT EXISTS `prescrire` (
 -- D?chargement des donn?es de la table `prescrire`
 --
 
-INSERT INTO `prescrire` (`MED_DEPOTLEGAL`, `TIN_Code`, `DOS_CODE`, `PRE_POSOLOGIE`) VALUES
+INSERT IGNORE INTO `prescrire` (`MED_DEPOTLEGAL`, `TIN_Code`, `DOS_CODE`, `PRE_POSOLOGIE`) VALUES
 ('3MYC7', 1, 5, 'Application 2 ? 3 fois par jour'),
 ('3MYC7', 2, 5, 'Application 2 fois par jour'),
 ('ADIMOL9', 1, 2, '1g matin et soir pendant 7 jours'),
@@ -903,7 +903,7 @@ INSERT INTO `prescrire` (`MED_DEPOTLEGAL`, `TIN_Code`, `DOS_CODE`, `PRE_POSOLOGI
 -- Structure de la table `presentation`
 --
 
-DROP TABLE IF EXISTS `presentation`;
+-- DROP TABLE IF EXISTS `presentation`;
 CREATE TABLE IF NOT EXISTS `presentation` (
   `PRE_CODE` varchar(2) NOT NULL,
   `PRE_LIBELLE` varchar(20) DEFAULT NULL,
@@ -914,7 +914,7 @@ CREATE TABLE IF NOT EXISTS `presentation` (
 -- D?chargement des donn?es de la table `presentation`
 --
 
-INSERT INTO `presentation` (`PRE_CODE`, `PRE_LIBELLE`) VALUES
+INSERT IGNORE INTO `presentation` (`PRE_CODE`, `PRE_LIBELLE`) VALUES
 ('CP', 'Comprim?'),
 ('CR', 'Cr?me'),
 ('GE', 'G?lule'),
@@ -932,7 +932,7 @@ INSERT INTO `presentation` (`PRE_CODE`, `PRE_LIBELLE`) VALUES
 -- Structure de la table `rapport_visite`
 --
 
-DROP TABLE IF EXISTS `rapport_visite`;
+-- DROP TABLE IF EXISTS `rapport_visite`;
 CREATE TABLE IF NOT EXISTS `rapport_visite` (
   `VIS_MATRICULE` varchar(10) NOT NULL,
   `RAP_NUM` int(11) NOT NULL,
@@ -956,7 +956,7 @@ CREATE TABLE IF NOT EXISTS `rapport_visite` (
 -- D?chargement des donn?es de la table `rapport_visite`
 --
 
-INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP_BILAN`, `RAP_MOTIF`, `ETAT_CODE`, `MED_DEPOTLEGAL1`, `MED_DEPOTLEGAL2`, `MOT_CODE`, `PRA_NUM`) VALUES
+INSERT IGNORE INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP_BILAN`, `RAP_MOTIF`, `ETAT_CODE`, `MED_DEPOTLEGAL1`, `MED_DEPOTLEGAL2`, `MOT_CODE`, `PRA_NUM`) VALUES
 ('a131', 1, '2002-04-18', 'M?decin curieux, ? recontacter en d?cembre pour r?union.', NULL, NULL, NULL, NULL, NULL, 23),
 ('a131', 2, '2003-03-23', 'RAS.\r\nChangement de tel : 05 89 89 89 89.', NULL, NULL, NULL, NULL, NULL, 41),
 ('a131', 3, '2021-12-03', 'M?decin ?nerv?, ancien boxeur !', NULL, NULL, NULL, NULL, NULL, 7),
@@ -968,7 +968,7 @@ INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP
 -- Structure de la table `region`
 --
 
-DROP TABLE IF EXISTS `region`;
+-- DROP TABLE IF EXISTS `region`;
 CREATE TABLE IF NOT EXISTS `region` (
   `REG_CODE` varchar(2) NOT NULL,
   `REG_NOM` varchar(50) DEFAULT NULL,
@@ -981,7 +981,7 @@ CREATE TABLE IF NOT EXISTS `region` (
 -- D?chargement des donn?es de la table `region`
 --
 
-INSERT INTO `region` (`REG_CODE`, `REG_NOM`, `SEC_CODE`) VALUES
+INSERT IGNORE INTO `region` (`REG_CODE`, `REG_NOM`, `SEC_CODE`) VALUES
 ('AQ', 'Nouvelle Aquitaine', 'S'),
 ('BG', 'Bretagne', 'O'),
 ('CE', 'Centre Val de Loire', 'P'),
@@ -1008,7 +1008,7 @@ INSERT INTO `region` (`REG_CODE`, `REG_NOM`, `SEC_CODE`) VALUES
 -- Structure de la table `secteur`
 --
 
-DROP TABLE IF EXISTS `secteur`;
+-- DROP TABLE IF EXISTS `secteur`;
 CREATE TABLE IF NOT EXISTS `secteur` (
   `SEC_CODE` varchar(1) NOT NULL,
   `SEC_LIBELLE` varchar(15) DEFAULT NULL,
@@ -1019,7 +1019,7 @@ CREATE TABLE IF NOT EXISTS `secteur` (
 -- D?chargement des donn?es de la table `secteur`
 --
 
-INSERT INTO `secteur` (`SEC_CODE`, `SEC_LIBELLE`) VALUES
+INSERT IGNORE INTO `secteur` (`SEC_CODE`, `SEC_LIBELLE`) VALUES
 ('E', 'Est'),
 ('N', 'Nord'),
 ('O', 'Ouest'),
@@ -1032,7 +1032,7 @@ INSERT INTO `secteur` (`SEC_CODE`, `SEC_LIBELLE`) VALUES
 -- Structure de la table `specialite`
 --
 
-DROP TABLE IF EXISTS `specialite`;
+-- DROP TABLE IF EXISTS `specialite`;
 CREATE TABLE IF NOT EXISTS `specialite` (
   `SPE_CODE` varchar(5) NOT NULL,
   `SPE_LIBELLE` varchar(150) DEFAULT NULL,
@@ -1043,7 +1043,7 @@ CREATE TABLE IF NOT EXISTS `specialite` (
 -- D?chargement des donn?es de la table `specialite`
 --
 
-INSERT INTO `specialite` (`SPE_CODE`, `SPE_LIBELLE`) VALUES
+INSERT IGNORE INTO `specialite` (`SPE_CODE`, `SPE_LIBELLE`) VALUES
 ('ACP', 'anatomie et cytologie pathologiques'),
 ('AMV', 'ang?iologie, m?decine vasculaire'),
 ('ARC', 'anesth?siologie et r?animation chirurgicale'),
@@ -1095,7 +1095,7 @@ INSERT INTO `specialite` (`SPE_CODE`, `SPE_LIBELLE`) VALUES
 -- Structure de la table `travailler`
 --
 
-DROP TABLE IF EXISTS `travailler`;
+-- DROP TABLE IF EXISTS `travailler`;
 CREATE TABLE IF NOT EXISTS `travailler` (
   `VIS_MATRICULE` varchar(10) NOT NULL,
   `REG_CODE` varchar(2) NOT NULL,
@@ -1110,7 +1110,7 @@ CREATE TABLE IF NOT EXISTS `travailler` (
 -- Structure de la table `type_frais`
 --
 
-DROP TABLE IF EXISTS `type_frais`;
+-- DROP TABLE IF EXISTS `type_frais`;
 CREATE TABLE IF NOT EXISTS `type_frais` (
   `TF_CODE` int(11) NOT NULL,
   `TF_LIBELLE` varchar(30) NOT NULL,
@@ -1124,18 +1124,18 @@ CREATE TABLE IF NOT EXISTS `type_frais` (
 -- Structure de la table `type_individu`
 --
 
-DROP TABLE IF EXISTS `type_individu`;
+-- DROP TABLE IF EXISTS `type_individu`;
 CREATE TABLE IF NOT EXISTS `type_individu` (
   `TIN_Code` int(11) NOT NULL AUTO_INCREMENT,
   `TIN_LIBELLE` varchar(50) NOT NULL,
   PRIMARY KEY (`TIN_Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_general_ci;
 
 --
 -- D?chargement des donn?es de la table `type_individu`
 --
 
-INSERT INTO `type_individu` (`TIN_Code`, `TIN_LIBELLE`) VALUES
+INSERT IGNORE INTO `type_individu` (`TIN_Code`, `TIN_LIBELLE`) VALUES
 (1, 'Adulte'),
 (2, 'Enfant'),
 (3, 'Nourrisson'),
@@ -1148,7 +1148,7 @@ INSERT INTO `type_individu` (`TIN_Code`, `TIN_LIBELLE`) VALUES
 -- Structure de la table `type_praticien`
 --
 
-DROP TABLE IF EXISTS `type_praticien`;
+-- DROP TABLE IF EXISTS `type_praticien`;
 CREATE TABLE IF NOT EXISTS `type_praticien` (
   `TYP_CODE` varchar(3) NOT NULL,
   `TYP_LIBELLE` varchar(25) DEFAULT NULL,
@@ -1160,7 +1160,7 @@ CREATE TABLE IF NOT EXISTS `type_praticien` (
 -- D?chargement des donn?es de la table `type_praticien`
 --
 
-INSERT INTO `type_praticien` (`TYP_CODE`, `TYP_LIBELLE`, `TYP_LIEU`) VALUES
+INSERT IGNORE INTO `type_praticien` (`TYP_CODE`, `TYP_LIBELLE`, `TYP_LIEU`) VALUES
 ('MH', 'M?decin Hospitalier', 'Hopital ou clinique'),
 ('MV', 'M?decine de Ville', 'Cabinet'),
 ('PH', 'Pharmacien Hospitalier', 'Hopital ou clinique'),

@@ -44,6 +44,75 @@
         </div>
     </div>
 
+    <!-- 2 : Affichage en mode consultation -->
+    <?php if ($mode === 'consultation') : ?>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Informations du praticien</h2>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>Numéro :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_NUM']) ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Nom :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_NOM']) ?>
+                    </div>
+                    <div class="col-md-5">
+                        <strong>Prénom :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_PRENOM']) ?>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Adresse :</strong><br>
+                    <?= htmlspecialchars($praticien['PRA_ADRESSE'] ?? 'Non renseignée') ?>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>Code postal :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_CP']) ?>
+                    </div>
+                    <div class="col-md-5">
+                        <strong>Ville :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_VILLE']) ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Coef. notoriété :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_COEFNOTORIETE'] ?? 'Non renseigné') ?>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Type de praticien :</strong><br>
+                    <?php
+                    $typeLibelle = '';
+                    foreach ($listeTypes as $t) {
+                        if ($t['TYP_CODE'] == $praticien['TYP_CODE']) {
+                            $typeLibelle = $t['TYP_LIBELLE'];
+                            break;
+                        }
+                    }
+                    ?>
+                    <?= htmlspecialchars($typeLibelle . ' (' . $praticien['TYP_CODE'] . ')') ?>
+                </div>
+
+                <div class="mt-4">
+                    <a href="index.php?uc=praticiens&action=modifier&num=<?= $praticien['PRA_NUM'] ?>"
+                       class="btn btn-warning">
+                        Modifier ce praticien
+                    </a>
+                    <a href="index.php?uc=praticiens&action=selection"
+                       class="btn btn-outline-secondary ms-2">
+                        Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <!-- 3-4 : Formulaire de saisie / modification -->
     <?php if ($mode === 'creation' || $mode === 'modification') : ?>
         <div class="card">
@@ -115,7 +184,7 @@
                         </select>
                     </div>
 
-                    <p class="text-muted">Les champs marqués d’un * sont obligatoires.</p>
+                    <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>
 
                     <button type="submit" name="btn" value="valider" class="btn btn-success">
                         Valider

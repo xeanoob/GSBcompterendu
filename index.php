@@ -45,13 +45,23 @@
         }
 
         case 'praticiens' :
-        {   
-         
+        {
+
             if (!empty($_SESSION['login'])) {
                 include("controleur/c_praticiens.php");
             } else {
                 include("vues/v_accesInterdit.php");
          }
+            break;
+        }
+
+        case 'rapports' :
+        {
+            if (!empty($_SESSION['login'])) {
+                include("controleur/c_rapports.php");
+            } else {
+                include("vues/v_accesInterdit.php");
+            }
             break;
         }
 
