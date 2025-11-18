@@ -27,9 +27,20 @@
                 <select name="praticien" id="listePraticiens" class="form-select">
                     <option value="">- Choisissez un praticien -</option>
                     <?php foreach ($listePraticiens as $p) : ?>
+                        <?php
+                        // Trouver le type de ce praticien
+                        $typeLibelle = '';
+                        foreach ($listeTypes as $t) {
+                            if ($t['TYP_CODE'] == $p['TYP_CODE']) {
+                                $typeLibelle = $t['TYP_LIBELLE'];
+                                break;
+                            }
+                        }
+                        ?>
                         <option value="<?= htmlspecialchars($p['PRA_NUM']) ?>"
                             <?php if (!empty($praticien) && $praticien['PRA_NUM'] == $p['PRA_NUM']) echo 'selected'; ?>>
-                            <?= htmlspecialchars($p['PRA_NOM'] . ' ' . $p['PRA_PRENOM'] . ' (n°' . $p['PRA_NUM'] . ')') ?>
+                            <?= htmlspecialchars($p['PRA_NOM'] . ' ' . $p['PRA_PRENOM']) ?>
+                            (n°<?= $p['PRA_NUM'] ?>) - <?= htmlspecialchars($typeLibelle) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -97,6 +108,29 @@
                     }
                     ?>
                     <?= htmlspecialchars($typeLibelle . ' (' . $praticien['TYP_CODE'] . ')') ?>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Spécialités :</strong><br>
+                    <?php if (!empty($specialitesPraticien)) : ?>
+                        <ul class="list-unstyled mb-0">
+                            <?php foreach ($specialitesPraticien as $spe) : ?>
+                                <li>
+                                    <span class="badge bg-info">
+                                        <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
+                                    </span>
+                                    <?php if (!empty($spe['POS_DIPLOME'])) : ?>
+                                        <small class="text-muted">(Diplôme: <?= htmlspecialchars($spe['POS_DIPLOME']) ?>)</small>
+                                    <?php endif; ?>
+                                    <?php if (!empty($spe['POS_COEFPRESCRIPTIO'])) : ?>
+                                        <small class="text-muted">- Coef: <?= htmlspecialchars($spe['POS_COEFPRESCRIPTIO']) ?></small>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else : ?>
+                        <span class="text-muted">Aucune spécialité renseignée</span>
+                    <?php endif; ?>
                 </div>
 
                 <div class="mt-4">
@@ -182,6 +216,30 @@
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Spécialités (optionnel - sélection multiple)</label>
+                        <select name="specialites[]" id="specialites" class="form-select" multiple size="8">
+                            <?php
+                            // Créer un tableau des codes de spécialités déjà sélectionnées
+                            $specialitesSelectionnees = [];
+                            if (!empty($specialitesPraticien)) {
+                                foreach ($specialitesPraticien as $spe) {
+                                    $specialitesSelectionnees[] = $spe['SPE_CODE'];
+                                }
+                            }
+                            ?>
+                            <?php foreach ($listeSpecialites as $spe) : ?>
+                                <option value="<?= htmlspecialchars($spe['SPE_CODE']) ?>"
+                                    <?php if (in_array($spe['SPE_CODE'], $specialitesSelectionnees)) echo 'selected'; ?>>
+                                    <?= htmlspecialchars($spe['SPE_LIBELLE'] . ' (' . $spe['SPE_CODE'] . ')') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="form-text">
+                            Vous pouvez créer un praticien sans spécialité. Les spécialités peuvent être ajoutées ultérieurement.
+                        </div>
                     </div>
 
                     <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>

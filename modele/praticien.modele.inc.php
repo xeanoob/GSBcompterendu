@@ -141,3 +141,91 @@ function getPraticienComplet($num)
         die();
     }
 }
+
+/**
+ * Récupère toutes les spécialités disponibles
+ * @return array Liste des spécialités
+ */
+function getAllSpecialites()
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT SPE_CODE, SPE_LIBELLE
+                FROM specialite
+                ORDER BY SPE_LIBELLE';
+        $res = $pdo->query($sql);
+        return $res->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Récupère les spécialités d'un praticien
+ * @param int $praticienNum Numéro du praticien
+ * @return array Liste des spécialités avec leurs informations (diplôme, coef prescription)
+ */
+function getSpecialitesPraticien($praticienNum)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT s.SPE_CODE, s.SPE_LIBELLE, p.POS_DIPLOME, p.POS_COEFPRESCRIPTIO
+                FROM posseder p
+                INNER JOIN specialite s ON p.SPE_CODE = s.SPE_CODE
+                WHERE p.PRA_NUM = :num
+                ORDER BY s.SPE_LIBELLE';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Ajoute une spécialité à un praticien
+ * @param int $praticienNum Numéro du praticien
+ * @param string $speCode Code de la spécialité
+ * @param string $diplome Diplôme obtenu
+ * @param float $coefPrescription Coefficient de prescription
+ * @return bool Succès de l'opération
+ */
+function ajouterSpecialitePraticien($praticienNum, $speCode, $diplome = '', $coefPrescription = 0)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'INSERT INTO posseder (PRA_NUM, SPE_CODE, POS_DIPLOME, POS_COEFPRESCRIPTIO)
+                VALUES (:praNum, :speCode, :diplome, :coef)';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':praNum', $praticienNum, PDO::PARAM_INT);
+        $stmt->bindValue(':speCode', $speCode, PDO::PARAM_STR);
+        $stmt->bindValue(':diplome', $diplome, PDO::PARAM_STR);
+        $stmt->bindValue(':coef', $coefPrescription, PDO::PARAM_STR);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
+
+/**
+ * Supprime toutes les spécialités d'un praticien
+ * @param int $praticienNum Numéro du praticien
+ * @return bool Succès de l'opération
+ */
+function supprimerToutesSpecialitesPraticien($praticienNum)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'DELETE FROM posseder WHERE PRA_NUM = :num';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}

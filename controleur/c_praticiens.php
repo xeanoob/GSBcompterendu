@@ -11,6 +11,8 @@ if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
 // variables communes
 $listePraticiens = getAllPraticiens();
 $listeTypes = getAllTypesPraticien();
+$listeSpecialites = getAllSpecialites();
+$specialitesPraticien = [];
 $praticien = null;
 $mode = 'aucun';          // 'aucun' | 'creation' | 'modification'
 $erreurs = [];
@@ -31,6 +33,7 @@ switch ($action) {
             $praticien = getPraticienByNum($num);
             if ($praticien) {
                 $mode = 'consultation';  // Mode consultation par défaut
+                $specialitesPraticien = getSpecialitesPraticien($num);
             } else {
                 $erreurs[] = "Le praticien sélectionné n'existe pas.";
             }
@@ -47,6 +50,7 @@ switch ($action) {
             $praticien = getPraticienByNum($num);
             if ($praticien) {
                 $mode = 'modification';
+                $specialitesPraticien = getSpecialitesPraticien($num);
             } else {
                 $erreurs[] = "Le praticien sélectionné n'existe pas.";
             }
@@ -87,6 +91,9 @@ switch ($action) {
         $coef    = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
         $type    = trim($_POST['TYP_CODE'] ?? '');
 
+        // Récupération des spécialités sélectionnées (facultatives)
+        $specialitesSelectionnees = $_POST['specialites'] ?? [];
+
         // Contrôle des champs obligatoires (exception 5-a)
         if ($num <= 0)      $erreurs[] = "Le numéro du praticien est obligatoire.";
         if ($nom === '')    $erreurs[] = "Le nom du praticien est obligatoire.";
@@ -113,7 +120,7 @@ switch ($action) {
             break;
         }
 
-        // Pas d’erreur → enregistrement
+        // Pas d'erreur → enregistrement
         if ($mode === 'creation') {
             // On vérifie que le numéro n'existe pas déjà
             $existant = getPraticienByNum($num);
@@ -131,11 +138,28 @@ switch ($action) {
             $mode = 'modification';
         }
 
+        // Gestion des spécialités (pour création ET modification)
+        // On supprime d'abord toutes les spécialités existantes
+        supprimerToutesSpecialitesPraticien($num);
+
+        // On ajoute les spécialités sélectionnées
+        if (!empty($specialitesSelectionnees) && is_array($specialitesSelectionnees)) {
+            foreach ($specialitesSelectionnees as $speCode) {
+                ajouterSpecialitePraticien($num, $speCode);
+            }
+
+            if (count($specialitesSelectionnees) > 0) {
+                $messageSucces .= " " . count($specialitesSelectionnees) . " spécialité(s) associée(s).";
+            }
+        }
+
         // On recharge la liste (au cas où)
         $listePraticiens = getAllPraticiens();
         $listeTypes = getAllTypesPraticien();
+        $listeSpecialites = getAllSpecialites();
         // On récupère les infos à jour depuis la base
         $praticien = getPraticienByNum($num);
+        $specialitesPraticien = getSpecialitesPraticien($num);
 
         include("vues/v_gererPraticien.php");
         break;
