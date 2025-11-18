@@ -23,7 +23,6 @@
         <div class="card-body">
             <form method="post" action="index.php?uc=rapports&action=enregistrer" id="formRapport">
 
-                <!-- Numéro du rapport (lecture seule) -->
                 <div class="mb-3">
                     <label for="RAP_NUM" class="form-label">Numéro du rapport</label>
                     <input type="number" name="RAP_NUM" id="RAP_NUM" class="form-control"
@@ -31,7 +30,6 @@
                     <small class="text-muted">Ce numéro est généré automatiquement.</small>
                 </div>
 
-                <!-- Date de visite -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="RAP_DATEVISITE" class="form-label">Date de la visite *</label>
@@ -41,7 +39,6 @@
                         <small class="text-muted">La date ne peut pas être dans le futur.</small>
                     </div>
 
-                    <!-- Praticien -->
                     <div class="col-md-6">
                         <label for="PRA_NUM" class="form-label">Praticien visité *</label>
                         <select name="PRA_NUM" id="PRA_NUM" class="form-select" required>
@@ -56,7 +53,6 @@
                     </div>
                 </div>
 
-                <!-- Motif de visite -->
                 <div class="mb-3">
                     <label for="MOT_CODE" class="form-label">Motif de la visite *</label>
                     <select name="MOT_CODE" id="MOT_CODE" class="form-select" required>
@@ -70,7 +66,6 @@
                     </select>
                 </div>
 
-                <!-- Bilan de la visite -->
                 <div class="mb-3">
                     <label for="RAP_BILAN" class="form-label">Bilan de la visite *</label>
                     <textarea name="RAP_BILAN" id="RAP_BILAN" class="form-control" rows="5"
@@ -80,7 +75,6 @@
 
                 <hr class="my-4">
 
-                <!-- Médicaments présentés -->
                 <h3 class="h5 mb-3">Médicaments présentés lors de la visite</h3>
 
                 <div class="row mb-3">
@@ -113,72 +107,6 @@
 
                 <hr class="my-4">
 
-                <!-- Échantillons offerts -->
-                <h3 class="h5 mb-3">Échantillons offerts</h3>
-
-                <div id="conteneurEchantillons">
-                    <?php
-                    // Afficher les échantillons existants s'il y en a
-                    if (!empty($echantillons)) {
-                        foreach ($echantillons as $index => $ech) : ?>
-                            <div class="row mb-2 echantillon-ligne">
-                                <div class="col-md-7">
-                                    <select name="echantillon_medicament[]" class="form-select">
-                                        <option value="">-- Sélectionnez un médicament --</option>
-                                        <?php foreach ($listeMedicaments as $med) : ?>
-                                            <option value="<?= htmlspecialchars($med['MED_DEPOTLEGAL']) ?>"
-                                                <?php if (isset($ech['medicament']) && $ech['medicament'] == $med['MED_DEPOTLEGAL']) echo 'selected'; ?>>
-                                                <?= htmlspecialchars($med['MED_NOMCOMMERCIAL']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="number" name="echantillon_quantite[]" class="form-control"
-                                           placeholder="Quantité" min="1" max="1000"
-                                           value="<?= htmlspecialchars($ech['quantite'] ?? '') ?>">
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="supprimerLigneEchantillon(this)">
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </div>
-                        <?php endforeach;
-                    } else {
-                        // Afficher une première ligne vide
-                        ?>
-                        <div class="row mb-2 echantillon-ligne">
-                            <div class="col-md-7">
-                                <select name="echantillon_medicament[]" class="form-select">
-                                    <option value="">-- Sélectionnez un médicament --</option>
-                                    <?php foreach ($listeMedicaments as $med) : ?>
-                                        <option value="<?= htmlspecialchars($med['MED_DEPOTLEGAL']) ?>">
-                                            <?= htmlspecialchars($med['MED_NOMCOMMERCIAL']) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <input type="number" name="echantillon_quantite[]" class="form-control"
-                                       placeholder="Quantité" min="1" max="1000">
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="supprimerLigneEchantillon(this)">
-                                    Supprimer
-                                </button>
-                            </div>
-                        </div>
-                    <?php } ?>
-                </div>
-
-                <button type="button" class="btn btn-secondary btn-sm" onclick="ajouterLigneEchantillon()">
-                    + Ajouter un échantillon
-                </button>
-
-                <hr class="my-4">
-
-                <!-- Boutons de validation -->
                 <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>
 
                 <div class="d-flex gap-2">
@@ -216,35 +144,4 @@ document.addEventListener('DOMContentLoaded', function() {
     const bilan = document.getElementById('RAP_BILAN');
     document.getElementById('compteurCaracteres').textContent = bilan.value.length;
 });
-
-// Ajouter une ligne d'échantillon
-function ajouterLigneEchantillon() {
-    const conteneur = document.getElementById('conteneurEchantillons');
-    const premiereLigne = conteneur.querySelector('.echantillon-ligne');
-    const nouvelleLigne = premiereLigne.cloneNode(true);
-
-    // Réinitialiser les valeurs
-    nouvelleLigne.querySelectorAll('select, input').forEach(input => {
-        input.value = '';
-    });
-
-    conteneur.appendChild(nouvelleLigne);
-}
-
-// Supprimer une ligne d'échantillon
-function supprimerLigneEchantillon(bouton) {
-    const conteneur = document.getElementById('conteneurEchantillons');
-    const lignes = conteneur.querySelectorAll('.echantillon-ligne');
-
-    // Garder au moins une ligne
-    if (lignes.length > 1) {
-        bouton.closest('.echantillon-ligne').remove();
-    } else {
-        // Réinitialiser la dernière ligne
-        const ligne = bouton.closest('.echantillon-ligne');
-        ligne.querySelectorAll('select, input').forEach(input => {
-            input.value = '';
-        });
-    }
-}
 </script>

@@ -1,0 +1,11 @@
+------- Reponsable secteur -------
+user : loidid 
+mdp :  LoiDid!
+
+------- Visiteur -------
+user : villou
+mdp : VilLou!
+
+------- Délégué -------
+user : leclud
+mdp : LecLud!
