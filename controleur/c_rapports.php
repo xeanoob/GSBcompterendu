@@ -215,6 +215,137 @@ switch ($action) {
         }
         break;
 
+    // Afficher le formulaire de recherche/consultation des rapports
+    case 'consulter':
+        // Récupérer la liste des praticiens pour le filtre
+        $listePraticiens = getTousPraticiens();
+        include("vues/v_consulterRapports.php");
+        break;
+
+    // Effectuer la recherche et afficher les résultats
+    case 'rechercher':
+        // Récupération des critères de recherche
+        $dateDebut = trim($_POST['date_debut'] ?? '');
+        $dateFin = trim($_POST['date_fin'] ?? '');
+        $praticienNum = !empty($_POST['praticien_num']) ? (int) $_POST['praticien_num'] : null;
+
+        // Validation des critères
+        if (empty($dateDebut)) {
+            $erreurs[] = "La date de début est obligatoire.";
+        }
+
+        if (empty($dateFin)) {
+            $erreurs[] = "La date de fin est obligatoire.";
+        }
+
+        // Vérifier que date début <= date fin
+        if (!empty($dateDebut) && !empty($dateFin)) {
+            $dateDebutObj = DateTime::createFromFormat('Y-m-d', $dateDebut);
+            $dateFinObj = DateTime::createFromFormat('Y-m-d', $dateFin);
+
+            if (!$dateDebutObj) {
+                $erreurs[] = "Le format de la date de début est incorrect.";
+            }
+
+            if (!$dateFinObj) {
+                $erreurs[] = "Le format de la date de fin est incorrect.";
+            }
+
+            if ($dateDebutObj && $dateFinObj && $dateDebutObj > $dateFinObj) {
+                $erreurs[] = "La date de début doit être antérieure ou égale à la date de fin.";
+            }
+        }
+
+        // Si erreurs, réafficher le formulaire
+        if (!empty($erreurs)) {
+            $listePraticiens = getTousPraticiens();
+            include("vues/v_consulterRapports.php");
+            break;
+        }
+
+        // Rechercher les rapports
+        $rapports = rechercherRapports($dateDebut, $dateFin, $praticienNum);
+
+        // Stocker les critères en session pour les boutons retour
+        $_SESSION['criteres_recherche'] = [
+            'date_debut' => $dateDebut,
+            'date_fin' => $dateFin,
+            'praticien_num' => $praticienNum
+        ];
+
+        if (empty($rapports)) {
+            $erreurs[] = "Aucun rapport de visite trouvé pour cette période.";
+            $listePraticiens = getTousPraticiens();
+            include("vues/v_consulterRapports.php");
+        } else {
+            include("vues/v_resultatConsultationRapports.php");
+        }
+        break;
+
+    // Afficher le détail d'un rapport (depuis la consultation)
+    case 'detailConsultation':
+        if (!empty($_GET['mat']) && !empty($_GET['num'])) {
+            $matricule = $_GET['mat'];
+            $numRapport = (int) $_GET['num'];
+            $rapport = getRapportVisiteComplet($matricule, $numRapport);
+            $echantillons = getEchantillonsOfferts($matricule, $numRapport);
+
+            if ($rapport) {
+                include("vues/v_detailRapport.php");
+            } else {
+                $erreurs[] = "Le rapport demandé n'existe pas.";
+                // Retour à la recherche
+                header('Location: index.php?uc=rapports&action=consulter');
+                exit;
+            }
+        } else {
+            header('Location: index.php?uc=rapports&action=consulter');
+            exit;
+        }
+        break;
+
+    // Afficher le détail d'un praticien
+    case 'detailPraticien':
+        require_once('modele/praticien.modele.inc.php');
+
+        if (!empty($_GET['pra'])) {
+            $praticienNum = (int) $_GET['pra'];
+            $praticien = getPraticienComplet($praticienNum);
+
+            if ($praticien) {
+                include("vues/v_detailPraticien.php");
+            } else {
+                $erreurs[] = "Le praticien demandé n'existe pas.";
+                header('Location: index.php?uc=rapports&action=consulter');
+                exit;
+            }
+        } else {
+            header('Location: index.php?uc=rapports&action=consulter');
+            exit;
+        }
+        break;
+
+    // Afficher le détail d'un médicament
+    case 'detailMedicament':
+        require_once('modele/medicament.modele.inc.php');
+
+        if (!empty($_GET['med'])) {
+            $medDepot = $_GET['med'];
+            $medicament = getAllInformationMedicamentDepot($medDepot);
+
+            if ($medicament) {
+                include("vues/v_detailMedicament.php");
+            } else {
+                $erreurs[] = "Le médicament demandé n'existe pas.";
+                header('Location: index.php?uc=rapports&action=consulter');
+                exit;
+            }
+        } else {
+            header('Location: index.php?uc=rapports&action=consulter');
+            exit;
+        }
+        break;
+
     default:
         header('Location: index.php?uc=rapports&action=liste');
         break;

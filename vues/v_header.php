@@ -33,6 +33,17 @@
                        <li class="nav-item">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=praticiens&action=selection">Praticiens</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold dropdown-toggle" href="#" id="rapportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Rapports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="rapportsDropdown">
+                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Mes rapports</a></li>
+                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Créer un rapport</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Consulter les rapports</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item ">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=connexion&action=profil">Profil</a>
                         </li>

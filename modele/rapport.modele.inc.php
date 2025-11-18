@@ -226,3 +226,87 @@ function getEchantillonsOfferts($matricule, $numRapport)
         die();
     }
 }
+
+/**
+ * Recherche les rapports de visite selon des critères
+ * @param string $dateDebut Date de début (format Y-m-d)
+ * @param string $dateFin Date de fin (format Y-m-d)
+ * @param int|null $praticienNum Numéro du praticien (optionnel)
+ * @return array Liste des rapports correspondant aux critères
+ */
+function rechercherRapports($dateDebut, $dateFin, $praticienNum = null)
+{
+    try {
+        $pdo = connexionPDO();
+
+        // Construction de la requête de base
+        $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_MOTIF, r.RAP_BILAN,
+                       p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM,
+                       m.MOT_LIBELLE,
+                       GROUP_CONCAT(DISTINCT CONCAT(med.MED_DEPOTLEGAL, ":", med.MED_NOMCOMMERCIAL) SEPARATOR ";") as medicaments_presentes
+                FROM rapport_visite r
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN medicament med ON (r.MED_DEPOTLEGAL1 = med.MED_DEPOTLEGAL OR r.MED_DEPOTLEGAL2 = med.MED_DEPOTLEGAL)
+                WHERE r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+
+        // Ajout du filtre praticien si spécifié
+        if ($praticienNum !== null && $praticienNum > 0) {
+            $sql .= ' AND r.PRA_NUM = :praticienNum';
+        }
+
+        $sql .= ' GROUP BY r.VIS_MATRICULE, r.RAP_NUM
+                  ORDER BY r.RAP_DATEVISITE DESC';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
+        $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+
+        if ($praticienNum !== null && $praticienNum > 0) {
+            $stmt->bindValue(':praticienNum', $praticienNum, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Récupère les détails d'un rapport de visite (pour consultation publique)
+ * @param string $matricule Matricule du visiteur
+ * @param int $numRapport Numéro du rapport
+ * @return array|false Informations du rapport ou false si non trouvé
+ */
+function getRapportVisiteComplet($matricule, $numRapport)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT r.*,
+                       p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM, p.PRA_ADRESSE, p.PRA_CP, p.PRA_VILLE,
+                       m.MOT_LIBELLE,
+                       e.ETAT_LIBELLE,
+                       med1.MED_NOMCOMMERCIAL as MED1_NOM,
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                FROM rapport_visite r
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
+                LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
+                LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
+                WHERE r.VIS_MATRICULE = :matricule AND r.RAP_NUM = :num';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
+        $stmt->bindValue(':num', $numRapport, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}

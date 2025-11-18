@@ -118,3 +118,26 @@ function modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $t
         die();
     }
 }
+
+/**
+ * Récupère toutes les informations détaillées d'un praticien avec son type
+ * @param int $num Numéro du praticien
+ * @return array|false Informations du praticien ou false si non trouvé
+ */
+function getPraticienComplet($num)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT p.*, t.TYP_LIBELLE, t.TYP_LIEU
+                FROM praticien p
+                LEFT JOIN type_praticien t ON p.TYP_CODE = t.TYP_CODE
+                WHERE p.PRA_NUM = :num';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $num, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
