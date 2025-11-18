@@ -34,7 +34,6 @@
                                name="date_debut"
                                value="<?= htmlspecialchars($_POST['date_debut'] ?? '') ?>"
                                required>
-                        <div class="form-text">Début de la période de recherche</div>
                     </div>
 
                     <div class="col-md-6">
@@ -47,7 +46,6 @@
                                name="date_fin"
                                value="<?= htmlspecialchars($_POST['date_fin'] ?? '') ?>"
                                required>
-                        <div class="form-text">Fin de la période de recherche</div>
                     </div>
                 </div>
 
@@ -56,7 +54,7 @@
                         Praticien (optionnel)
                     </label>
                     <select class="form-select" id="praticien_num" name="praticien_num">
-                        <option value="">-- Tous les praticiens --</option>
+                        <option value=""> Tous les praticiens </option>
                         <?php foreach ($listePraticiens as $prat) : ?>
                             <option value="<?= $prat['PRA_NUM'] ?>"
                                 <?= (isset($_POST['praticien_num']) && $_POST['praticien_num'] == $prat['PRA_NUM']) ? 'selected' : '' ?>>
@@ -65,7 +63,6 @@
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="form-text">Filtrer par un praticien spécifique (facultatif)</div>
                 </div>
 
                 <div class="d-flex gap-2">
@@ -83,11 +80,6 @@
 
             </form>
         </div>
-    </div>
-
-    <div class="alert alert-info mt-4">
-        <strong>Information :</strong> Les rapports seront triés par date de visite (du plus récent au plus ancien).
-        Vous pourrez consulter les détails de chaque rapport, praticien et médicament présenté.
     </div>
 
 </section>
