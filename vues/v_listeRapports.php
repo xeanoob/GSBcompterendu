@@ -1,6 +1,6 @@
 <section class="container mt-4 mb-5">
 
-    <h1 class="mb-4">Mes rapports de visite</h1>
+    <h1 class="mb-4">Saisir un rapport de visite</h1>
 
     <?php
     // Afficher le message de succès s'il y en a un dans la session

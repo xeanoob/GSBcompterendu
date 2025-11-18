@@ -38,9 +38,7 @@
                                 Rapports
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="rapportsDropdown">
-                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Mes rapports</a></li>
-                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Créer un rapport</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Saisir un rapport de visite</a></li>
                                 <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Consulter les rapports</a></li>
                             </ul>
                         </li>

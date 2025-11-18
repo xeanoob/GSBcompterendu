@@ -23,13 +23,6 @@
         <div class="card-body">
             <form method="post" action="index.php?uc=rapports&action=enregistrer" id="formRapport">
 
-                <div class="mb-3">
-                    <label for="RAP_NUM" class="form-label">Numéro du rapport</label>
-                    <input type="number" name="RAP_NUM" id="RAP_NUM" class="form-control"
-                           value="<?= htmlspecialchars($rapport['RAP_NUM'] ?? '') ?>" readonly>
-                    <small class="text-muted">Ce numéro est généré automatiquement.</small>
-                </div>
-
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="RAP_DATEVISITE" class="form-label">Date de la visite *</label>
@@ -70,7 +63,6 @@
                     <label for="RAP_BILAN" class="form-label">Bilan de la visite *</label>
                     <textarea name="RAP_BILAN" id="RAP_BILAN" class="form-control" rows="5"
                               maxlength="255" required><?= htmlspecialchars($rapport['RAP_BILAN'] ?? '') ?></textarea>
-                    <small class="text-muted">Maximum 255 caractères. <span id="compteurCaracteres">0</span> / 255</small>
                 </div>
 
                 <hr class="my-4">
