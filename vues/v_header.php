@@ -27,27 +27,44 @@
                         <li class="nav-item ">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=accueil">Accueil</a>
                         </li>
+                        <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 1 || $_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
                         <li class="nav-item ">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=medicaments&action=formulairemedoc">Médicaments</a>
-                        </li>
-                       <li class="nav-item">
-                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=praticiens&action=selection">Praticiens</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold dropdown-toggle" href="#" id="rapportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Rapports
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="rapportsDropdown">
+                                <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 1 || $_SESSION['habilitation'] == 2)) { ?>
                                 <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Saisir un rapport de visite</a></li>
+                                <?php } ?>
                                 <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Consulter les rapports</a></li>
+                                <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
+                                    <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
+                                        <?php echo ($_SESSION['habilitation'] == 2) ? 'Rapports de la région' : 'Rapports du secteur'; ?>
+                                    </a></li>
+                                <?php } ?>
                             </ul>
                         </li>
+                        <?php } ?>
+                        <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
+                        <li class="nav-item">
+                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=praticiens&action=selection">Praticiens</a>
+                        </li>
+                        <?php } ?>
+                        <?php if (isset($_SESSION['login'])) { ?>
                         <li class="nav-item ">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=connexion&action=profil">Profil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=connexion&action=deconnexion" onclick="return confirm('Voulez-vous vraiment vous déconnecter ?');">Déconnexion</a>
+                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=connexion&action=deconnexion">Déconnexion</a>
                         </li>
+                        <?php } else { ?>
+                        <li class="nav-item ">
+                            <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=connexion&action=connexion">Se connecter</a>
+                        </li>
+                        <?php } ?>
                     </ul>
                 </div>
             </div>

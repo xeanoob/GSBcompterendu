@@ -1,4 +1,5 @@
-<section class="container mt-4 mb-5">
+<section class="bg-light py-5">
+<div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Gérer les praticiens</h1>
 
@@ -46,9 +47,9 @@
                 </select>
 
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">Afficher les informations</button>
-                    <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-secondary ms-2">
-                        Créer un nouveau praticien
+                    <button type="submit" class="btn btn-info text-light">Afficher les informations</button>
+                    <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-info text-light ms-2">
+                        + Créer un nouveau praticien
                     </a>
                 </div>
             </form>
@@ -113,21 +114,13 @@
                 <div class="mb-3">
                     <strong>Spécialités :</strong><br>
                     <?php if (!empty($specialitesPraticien)) : ?>
-                        <ul class="list-unstyled mb-0">
+                        <div class="d-flex flex-wrap gap-2 mt-2">
                             <?php foreach ($specialitesPraticien as $spe) : ?>
-                                <li>
-                                    <span class="badge bg-info">
-                                        <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
-                                    </span>
-                                    <?php if (!empty($spe['POS_DIPLOME'])) : ?>
-                                        <small class="text-muted">(Diplôme: <?= htmlspecialchars($spe['POS_DIPLOME']) ?>)</small>
-                                    <?php endif; ?>
-                                    <?php if (!empty($spe['POS_COEFPRESCRIPTIO'])) : ?>
-                                        <small class="text-muted">- Coef: <?= htmlspecialchars($spe['POS_COEFPRESCRIPTIO']) ?></small>
-                                    <?php endif; ?>
-                                </li>
+                                <span class="badge bg-info text-light rounded-pill px-3 py-2">
+                                    <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
+                                </span>
                             <?php endforeach; ?>
-                        </ul>
+                        </div>
                     <?php else : ?>
                         <span class="text-muted">Aucune spécialité renseignée</span>
                     <?php endif; ?>
@@ -135,7 +128,7 @@
 
                 <div class="mt-4">
                     <a href="index.php?uc=praticiens&action=modifier&num=<?= $praticien['PRA_NUM'] ?>"
-                       class="btn btn-warning">
+                       class="btn btn-info text-light">
                         Modifier ce praticien
                     </a>
                     <a href="index.php?uc=praticiens&action=selection"
@@ -161,42 +154,42 @@
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="PRA_NUM" class="form-label">Numéro *</label>
-                            <input type="number" name="PRA_NUM" id="PRA_NUM" class="form-control"
+                            <input type="number" name="PRA_NUM" id="PRA_NUM" class="form-control" min="1"
                                    value="<?= htmlspecialchars($praticien['PRA_NUM'] ?? '') ?>"
                                    <?= ($mode === 'modification') ? 'readonly' : '' ?>>
                         </div>
                         <div class="col-md-4">
                             <label for="PRA_NOM" class="form-label">Nom *</label>
-                            <input type="text" name="PRA_NOM" id="PRA_NOM" class="form-control"
+                            <input type="text" name="PRA_NOM" id="PRA_NOM" class="form-control" maxlength="50"
                                    value="<?= htmlspecialchars($praticien['PRA_NOM'] ?? '') ?>">
                         </div>
                         <div class="col-md-4">
                             <label for="PRA_PRENOM" class="form-label">Prénom *</label>
-                            <input type="text" name="PRA_PRENOM" id="PRA_PRENOM" class="form-control"
+                            <input type="text" name="PRA_PRENOM" id="PRA_PRENOM" class="form-control" maxlength="50"
                                    value="<?= htmlspecialchars($praticien['PRA_PRENOM'] ?? '') ?>">
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label for="PRA_ADRESSE" class="form-label">Adresse</label>
-                        <input type="text" name="PRA_ADRESSE" id="PRA_ADRESSE" class="form-control"
+                        <input type="text" name="PRA_ADRESSE" id="PRA_ADRESSE" class="form-control" maxlength="100"
                                value="<?= htmlspecialchars($praticien['PRA_ADRESSE'] ?? '') ?>">
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="PRA_CP" class="form-label">Code postal *</label>
-                            <input type="text" name="PRA_CP" id="PRA_CP" class="form-control"
+                            <input type="text" name="PRA_CP" id="PRA_CP" class="form-control" maxlength="5" pattern="[0-9]{5}" title="5 chiffres requis"
                                    value="<?= htmlspecialchars($praticien['PRA_CP'] ?? '') ?>">
                         </div>
                         <div class="col-md-5">
                             <label for="PRA_VILLE" class="form-label">Ville *</label>
-                            <input type="text" name="PRA_VILLE" id="PRA_VILLE" class="form-control"
+                            <input type="text" name="PRA_VILLE" id="PRA_VILLE" class="form-control" maxlength="50"
                                    value="<?= htmlspecialchars($praticien['PRA_VILLE'] ?? '') ?>">
                         </div>
                         <div class="col-md-4">
                             <label for="PRA_COEFNOTORIETE" class="form-label">Coef. notoriété</label>
-                            <input type="number" step="0.01" name="PRA_COEFNOTORIETE" id="PRA_COEFNOTORIETE" class="form-control"
+                            <input type="number" step="0.01" min="0" name="PRA_COEFNOTORIETE" id="PRA_COEFNOTORIETE" class="form-control"
                                    value="<?= htmlspecialchars($praticien['PRA_COEFNOTORIETE'] ?? '') ?>">
                         </div>
                     </div>
@@ -220,31 +213,42 @@
 
                     <div class="mb-3">
                         <label class="form-label">Spécialités (optionnel - sélection multiple)</label>
-                        <select name="specialites[]" id="specialites" class="form-select" multiple size="8">
-                            <?php
-                            // Créer un tableau des codes de spécialités déjà sélectionnées
-                            $specialitesSelectionnees = [];
-                            if (!empty($specialitesPraticien)) {
-                                foreach ($specialitesPraticien as $spe) {
-                                    $specialitesSelectionnees[] = $spe['SPE_CODE'];
-                                }
+                        <?php
+                        // Créer un tableau des codes de spécialités déjà sélectionnées
+                        $specialitesSelectionnees = [];
+                        if (!empty($specialitesPraticien)) {
+                            foreach ($specialitesPraticien as $spe) {
+                                $specialitesSelectionnees[] = $spe['SPE_CODE'];
                             }
-                            ?>
-                            <?php foreach ($listeSpecialites as $spe) : ?>
-                                <option value="<?= htmlspecialchars($spe['SPE_CODE']) ?>"
-                                    <?php if (in_array($spe['SPE_CODE'], $specialitesSelectionnees)) echo 'selected'; ?>>
-                                    <?= htmlspecialchars($spe['SPE_LIBELLE'] . ' (' . $spe['SPE_CODE'] . ')') ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        }
+                        ?>
+                        <div class="border rounded p-3 bg-white" style="max-height: 300px; overflow-y: auto;">
+                            <div class="row g-2">
+                                <?php foreach ($listeSpecialites as $spe) : ?>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="specialites[]" 
+                                                   value="<?= htmlspecialchars($spe['SPE_CODE']) ?>"
+                                                   id="spe_<?= htmlspecialchars($spe['SPE_CODE']) ?>"
+                                                   <?php if (in_array($spe['SPE_CODE'], $specialitesSelectionnees)) echo 'checked'; ?>>
+                                            <label class="form-check-label" for="spe_<?= htmlspecialchars($spe['SPE_CODE']) ?>">
+                                                <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
+                                                <small class="text-muted">(<?= htmlspecialchars($spe['SPE_CODE']) ?>)</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                         <div class="form-text">
-                            Vous pouvez créer un praticien sans spécialité. Les spécialités peuvent être ajoutées ultérieurement.
+                            Cochez les spécialités du praticien. Vous pouvez créer un praticien sans spécialité.
                         </div>
                     </div>
 
                     <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>
 
-                    <button type="submit" name="btn" value="valider" class="btn btn-success">
+                    <button type="submit" name="btn" value="valider" class="btn btn-info text-light">
                         Valider
                     </button>
                     <button type="submit" name="btn" value="annuler" class="btn btn-outline-secondary ms-2">
@@ -254,5 +258,6 @@
             </div>
         </div>
     <?php endif; ?>
+    </div>
 
 </section>

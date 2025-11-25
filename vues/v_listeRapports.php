@@ -1,4 +1,5 @@
-<section class="container mt-4 mb-5">
+<section class="bg-light py-5">
+<div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Saisir un rapport de visite</h1>
 
@@ -21,7 +22,7 @@
     <?php endif; ?>
 
     <div class="mb-3">
-        <a href="index.php?uc=rapports&action=nouveau" class="btn btn-primary">
+        <a href="index.php?uc=rapports&action=nouveau" class="btn btn-info text-light">
             + Créer un nouveau rapport de visite
         </a>
     </div>
@@ -79,9 +80,15 @@
                                         </span>
                                     </td>
                                     <td>
+                                        <?php if ($rap['ETAT_CODE'] == 1) : ?>
+                                            <a href="index.php?uc=rapports&action=modifier&num=<?= $rap['RAP_NUM'] ?>"
+                                               class="btn btn-sm btn-outline-warning me-1">
+                                                <i class="bi bi-pencil"></i> Modifier
+                                            </a>
+                                        <?php endif; ?>
                                         <a href="index.php?uc=rapports&action=detail&num=<?= $rap['RAP_NUM'] ?>"
                                            class="btn btn-sm btn-outline-primary">
-                                            Voir détail
+                                            <i class="bi bi-eye"></i> Voir détail
                                         </a>
                                     </td>
                                 </tr>
@@ -96,5 +103,6 @@
             Total : <?= count($rapports) ?> rapport<?= count($rapports) > 1 ? 's' : '' ?>
         </p>
     <?php endif; ?>
+    </div>
 
 </section>

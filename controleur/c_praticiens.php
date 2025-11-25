@@ -22,12 +22,22 @@ switch ($action) {
 
     // Le délégué demande à gérer les praticiens (scénario nominal)
     case 'selection':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         // Juste la liste déroulante + bouton "Créer"
         include("vues/v_gererPraticien.php");
         break;
 
     // L'utilisateur choisit un praticien dans la liste
     case 'afficher':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         if (!empty($_POST['praticien'])) {
             $num = (int) $_POST['praticien'];
             $praticien = getPraticienByNum($num);
@@ -45,6 +55,11 @@ switch ($action) {
 
     // Le délégué clique sur "Modifier" depuis le mode consultation
     case 'modifier':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         if (!empty($_GET['num'])) {
             $num = (int) $_GET['num'];
             $praticien = getPraticienByNum($num);
@@ -62,6 +77,11 @@ switch ($action) {
 
     // Le délégué demande à créer un nouveau praticien 
     case 'nouveau':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         $mode = 'creation';
         // $praticien reste null → formulaire vierge
         include("vues/v_gererPraticien.php");
@@ -69,6 +89,11 @@ switch ($action) {
 
     // Le délégué saisit ou modifie les informations puis clique sur "Valider"
     case 'enregistrer':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
 
         // Bouton "Annuler" → exception 4-b
         if (isset($_POST['btn']) && $_POST['btn'] === 'annuler') {
@@ -81,13 +106,13 @@ switch ($action) {
 
         $mode = isset($_POST['mode']) ? $_POST['mode'] : 'creation';
 
-        // Récupération des champs du formulaire
+        // Récupération des champs du formulaire avec sanitization
         $num     = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
-        $prenom  = trim($_POST['PRA_PRENOM'] ?? '');
-        $nom     = trim($_POST['PRA_NOM'] ?? '');
-        $adresse = trim($_POST['PRA_ADRESSE'] ?? '');
-        $cp      = trim($_POST['PRA_CP'] ?? '');
-        $ville   = trim($_POST['PRA_VILLE'] ?? '');
+        $prenom  = trim(strip_tags($_POST['PRA_PRENOM'] ?? ''));
+        $nom     = trim(strip_tags($_POST['PRA_NOM'] ?? ''));
+        $adresse = trim(strip_tags($_POST['PRA_ADRESSE'] ?? ''));
+        $cp      = trim(strip_tags($_POST['PRA_CP'] ?? ''));
+        $ville   = trim(strip_tags($_POST['PRA_VILLE'] ?? ''));
         $coef    = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
         $type    = trim($_POST['TYP_CODE'] ?? '');
 
@@ -95,12 +120,35 @@ switch ($action) {
         $specialitesSelectionnees = $_POST['specialites'] ?? [];
 
         // Contrôle des champs obligatoires (exception 5-a)
-        if ($num <= 0)      $erreurs[] = "Le numéro du praticien est obligatoire.";
+        if ($num <= 0)      $erreurs[] = "Le numéro du praticien est obligatoire et doit être positif.";
         if ($nom === '')    $erreurs[] = "Le nom du praticien est obligatoire.";
         if ($prenom === '') $erreurs[] = "Le prénom du praticien est obligatoire.";
         if ($cp === '')     $erreurs[] = "Le code postal est obligatoire.";
         if ($ville === '')  $erreurs[] = "La ville est obligatoire.";
         if ($type === '')   $erreurs[] = "Le type de praticien est obligatoire.";
+        
+        // Validations supplémentaires
+        if (!preg_match('/^\d{5}$/', $cp)) {
+            $erreurs[] = "Le code postal doit contenir exactement 5 chiffres.";
+        }
+        
+        if ($coef !== '' && !is_numeric($coef)) {
+            $erreurs[] = "Le coefficient de notoriété doit être une valeur numérique.";
+        } elseif ($coef < 0) {
+            $erreurs[] = "Le coefficient de notoriété ne peut pas être négatif.";
+        }
+        
+        // Vérification que le type existe
+        $typeExiste = false;
+        foreach ($listeTypes as $t) {
+            if ($t['TYP_CODE'] == $type) {
+                $typeExiste = true;
+                break;
+            }
+        }
+        if (!$typeExiste && $type !== '') {
+            $erreurs[] = "Le type de praticien sélectionné est invalide.";
+        }
 
         // On reconstruit un tableau praticien pour réafficher le formulaire en cas d'erreur
         $praticien = [

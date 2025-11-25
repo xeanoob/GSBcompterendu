@@ -43,7 +43,9 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <strong>Praticien visité :</strong><br>
-                    <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
+                    <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rapport['PRA_NUM'] ?>">
+                        <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
+                    </a>
                 </div>
                 <div class="col-md-6">
                     <strong>Motif de la visite :</strong><br>
@@ -71,13 +73,17 @@
                     <?php if (!empty($rapport['MED_DEPOTLEGAL1'])) : ?>
                         <li class="mb-2">
                             <span class="badge bg-primary">1</span>
-                            <?= htmlspecialchars($rapport['MED_DEPOTLEGAL1']) ?>
+                            <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL1'] ?>">
+                                <?= htmlspecialchars($rapport['MED_DEPOTLEGAL1']) ?>
+                            </a>
                         </li>
                     <?php endif; ?>
                     <?php if (!empty($rapport['MED_DEPOTLEGAL2'])) : ?>
                         <li>
                             <span class="badge bg-primary">2</span>
-                            <?= htmlspecialchars($rapport['MED_DEPOTLEGAL2']) ?>
+                            <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL2'] ?>">
+                                <?= htmlspecialchars($rapport['MED_DEPOTLEGAL2']) ?>
+                            </a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -105,7 +111,11 @@
                             <?php foreach ($echantillons as $ech) : ?>
                                 <tr>
                                     <td><?= htmlspecialchars($ech['MED_NOMCOMMERCIAL']) ?></td>
-                                    <td><?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?></td>
+                                    <td>
+                                        <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $ech['MED_DEPOTLEGAL'] ?>">
+                                            <?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?>
+                                        </a>
+                                    </td>
                                     <td class="text-end">
                                         <span class="badge bg-secondary">
                                             <?= htmlspecialchars($ech['OFF_QTE']) ?>
@@ -126,9 +136,15 @@
 
     <!-- Boutons d'action -->
     <div class="mt-4">
-        <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
-            Retour à la liste
-        </a>
+        <?php if (isset($retourNouveaux) && $retourNouveaux) : ?>
+            <a href="index.php?uc=rapports&action=nouveaux" class="btn btn-outline-secondary">
+                Retour à la liste des nouveaux rapports
+            </a>
+        <?php else : ?>
+            <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
+                Retour à la liste
+            </a>
+        <?php endif; ?>
     </div>
 
 </section>

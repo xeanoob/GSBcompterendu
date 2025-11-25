@@ -9,7 +9,7 @@ if (empty($_SESSION['login'])) {
 }
 
 // Récupérer le matricule du visiteur connecté
-$matriculeVisiteur = $_SESSION['login'];
+$matriculeVisiteur = $_SESSION['matricule'];
 
 if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
     $action = "liste";
@@ -31,6 +31,51 @@ switch ($action) {
 
     // Afficher le formulaire de création d'un nouveau rapport
     case 'nouveau':
+        // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
+            header('Location: index.php?uc=rapports&action=liste');
+            exit;
+        }
+        
+        // Vérifier s'il existe des rapports en cours de saisie
+        $rapportsEnCours = getRapportsEnCours($matriculeVisiteur);
+        
+        if (!empty($rapportsEnCours)) {
+            // Afficher la liste des rapports en cours
+            $messageInfo = "Vous avez " . count($rapportsEnCours) . " rapport(s) en cours de saisie.";
+            include("vues/v_rapportsEnCours.php");
+        } else {
+            // Aucun rapport en cours, afficher le formulaire vierge
+            $prochainNumero = getProchainNumeroRapport($matriculeVisiteur);
+            $listePraticiens = getTousPraticiens();
+            $listeMotifs = getTousMotifsVisite();
+            $listeMedicaments = getTousMedicaments();
+
+            // Initialiser un rapport vide
+            $rapport = [
+                'RAP_NUM' => $prochainNumero,
+                'RAP_DATEVISITE' => date('Y-m-d'),
+                'RAP_BILAN' => '',
+                'MOT_CODE' => '',
+                'PRA_NUM' => '',
+                'MED_DEPOTLEGAL1' => '',
+                'MED_DEPOTLEGAL2' => ''
+            ];
+
+            $echantillons = []; // Tableau vide pour les échantillons
+
+            include("vues/v_saisirRapport.php");
+        }
+        break;
+    
+    // Créer un nouveau rapport (même s'il y a des rapports en cours)
+    case 'creerNouveau':
+        // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
+            header('Location: index.php?uc=rapports&action=liste');
+            exit;
+        }
+        
         $prochainNumero = getProchainNumeroRapport($matriculeVisiteur);
         $listePraticiens = getTousPraticiens();
         $listeMotifs = getTousMotifsVisite();
@@ -51,9 +96,46 @@ switch ($action) {
 
         include("vues/v_saisirRapport.php");
         break;
+    
+    // Modifier un rapport existant en cours de saisie
+    case 'modifier':
+        // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
+            header('Location: index.php?uc=rapports&action=liste');
+            exit;
+        }
+        
+        if (!empty($_GET['num'])) {
+            $numRapport = (int) $_GET['num'];
+            $rapport = getRapportVisite($matriculeVisiteur, $numRapport);
+            
+            if ($rapport && $rapport['ETAT_CODE'] == 1) {
+                // Le rapport existe et est en cours de saisie
+                $listePraticiens = getTousPraticiens();
+                $listeMotifs = getTousMotifsVisite();
+                $listeMedicaments = getTousMedicaments();
+                $echantillons = getEchantillonsOfferts($matriculeVisiteur, $numRapport);
+                
+                include("vues/v_saisirRapport.php");
+            } else {
+                // Le rapport n'existe pas ou est déjà validé
+                $erreurs[] = "Ce rapport ne peut pas être modifié.";
+                header('Location: index.php?uc=rapports&action=liste');
+                exit;
+            }
+        } else {
+            header('Location: index.php?uc=rapports&action=liste');
+            exit;
+        }
+        break;
 
     // Enregistrer le rapport de visite
     case 'enregistrer':
+        // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
+            header('Location: index.php?uc=rapports&action=liste');
+            exit;
+        }
 
         // Récupération des données du formulaire
         $numRapport = isset($_POST['RAP_NUM']) ? (int) $_POST['RAP_NUM'] : 0;
@@ -63,6 +145,10 @@ switch ($action) {
         $praticienNum = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
         $med1 = !empty($_POST['MED_DEPOTLEGAL1']) ? $_POST['MED_DEPOTLEGAL1'] : null;
         $med2 = !empty($_POST['MED_DEPOTLEGAL2']) ? $_POST['MED_DEPOTLEGAL2'] : null;
+        
+        // Récupérer l'état en fonction de la case "Saisie définitive"
+        $saisieDefinitive = isset($_POST['saisie_definitive']) && $_POST['saisie_definitive'] == '1';
+        $etatCode = $saisieDefinitive ? 2 : 1; // 2 = Validé, 1 = En cours
 
         // Récupération des échantillons offerts
         $echantillonsMedicaments = $_POST['echantillon_medicament'] ?? [];
@@ -103,6 +189,8 @@ switch ($action) {
 
         // Validation des échantillons
         $echantillonsValides = [];
+        $medicamentsEchantillons = [];
+        
         foreach ($echantillonsMedicaments as $index => $medDepot) {
             if (!empty($medDepot)) {
                 $qte = isset($echantillonsQuantites[$index]) ? (int) $echantillonsQuantites[$index] : 0;
@@ -112,12 +200,23 @@ switch ($action) {
                 } elseif ($qte > 1000) {
                     $erreurs[] = "La quantité de l'échantillon ne peut pas dépasser 1000.";
                 } else {
-                    $echantillonsValides[] = [
-                        'medicament' => $medDepot,
-                        'quantite' => $qte
-                    ];
+                    // Vérifier les doublons
+                    if (in_array($medDepot, $medicamentsEchantillons)) {
+                        $erreurs[] = "Le médicament $medDepot est présent plusieurs fois dans les échantillons.";
+                    } else {
+                        $medicamentsEchantillons[] = $medDepot;
+                        $echantillonsValides[] = [
+                            'medicament' => $medDepot,
+                            'quantite' => $qte
+                        ];
+                    }
                 }
             }
+        }
+        
+        // Vérifier le nombre max d'échantillons (10)
+        if (count($echantillonsValides) > 10) {
+            $erreurs[] = "Vous ne pouvez pas ajouter plus de 10 échantillons.";
         }
 
         // Si erreurs, réafficher le formulaire avec les données saisies
@@ -133,7 +232,8 @@ switch ($action) {
                 'MOT_CODE' => $motifCode,
                 'PRA_NUM' => $praticienNum,
                 'MED_DEPOTLEGAL1' => $med1,
-                'MED_DEPOTLEGAL2' => $med2
+                'MED_DEPOTLEGAL2' => $med2,
+                'saisie_definitive' => $saisieDefinitive
             ];
 
             $echantillons = $echantillonsValides;
@@ -141,32 +241,78 @@ switch ($action) {
             include("vues/v_saisirRapport.php");
             break;
         }
-
-        // Pas d'erreur : enregistrement
-        $success = creerRapportVisite(
-            $matriculeVisiteur,
-            $numRapport,
-            $dateVisite,
-            $bilan,
-            $motifCode,
-            $praticienNum,
-            1, // État : En cours de saisie
-            $med1,
-            $med2
-        );
-
-        if ($success) {
-            // Enregistrer les échantillons offerts
-            foreach ($echantillonsValides as $ech) {
-                ajouterEchantillonOffert(
-                    $matriculeVisiteur,
-                    $numRapport,
-                    $ech['medicament'],
-                    $ech['quantite']
-                );
+        
+        // Vérifier si le rapport existe déjà (modification)
+        $rapportExistant = getRapportVisite($matriculeVisiteur, $numRapport);
+        
+        if ($rapportExistant) {
+            // Mise à jour du rapport existant
+            $success = mettreAJourRapport(
+                $matriculeVisiteur,
+                $numRapport,
+                $dateVisite,
+                $bilan,
+                $motifCode,
+                $praticienNum,
+                $etatCode,
+                $med1,
+                $med2
+            );
+            
+            if ($success) {
+                // Supprimer les anciens échantillons
+                supprimerEchantillonsRapport($matriculeVisiteur, $numRapport);
+                
+                // Ajouter les nouveaux échantillons
+                foreach ($echantillonsValides as $ech) {
+                    ajouterEchantillonOffert(
+                        $matriculeVisiteur,
+                        $numRapport,
+                        $ech['medicament'],
+                        $ech['quantite']
+                    );
+                }
+                
+                $messageSucces = "Le rapport de visite n°$numRapport a été modifié avec succès.";
+                if ($saisieDefinitive) {
+                    $messageSucces .= " Il est maintenant validé.";
+                }
             }
+        } else {
+            // Création d'un nouveau rapport
+            $success = creerRapportVisite(
+                $matriculeVisiteur,
+                $numRapport,
+                $dateVisite,
+                $bilan,
+                $motifCode,
+                $praticienNum,
+                $etatCode,
+                $med1,
+                $med2
+            );
 
-            $messageSucces = "Le rapport de visite n°$numRapport a été créé avec succès.";
+            if ($success) {
+                // Enregistrer les échantillons offerts
+                foreach ($echantillonsValides as $ech) {
+                    ajouterEchantillonOffert(
+                        $matriculeVisiteur,
+                        $numRapport,
+                        $ech['medicament'],
+                        $ech['quantite']
+                    );
+                }
+
+                $messageSucces = "Le rapport de visite n°$numRapport a été créé avec succès.";
+                if ($saisieDefinitive) {
+                    $messageSucces .= " Il est validé.";
+                } else {
+                    $messageSucces .= " Il est en cours de saisie.";
+                }
+            }
+        }
+        
+        if ($success) {
 
             // Rediriger vers la liste des rapports avec le message
             $_SESSION['message_succes_rapport'] = $messageSucces;
@@ -217,6 +363,11 @@ switch ($action) {
 
     // Afficher le formulaire de recherche/consultation des rapports
     case 'consulter':
+        // Vérification des droits d'accès (Tout le monde : 1, 2, 3)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         // Récupérer la liste des praticiens pour le filtre
         $listePraticiens = getTousPraticiens();
         include("vues/v_consulterRapports.php");
@@ -224,6 +375,11 @@ switch ($action) {
 
     // Effectuer la recherche et afficher les résultats
     case 'rechercher':
+        // Vérification des droits d'accès (Tout le monde : 1, 2, 3)
+        if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
         // Récupération des critères de recherche
         $dateDebut = trim($_POST['date_debut'] ?? '');
         $dateFin = trim($_POST['date_fin'] ?? '');
@@ -346,7 +502,62 @@ switch ($action) {
         }
         break;
 
-    default:
-        header('Location: index.php?uc=rapports&action=liste');
+    // Afficher les nouveaux rapports de la région/secteur (pour délégués et responsables)
+    case 'nouveaux':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        $titrePage = "";
+        $rapports = [];
+
+        if ($_SESSION['habilitation'] == 2) {
+            // Délégué régional : rapports de sa région
+            $region = $_SESSION['region'];
+            $titrePage = "Nouveaux rapports de la région " . $region;
+            $rapports = getNouveauxRapportsRegion($region);
+        } elseif ($_SESSION['habilitation'] == 3) {
+            // Responsable secteur : rapports de son secteur
+            $secteur = $_SESSION['secteur'];
+            $titrePage = "Nouveaux rapports du secteur " . $secteur;
+            $rapports = getNouveauxRapportsSecteur($secteur);
+        }
+
+        include("vues/v_nouveauxRapports.php");
+        break;
+
+    // Consulter le détail d'un nouveau rapport et le marquer comme consulté
+    case 'consulter_detail':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        if (!empty($_GET['mat']) && !empty($_GET['num'])) {
+            $matricule = $_GET['mat'];
+            $numRapport = (int) $_GET['num'];
+            
+            // Marquer comme consulté AVANT d'afficher le détail
+            marquerRapportConsulte($matricule, $numRapport);
+            
+            $rapport = getRapportVisiteComplet($matricule, $numRapport);
+            $echantillons = getEchantillonsOfferts($matricule, $numRapport);
+
+            if ($rapport) {
+                // Variable pour le bouton retour
+                $retourNouveaux = true;
+                include("vues/v_detailRapport.php");
+            } else {
+                $erreurs[] = "Le rapport demandé n'existe pas.";
+                header('Location: index.php?uc=rapports&action=nouveaux');
+                exit;
+            }
+        } else {
+            header('Location: index.php?uc=rapports&action=nouveaux');
+            exit;
+        }
         break;
 }

@@ -228,6 +228,96 @@ function getEchantillonsOfferts($matricule, $numRapport)
 }
 
 /**
+ * Récupère les rapports en cours de saisie d'un visiteur (non validés)
+ * @param string $matricule Matricule du visiteur
+ * @return array Liste des rapports en cours
+ */
+function getRapportsEnCours($matricule)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT r.*, p.PRA_NOM, p.PRA_PRENOM, m.MOT_LIBELLE, e.ETAT_LIBELLE
+                FROM rapport_visite r
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
+                WHERE r.VIS_MATRICULE = :matricule AND r.ETAT_CODE = 1
+                ORDER BY r.RAP_DATEVISITE DESC, r.RAP_NUM DESC';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Met à jour un rapport de visite existant
+ * @return bool true en cas de succès, false sinon
+ */
+function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motifCode, $praticienNum, $etatCode, $med1 = null, $med2 = null)
+{
+    try {
+        $pdo = connexionPDO();
+
+        $sql = 'UPDATE rapport_visite
+                SET RAP_DATEVISITE = :dateVisite,
+                    RAP_BILAN = :bilan,
+                    MOT_CODE = :motifCode,
+                    PRA_NUM = :praticienNum,
+                    ETAT_CODE = :etatCode,
+                    MED_DEPOTLEGAL1 = :med1,
+                    MED_DEPOTLEGAL2 = :med2
+                WHERE VIS_MATRICULE = :matricule AND RAP_NUM = :num';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
+        $stmt->bindValue(':num', $numRapport, PDO::PARAM_INT);
+        $stmt->bindValue(':dateVisite', $dateVisite, PDO::PARAM_STR);
+        $stmt->bindValue(':bilan', $bilan, PDO::PARAM_STR);
+        $stmt->bindValue(':motifCode', $motifCode, PDO::PARAM_INT);
+        $stmt->bindValue(':praticienNum', $praticienNum, PDO::PARAM_INT);
+        $stmt->bindValue(':etatCode', $etatCode, PDO::PARAM_INT);
+        $stmt->bindValue(':med1', $med1, PDO::PARAM_STR);
+        $stmt->bindValue(':med2', $med2, PDO::PARAM_STR);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
+
+/**
+ * Supprime tous les échantillons d'un rapport
+ * @param string $matricule Matricule du visiteur
+ * @param int $numRapport Numéro du rapport
+ * @return bool true en cas de succès, false sinon
+ */
+function supprimerEchantillonsRapport($matricule, $numRapport)
+{
+    try {
+        $pdo = connexionPDO();
+
+        $sql = 'DELETE FROM offrir
+                WHERE VIS_MATRICULE = :matricule AND RAP_NUM = :num';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
+        $stmt->bindValue(':num', $numRapport, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
+
+/**
  * Recherche les rapports de visite selon des critères
  * @param string $dateDebut Date de début (format Y-m-d)
  * @param string $dateFin Date de fin (format Y-m-d)
@@ -308,5 +398,105 @@ function getRapportVisiteComplet($matricule, $numRapport)
     } catch (PDOException $e) {
         print "Erreur ! : " . $e->getMessage();
         die();
+    }
+}
+
+/**
+ * Récupère les nouveaux rapports validés d'une région (non consultés)
+ * @param string $regCode Code de la région
+ * @return array Liste des rapports
+ */
+function getNouveauxRapportsRegion($regCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.PRA_NUM,
+                       r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2,
+                       p.PRA_NOM, p.PRA_PRENOM,
+                       m.MOT_LIBELLE,
+                       c.COL_NOM, c.COL_PRENOM,
+                       med1.MED_NOMCOMMERCIAL as MED1_NOM,
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                FROM rapport_visite r
+                INNER JOIN collaborateur c ON r.VIS_MATRICULE = c.COL_MATRICULE
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
+                LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
+                WHERE c.REG_CODE = :regCode
+                AND r.ETAT_CODE = 2 -- Saisie définitive / Validé
+                ORDER BY c.COL_NOM, c.COL_PRENOM, r.RAP_DATEVISITE DESC';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Récupère les nouveaux rapports validés d'un secteur (non consultés)
+ * @param string $secCode Code du secteur
+ * @return array Liste des rapports
+ */
+function getNouveauxRapportsSecteur($secCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.PRA_NUM,
+                       r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2,
+                       p.PRA_NOM, p.PRA_PRENOM,
+                       m.MOT_LIBELLE,
+                       c.COL_NOM, c.COL_PRENOM,
+                       med1.MED_NOMCOMMERCIAL as MED1_NOM,
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                FROM rapport_visite r
+                INNER JOIN collaborateur c ON r.VIS_MATRICULE = c.COL_MATRICULE
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
+                LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
+                INNER JOIN region reg ON c.REG_CODE = reg.REG_CODE
+                WHERE reg.SEC_CODE = :secCode
+                AND r.ETAT_CODE = 2 -- Saisie définitive / Validé
+                ORDER BY c.COL_NOM, c.COL_PRENOM, r.RAP_DATEVISITE DESC';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Marque un rapport comme consulté par le délégué
+ * @param string $matricule Matricule du visiteur
+ * @param int $numRapport Numéro du rapport
+ * @return bool true en cas de succès
+ */
+function marquerRapportConsulte($matricule, $numRapport)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'UPDATE rapport_visite
+                SET ETAT_CODE = 3 -- Consulté par le délégué
+                WHERE VIS_MATRICULE = :matricule AND RAP_NUM = :num';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
+        $stmt->bindValue(':num', $numRapport, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
     }
 }

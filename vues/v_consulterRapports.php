@@ -1,4 +1,5 @@
-<section class="container mt-4 mb-5">
+<section class="bg-light py-5">
+<div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Consulter les rapports de visite</h1>
 
@@ -66,7 +67,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-info text-light">
                         Rechercher les rapports
                     </button>
                     <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
@@ -80,6 +81,7 @@
 
             </form>
         </div>
+    </div>
     </div>
 
 </section>
