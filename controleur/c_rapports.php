@@ -41,11 +41,8 @@ switch ($action) {
         $rapportsEnCours = getRapportsEnCours($matriculeVisiteur);
         
         if (!empty($rapportsEnCours)) {
-            // Afficher la liste des rapports en cours
-            $messageInfo = "Vous avez " . count($rapportsEnCours) . " rapport(s) en cours de saisie.";
             include("vues/v_rapportsEnCours.php");
         } else {
-            // Aucun rapport en cours, afficher le formulaire vierge
             $prochainNumero = getProchainNumeroRapport($matriculeVisiteur);
             $listePraticiens = getTousPraticiens();
             $listeMotifs = getTousMotifsVisite();
@@ -142,7 +139,9 @@ switch ($action) {
         $dateVisite = trim($_POST['RAP_DATEVISITE'] ?? '');
         $bilan = trim($_POST['RAP_BILAN'] ?? '');
         $motifCode = isset($_POST['MOT_CODE']) ? (int) $_POST['MOT_CODE'] : 0;
+        $rapMotif = trim($_POST['RAP_MOTIF'] ?? ''); // Motif personnalisé
         $praticienNum = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
+        $praticienRemplacant = !empty($_POST['PRA_NUM_REMPLACANT']) ? (int) $_POST['PRA_NUM_REMPLACANT'] : null;
         $med1 = !empty($_POST['MED_DEPOTLEGAL1']) ? $_POST['MED_DEPOTLEGAL1'] : null;
         $med2 = !empty($_POST['MED_DEPOTLEGAL2']) ? $_POST['MED_DEPOTLEGAL2'] : null;
         
@@ -181,6 +180,18 @@ switch ($action) {
 
         if ($motifCode <= 0) {
             $erreurs[] = "Le motif de visite est obligatoire.";
+        }
+        
+        // Valider le motif personnalisé si "Autre" est sélectionné
+        if ($motifCode == 5) {
+            if (empty($rapMotif)) {
+                $erreurs[] = "Veuillez préciser le motif de la visite.";
+            } elseif (strlen($rapMotif) > 50) {
+                $erreurs[] = "Le motif personnalisé ne peut pas dépasser 50 caractères.";
+            }
+        } else {
+            // Si "Autre" n'est pas sélectionné, vider le champ RAP_MOTIF
+            $rapMotif = null;
         }
 
         if ($praticienNum <= 0) {
@@ -230,7 +241,9 @@ switch ($action) {
                 'RAP_DATEVISITE' => $dateVisite,
                 'RAP_BILAN' => $bilan,
                 'MOT_CODE' => $motifCode,
+                'RAP_MOTIF' => $rapMotif,
                 'PRA_NUM' => $praticienNum,
+                'PRA_NUM_REMPLACANT' => $praticienRemplacant,
                 'MED_DEPOTLEGAL1' => $med1,
                 'MED_DEPOTLEGAL2' => $med2,
                 'saisie_definitive' => $saisieDefinitive
@@ -256,7 +269,9 @@ switch ($action) {
                 $praticienNum,
                 $etatCode,
                 $med1,
-                $med2
+                $med2,
+                $rapMotif,
+                $praticienRemplacant
             );
             
             if ($success) {
@@ -289,7 +304,9 @@ switch ($action) {
                 $praticienNum,
                 $etatCode,
                 $med1,
-                $med2
+                $med2,
+                $rapMotif,
+                $praticienRemplacant
             );
 
             if ($success) {
@@ -316,7 +333,7 @@ switch ($action) {
 
             // Rediriger vers la liste des rapports avec le message
             $_SESSION['message_succes_rapport'] = $messageSucces;
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         } else {
             $erreurs[] = "Une erreur s'est produite lors de l'enregistrement du rapport.";
@@ -330,7 +347,9 @@ switch ($action) {
                 'RAP_DATEVISITE' => $dateVisite,
                 'RAP_BILAN' => $bilan,
                 'MOT_CODE' => $motifCode,
+                'RAP_MOTIF' => $rapMotif,
                 'PRA_NUM' => $praticienNum,
+                'PRA_NUM_REMPLACANT' => $praticienRemplacant,
                 'MED_DEPOTLEGAL1' => $med1,
                 'MED_DEPOTLEGAL2' => $med2
             ];

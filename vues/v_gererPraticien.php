@@ -1,7 +1,9 @@
 <section class="bg-light py-5">
 <div class="container mt-4 mb-5">
 
-    <h1 class="mb-4">Gérer les praticiens</h1>
+    <h1 class="mb-4">
+        <?= ($_SESSION['habilitation'] == 1) ? 'Voir les praticiens' : 'Gérer les praticiens' ?>
+    </h1>
 
     <?php if (!empty($messageSucces)) : ?>
         <div class="alert alert-success">
@@ -48,9 +50,11 @@
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-info text-light">Afficher les informations</button>
-                    <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-info text-light ms-2">
-                        + Créer un nouveau praticien
-                    </a>
+                    <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
+                        <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-info text-light ms-2">
+                            + Créer un nouveau praticien
+                        </a>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
@@ -127,10 +131,12 @@
                 </div>
 
                 <div class="mt-4">
-                    <a href="index.php?uc=praticiens&action=modifier&num=<?= $praticien['PRA_NUM'] ?>"
-                       class="btn btn-info text-light">
-                        Modifier ce praticien
-                    </a>
+                    <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
+                        <a href="index.php?uc=praticiens&action=modifier&num=<?= $praticien['PRA_NUM'] ?>"
+                           class="btn btn-info text-light">
+                            Modifier ce praticien
+                        </a>
+                    <?php endif; ?>
                     <a href="index.php?uc=praticiens&action=selection"
                        class="btn btn-outline-secondary ms-2">
                         Retour à la liste
@@ -152,18 +158,20 @@
                     <input type="hidden" name="mode" value="<?= htmlspecialchars($mode) ?>">
 
                     <div class="row mb-3">
-                        <div class="col-md-3">
-                            <label for="PRA_NUM" class="form-label">Numéro *</label>
-                            <input type="number" name="PRA_NUM" id="PRA_NUM" class="form-control" min="1"
-                                   value="<?= htmlspecialchars($praticien['PRA_NUM'] ?? '') ?>"
-                                   <?= ($mode === 'modification') ? 'readonly' : '' ?>>
-                        </div>
-                        <div class="col-md-4">
+                        <?php if ($mode === 'modification') : ?>
+                            <div class="col-md-3">
+                                <label for="PRA_NUM" class="form-label">Numéro *</label>
+                                <input type="number" name="PRA_NUM" id="PRA_NUM" class="form-control" min="1"
+                                       value="<?= htmlspecialchars($praticien['PRA_NUM'] ?? '') ?>"
+                                       readonly>
+                            </div>
+                        <?php endif; ?>
+                        <div class="<?= ($mode === 'modification') ? 'col-md-4' : 'col-md-6' ?>">
                             <label for="PRA_NOM" class="form-label">Nom *</label>
                             <input type="text" name="PRA_NOM" id="PRA_NOM" class="form-control" maxlength="50"
                                    value="<?= htmlspecialchars($praticien['PRA_NOM'] ?? '') ?>">
                         </div>
-                        <div class="col-md-4">
+                        <div class="<?= ($mode === 'modification') ? 'col-md-4' : 'col-md-6' ?>">
                             <label for="PRA_PRENOM" class="form-label">Prénom *</label>
                             <input type="text" name="PRA_PRENOM" id="PRA_PRENOM" class="form-control" maxlength="50"
                                    value="<?= htmlspecialchars($praticien['PRA_PRENOM'] ?? '') ?>">

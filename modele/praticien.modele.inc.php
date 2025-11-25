@@ -63,16 +63,17 @@ function getAllTypesPraticien()
 
 /**
  * Ajoute un nouveau praticien.
+ * Le numéro PRA_NUM est généré automatiquement par AUTO_INCREMENT.
+ * @return int Le numéro du praticien créé
  */
-function ajouterPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type)
+function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
 {
     try {
         $pdo = connexionPDO();
         $sql = 'INSERT INTO praticien
-                (PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE)
-                VALUES (:num, :prenom, :nom, :adresse, :cp, :ville, :coef, :type)';
+                (PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE)
+                VALUES (:prenom, :nom, :adresse, :cp, :ville, :coef, :type)';
         $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':num', $num, PDO::PARAM_INT);
         $stmt->bindValue(':prenom', $prenom, PDO::PARAM_STR);
         $stmt->bindValue(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindValue(':adresse', $adresse, PDO::PARAM_STR);
@@ -81,6 +82,9 @@ function ajouterPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $ty
         $stmt->bindValue(':coef', $coef, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
+        
+        // Retourner l'ID auto-généré
+        return (int) $pdo->lastInsertId();
     } catch (PDOException $e) {
         print "Erreur ! : " . $e->getMessage();
         die();

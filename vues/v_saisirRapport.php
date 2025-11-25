@@ -1,4 +1,4 @@
-<section class="bg-light py-5">
+<section class="py-5">
 <div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Saisir un rapport de visite</h1>
@@ -24,7 +24,6 @@
         <div class="card-body">
             <form method="post" action="index.php?uc=rapports&action=enregistrer" id="formRapport">
 
-                <!-- Champ caché pour le numéro de rapport -->
                 <input type="hidden" name="RAP_NUM" value="<?= htmlspecialchars($rapport['RAP_NUM'] ?? 0) ?>">
 
                 <div class="row mb-3">
@@ -33,9 +32,10 @@
                         <input type="date" name="RAP_DATEVISITE" id="RAP_DATEVISITE" class="form-control"
                                value="<?= htmlspecialchars($rapport['RAP_DATEVISITE'] ?? '') ?>"
                                max="<?= date('Y-m-d') ?>" required>
-                        <small class="text-muted">La date ne peut pas être dans le futur.</small>
                     </div>
+                </div>
 
+                <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="PRA_NUM" class="form-label">Praticien visité *</label>
                         <select name="PRA_NUM" id="PRA_NUM" class="form-select" required>
@@ -43,6 +43,19 @@
                             <?php foreach ($listePraticiens as $p) : ?>
                                 <option value="<?= htmlspecialchars($p['PRA_NUM']) ?>"
                                     <?php if (!empty($rapport['PRA_NUM']) && $rapport['PRA_NUM'] == $p['PRA_NUM']) echo 'selected'; ?>>
+                                    <?= htmlspecialchars($p['PRA_NOM'] . ' ' . $p['PRA_PRENOM'] . ' - ' . $p['PRA_VILLE']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="PRA_NUM_REMPLACANT" class="form-label">Praticien de remplacement</label>
+                        <select name="PRA_NUM_REMPLACANT" id="PRA_NUM_REMPLACANT" class="form-select">
+                            <option value="">-- Aucun --</option>
+                            <?php foreach ($listePraticiens as $p) : ?>
+                                <option value="<?= htmlspecialchars($p['PRA_NUM']) ?>"
+                                    <?php if (!empty($rapport['PRA_NUM_REMPLACANT']) && $rapport['PRA_NUM_REMPLACANT'] == $p['PRA_NUM']) echo 'selected'; ?>>
                                     <?= htmlspecialchars($p['PRA_NOM'] . ' ' . $p['PRA_PRENOM'] . ' - ' . $p['PRA_VILLE']) ?>
                                 </option>
                             <?php endforeach; ?>
@@ -63,10 +76,45 @@
                     </select>
                 </div>
 
+                <div class="mb-3" id="motifAutreContainer" style="display: none;">
+                    <label for="RAP_MOTIF" class="form-label">Veuillez préciser le motif *</label>
+                    <input type="text" name="RAP_MOTIF" id="RAP_MOTIF" class="form-control" 
+                           maxlength="50" placeholder="Précisez le motif de la visite"
+                           value="<?= htmlspecialchars($rapport['RAP_MOTIF'] ?? '') ?>">
+                    <small class="text-muted">Maximum 50 caractères</small>
+                </div>
+
                 <div class="mb-3">
                     <label for="RAP_BILAN" class="form-label">Bilan de la visite *</label>
                     <textarea name="RAP_BILAN" id="RAP_BILAN" class="form-control" rows="5"
                               maxlength="255" required><?= htmlspecialchars($rapport['RAP_BILAN'] ?? '') ?></textarea>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="MED_DEPOTLEGAL1" class="form-label">Médicament présenté 1</label>
+                        <select name="MED_DEPOTLEGAL1" id="MED_DEPOTLEGAL1" class="form-select">
+                            <option value="">-- Aucun --</option>
+                            <?php foreach ($listeMedicaments as $med) : ?>
+                                <option value="<?= htmlspecialchars($med['MED_DEPOTLEGAL']) ?>"
+                                    <?php if (!empty($rapport['MED_DEPOTLEGAL1']) && $rapport['MED_DEPOTLEGAL1'] == $med['MED_DEPOTLEGAL']) echo 'selected'; ?>>
+                                    <?= htmlspecialchars($med['MED_NOMCOMMERCIAL']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="MED_DEPOTLEGAL2" class="form-label">Médicament présenté 2</label>
+                        <select name="MED_DEPOTLEGAL2" id="MED_DEPOTLEGAL2" class="form-select">
+                            <option value="">-- Aucun --</option>
+                            <?php foreach ($listeMedicaments as $med) : ?>
+                                <option value="<?= htmlspecialchars($med['MED_DEPOTLEGAL']) ?>"
+                                    <?php if (!empty($rapport['MED_DEPOTLEGAL2']) && $rapport['MED_DEPOTLEGAL2'] == $med['MED_DEPOTLEGAL']) echo 'selected'; ?>>
+                                    <?= htmlspecialchars($med['MED_NOMCOMMERCIAL']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
 
 
@@ -150,7 +198,6 @@
 </section>
 
 <script>
-// Template pour une ligne d'échantillon
 const medicamentOptions = `<?php foreach ($listeMedicaments as $med) : ?>
     <option value="<?= htmlspecialchars($med['MED_DEPOTLEGAL']) ?>">
         <?= htmlspecialchars($med['MED_NOMCOMMERCIAL'] . ' (' . $med['MED_DEPOTLEGAL'] . ')') ?>
@@ -159,7 +206,6 @@ const medicamentOptions = `<?php foreach ($listeMedicaments as $med) : ?>
 
 const MAX_ECHANTILLONS = 10;
 
-// Fonction pour créer une nouvelle ligne d'échantillon
 function creerLigneEchantillon() {
     const div = document.createElement('div');
     div.className = 'row mb-2 echantillon-row';
@@ -261,6 +307,17 @@ document.getElementById('formRapport').addEventListener('submit', function(e) {
             }
         }
     });
+
+    // Vérifier si aucun médicament n'est sélectionné (ni présenté, ni échantillon)
+    const med1 = document.getElementById('MED_DEPOTLEGAL1').value;
+    const med2 = document.getElementById('MED_DEPOTLEGAL2').value;
+    
+    if (!med1 && !med2 && medicaments.length === 0) {
+        if (!confirm("Voulez-vous vraiment enregistrer ce rapport sans médicament ?")) {
+            e.preventDefault();
+            return false;
+        }
+    }
     
     if (erreurs.length > 0) {
         e.preventDefault();
@@ -297,5 +354,25 @@ document.getElementById('RAP_BILAN').addEventListener('input', function() {
 // Initialiser l'état du bouton au chargement
 document.addEventListener('DOMContentLoaded', function() {
     updateBoutonAjout();
+    toggleMotifAutre(); // Initialiser l'affichage du champ motif personnalisé
 });
+
+// Gérer l'affichage du champ motif personnalisé
+document.getElementById('MOT_CODE').addEventListener('change', toggleMotifAutre);
+
+function toggleMotifAutre() {
+    const motifSelect = document.getElementById('MOT_CODE');
+    const motifAutreContainer = document.getElementById('motifAutreContainer');
+    const motifAutreInput = document.getElementById('RAP_MOTIF');
+    
+    // Afficher le champ si "Autre" (valeur 5) est sélectionné
+    if (motifSelect.value === '5') {
+        motifAutreContainer.style.display = 'block';
+        motifAutreInput.required = true;
+    } else {
+        motifAutreContainer.style.display = 'none';
+        motifAutreInput.required = false;
+        motifAutreInput.value = ''; // Réinitialiser la valeur si on change de motif
+    }
+}
 </script>

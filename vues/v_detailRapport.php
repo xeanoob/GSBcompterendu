@@ -43,13 +43,25 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <strong>Praticien visité :</strong><br>
-                    <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rapport['PRA_NUM'] ?>">
-                        <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
-                    </a>
+                    <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
                 </div>
+                <div class="col-md-6">
+                    <strong>Praticien de remplacement :</strong><br>
+                    <?php if (!empty($rapport['PRA_NUM_REMPLACANT']) && !empty($rapport['PRA_REMP_NOM'])) : ?>
+                        <?= htmlspecialchars($rapport['PRA_REMP_NOM'] . ' ' . $rapport['PRA_REMP_PRENOM']) ?>
+                    <?php else : ?>
+                        <em class="text-muted">Aucun</em>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="row mb-3">
                 <div class="col-md-6">
                     <strong>Motif de la visite :</strong><br>
                     <?= htmlspecialchars($rapport['MOT_LIBELLE'] ?? 'Non renseigné') ?>
+                    <?php if (!empty($rapport['RAP_MOTIF'])) : ?>
+                        <br><em class="text-muted">(<?= htmlspecialchars($rapport['RAP_MOTIF']) ?>)</em>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -73,17 +85,13 @@
                     <?php if (!empty($rapport['MED_DEPOTLEGAL1'])) : ?>
                         <li class="mb-2">
                             <span class="badge bg-primary">1</span>
-                            <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL1'] ?>">
-                                <?= htmlspecialchars($rapport['MED_DEPOTLEGAL1']) ?>
-                            </a>
+                            <?= htmlspecialchars(($rapport['MED1_NOM'] ?? '') . ' (' . $rapport['MED_DEPOTLEGAL1'] . ')') ?>
                         </li>
                     <?php endif; ?>
                     <?php if (!empty($rapport['MED_DEPOTLEGAL2'])) : ?>
                         <li>
                             <span class="badge bg-primary">2</span>
-                            <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL2'] ?>">
-                                <?= htmlspecialchars($rapport['MED_DEPOTLEGAL2']) ?>
-                            </a>
+                            <?= htmlspecialchars(($rapport['MED2_NOM'] ?? '') . ' (' . $rapport['MED_DEPOTLEGAL2'] . ')') ?>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -112,9 +120,7 @@
                                 <tr>
                                     <td><?= htmlspecialchars($ech['MED_NOMCOMMERCIAL']) ?></td>
                                     <td>
-                                        <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $ech['MED_DEPOTLEGAL'] ?>">
-                                            <?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?>
-                                        </a>
+                                        <?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?>
                                     </td>
                                     <td class="text-end">
                                         <span class="badge bg-secondary">

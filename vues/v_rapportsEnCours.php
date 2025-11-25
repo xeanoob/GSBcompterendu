@@ -1,4 +1,4 @@
-<section class="bg-light py-5">
+<section class="py-5">
 <div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Saisir un rapport de visite</h1>
@@ -12,7 +12,6 @@
     <div class="card">
         <div class="card-body">
             <h2 class="h5 mb-3">Rapports en cours de saisie</h2>
-            <p class="text-muted">Vous avez des rapports non validés. Vous pouvez continuer à modifier un rapport existant ou créer un nouveau rapport.</p>
 
             <?php if (!empty($rapportsEnCours)) : ?>
                 <div class="table-responsive mb-4">
@@ -32,13 +31,19 @@
                                 <tr>
                                     <td><?= htmlspecialchars($rap['RAP_NUM']) ?></td>
                                     <td><?= htmlspecialchars(date('d/m/Y', strtotime($rap['RAP_DATEVISITE']))) ?></td>
-                                    <td><?= htmlspecialchars($rap['PRA_NOM'] . ' ' . $rap['PRA_PRENOM']) ?></td>
+                                    <td>
+                                        <?= htmlspecialchars($rap['PRA_NOM'] . ' ' . $rap['PRA_PRENOM']) ?>
+                                    </td>
                                     <td><?= htmlspecialchars($rap['MOT_LIBELLE']) ?></td>
                                     <td><?= htmlspecialchars(substr($rap['RAP_BILAN'], 0, 50)) ?><?= strlen($rap['RAP_BILAN']) > 50 ? '...' : '' ?></td>
                                     <td>
                                         <a href="index.php?uc=rapports&action=modifier&num=<?= $rap['RAP_NUM'] ?>" 
-                                           class="btn btn-sm btn-primary">
+                                           class="btn btn-sm btn-primary me-1">
                                             <i class="bi bi-pencil"></i> Modifier
+                                        </a>
+                                        <a href="index.php?uc=rapports&action=detail&num=<?= $rap['RAP_NUM'] ?>" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i> Voir détail
                                         </a>
                                     </td>
                                 </tr>

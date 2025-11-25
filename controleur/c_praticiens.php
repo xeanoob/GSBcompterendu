@@ -22,8 +22,8 @@ switch ($action) {
 
     // Le délégué demande à gérer les praticiens (scénario nominal)
     case 'selection':
-        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
-        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+        // Vérification des droits d'accès (Délégué, Visiteur ou Responsable)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
         }
@@ -33,8 +33,8 @@ switch ($action) {
 
     // L'utilisateur choisit un praticien dans la liste
     case 'afficher':
-        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
-        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+        // Vérification des droits d'accès (Délégué, Visiteur ou Responsable)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
         }
@@ -55,7 +55,7 @@ switch ($action) {
 
     // Le délégué clique sur "Modifier" depuis le mode consultation
     case 'modifier':
-        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        // Vérification des droits d'accès (Délégué ou Responsable)
         if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
@@ -77,7 +77,7 @@ switch ($action) {
 
     // Le délégué demande à créer un nouveau praticien 
     case 'nouveau':
-        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        // Vérification des droits d'accès (Délégué ou Responsable)
         if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
@@ -89,7 +89,7 @@ switch ($action) {
 
     // Le délégué saisit ou modifie les informations puis clique sur "Valider"
     case 'enregistrer':
-        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        // Vérification des droits d'accès (Délégué ou Responsable)
         if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
@@ -120,7 +120,10 @@ switch ($action) {
         $specialitesSelectionnees = $_POST['specialites'] ?? [];
 
         // Contrôle des champs obligatoires (exception 5-a)
-        if ($num <= 0)      $erreurs[] = "Le numéro du praticien est obligatoire et doit être positif.";
+        // En mode modification, le numéro doit être fourni. En mode création, il sera auto-généré.
+        if ($mode === 'modification' && $num <= 0) {
+            $erreurs[] = "Le numéro du praticien est obligatoire et doit être positif.";
+        }
         if ($nom === '')    $erreurs[] = "Le nom du praticien est obligatoire.";
         if ($prenom === '') $erreurs[] = "Le prénom du praticien est obligatoire.";
         if ($cp === '')     $erreurs[] = "Le code postal est obligatoire.";
@@ -170,15 +173,9 @@ switch ($action) {
 
         // Pas d'erreur → enregistrement
         if ($mode === 'creation') {
-            // On vérifie que le numéro n'existe pas déjà
-            $existant = getPraticienByNum($num);
-            if ($existant) {
-                $erreurs[] = "Un praticien avec ce numéro existe déjà.";
-                include("vues/v_gererPraticien.php");
-                break;
-            }
-            ajouterPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type);
-            $messageSucces = "Le praticien a été créé avec succès.";
+            // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
+            $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type);
+            $messageSucces = "Le praticien a été créé avec succès (n°$num).";
             $mode = 'modification';
         } else {
             modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type);

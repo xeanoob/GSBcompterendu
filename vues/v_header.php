@@ -37,7 +37,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="rapportsDropdown">
                                 <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 1 || $_SESSION['habilitation'] == 2)) { ?>
-                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Saisir un rapport de visite</a></li>
+                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Saisir un rapport de visite</a></li>
                                 <?php } ?>
                                 <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Consulter les rapports</a></li>
                                 <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
@@ -48,7 +48,7 @@
                             </ul>
                         </li>
                         <?php } ?>
-                        <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
+                        <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 1 || $_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
                         <li class="nav-item">
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold" href="index.php?uc=praticiens&action=selection">Praticiens</a>
                         </li>

@@ -1,4 +1,4 @@
-<section class="bg-light py-5">
+<section class="py-5">
 <div class="container mt-4 mb-5">
 
     <h1 class="mb-4">Saisir un rapport de visite</h1>
