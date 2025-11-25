@@ -57,9 +57,7 @@
                 <a href="index.php?uc=rapports&action=creerNouveau" class="btn btn-info text-light">
                     <i class="bi bi-plus-circle"></i> Créer un nouveau rapport
                 </a>
-                <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Retour à la liste
-                </a>
+
             </div>
         </div>
     </div>
