@@ -36,10 +36,10 @@ switch ($action) {
             header('Location: index.php?uc=rapports&action=liste');
             exit;
         }
-        
+
         // Vérifier s'il existe des rapports en cours de saisie
         $rapportsEnCours = getRapportsEnCours($matriculeVisiteur);
-        
+
         if (!empty($rapportsEnCours)) {
             include("vues/v_rapportsEnCours.php");
         } else {
@@ -64,7 +64,7 @@ switch ($action) {
             include("vues/v_saisirRapport.php");
         }
         break;
-    
+
     // Créer un nouveau rapport (même s'il y a des rapports en cours)
     case 'creerNouveau':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
@@ -72,7 +72,7 @@ switch ($action) {
             header('Location: index.php?uc=rapports&action=liste');
             exit;
         }
-        
+
         $prochainNumero = getProchainNumeroRapport($matriculeVisiteur);
         $listePraticiens = getTousPraticiens();
         $listeMotifs = getTousMotifsVisite();
@@ -93,7 +93,7 @@ switch ($action) {
 
         include("vues/v_saisirRapport.php");
         break;
-    
+
     // Modifier un rapport existant en cours de saisie
     case 'modifier':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
@@ -101,18 +101,18 @@ switch ($action) {
             header('Location: index.php?uc=rapports&action=liste');
             exit;
         }
-        
+
         if (!empty($_GET['num'])) {
             $numRapport = (int) $_GET['num'];
             $rapport = getRapportVisite($matriculeVisiteur, $numRapport);
-            
+
             if ($rapport && $rapport['ETAT_CODE'] == 1) {
                 // Le rapport existe et est en cours de saisie
                 $listePraticiens = getTousPraticiens();
                 $listeMotifs = getTousMotifsVisite();
                 $listeMedicaments = getTousMedicaments();
                 $echantillons = getEchantillonsOfferts($matriculeVisiteur, $numRapport);
-                
+
                 include("vues/v_saisirRapport.php");
             } else {
                 // Le rapport n'existe pas ou est déjà validé
@@ -144,7 +144,7 @@ switch ($action) {
         $praticienRemplacant = !empty($_POST['PRA_NUM_REMPLACANT']) ? (int) $_POST['PRA_NUM_REMPLACANT'] : null;
         $med1 = !empty($_POST['MED_DEPOTLEGAL1']) ? $_POST['MED_DEPOTLEGAL1'] : null;
         $med2 = !empty($_POST['MED_DEPOTLEGAL2']) ? $_POST['MED_DEPOTLEGAL2'] : null;
-        
+
         // Récupérer l'état en fonction de la case "Saisie définitive"
         $saisieDefinitive = isset($_POST['saisie_definitive']) && $_POST['saisie_definitive'] == '1';
         $etatCode = $saisieDefinitive ? 2 : 1; // 2 = Validé, 1 = En cours
@@ -181,7 +181,7 @@ switch ($action) {
         if ($motifCode <= 0) {
             $erreurs[] = "Le motif de visite est obligatoire.";
         }
-        
+
         // Valider le motif personnalisé si "Autre" est sélectionné
         if ($motifCode == 5) {
             if (empty($rapMotif)) {
@@ -201,7 +201,7 @@ switch ($action) {
         // Validation des échantillons
         $echantillonsValides = [];
         $medicamentsEchantillons = [];
-        
+
         foreach ($echantillonsMedicaments as $index => $medDepot) {
             if (!empty($medDepot)) {
                 $qte = isset($echantillonsQuantites[$index]) ? (int) $echantillonsQuantites[$index] : 0;
@@ -224,7 +224,7 @@ switch ($action) {
                 }
             }
         }
-        
+
         // Vérifier le nombre max d'échantillons (10)
         if (count($echantillonsValides) > 10) {
             $erreurs[] = "Vous ne pouvez pas ajouter plus de 10 échantillons.";
@@ -254,10 +254,10 @@ switch ($action) {
             include("vues/v_saisirRapport.php");
             break;
         }
-        
+
         // Vérifier si le rapport existe déjà (modification)
         $rapportExistant = getRapportVisite($matriculeVisiteur, $numRapport);
-        
+
         if ($rapportExistant) {
             // Mise à jour du rapport existant
             $success = mettreAJourRapport(
@@ -273,11 +273,11 @@ switch ($action) {
                 $rapMotif,
                 $praticienRemplacant
             );
-            
+
             if ($success) {
                 // Supprimer les anciens échantillons
                 supprimerEchantillonsRapport($matriculeVisiteur, $numRapport);
-                
+
                 // Ajouter les nouveaux échantillons
                 foreach ($echantillonsValides as $ech) {
                     ajouterEchantillonOffert(
@@ -287,7 +287,7 @@ switch ($action) {
                         $ech['quantite']
                     );
                 }
-                
+
                 $messageSucces = "Le rapport de visite n°$numRapport a été modifié avec succès.";
                 if ($saisieDefinitive) {
                     $messageSucces .= " Il est maintenant validé.";
@@ -328,7 +328,7 @@ switch ($action) {
                 }
             }
         }
-        
+
         if ($success) {
 
             // Rediriger vers la liste des rapports avec le message
@@ -486,6 +486,7 @@ switch ($action) {
         if (!empty($_GET['pra'])) {
             $praticienNum = (int) $_GET['pra'];
             $praticien = getPraticienComplet($praticienNum);
+            $retour = $_GET['retour'] ?? null;
 
             if ($praticien) {
                 include("vues/v_detailPraticien.php");
@@ -507,6 +508,7 @@ switch ($action) {
         if (!empty($_GET['med'])) {
             $medDepot = $_GET['med'];
             $medicament = getAllInformationMedicamentDepot($medDepot);
+            $retour = $_GET['retour'] ?? null;
 
             if ($medicament) {
                 include("vues/v_detailMedicament.php");
@@ -547,7 +549,7 @@ switch ($action) {
         include("vues/v_nouveauxRapports.php");
         break;
 
-    // Consulter le détail d'un nouveau rapport et le marquer comme consulté
+    // Consulter le détail d'un nouveau rapport (sans le marquer comme consulté tout de suite)
     case 'consulter_detail':
         // Vérification des droits d'accès (Délégué ou Responsable uniquement)
         if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
@@ -558,15 +560,15 @@ switch ($action) {
         if (!empty($_GET['mat']) && !empty($_GET['num'])) {
             $matricule = $_GET['mat'];
             $numRapport = (int) $_GET['num'];
-            
-            // Marquer comme consulté AVANT d'afficher le détail
-            marquerRapportConsulte($matricule, $numRapport);
-            
+
+            // Note: On ne marque PAS comme consulté ici, car la demande spécifie
+            // que la requête doit être faite au clic sur le bouton retour.
+
             $rapport = getRapportVisiteComplet($matricule, $numRapport);
             $echantillons = getEchantillonsOfferts($matricule, $numRapport);
 
             if ($rapport) {
-                // Variable pour le bouton retour
+                // Variable pour le bouton retour spécifique
                 $retourNouveaux = true;
                 include("vues/v_detailRapport.php");
             } else {
@@ -578,5 +580,26 @@ switch ($action) {
             header('Location: index.php?uc=rapports&action=nouveaux');
             exit;
         }
+        break;
+
+    // Marquer le rapport comme consulté et retourner à la liste
+    case 'marquer_lu_et_retour':
+        // Vérification des droits d'accès
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        if (!empty($_GET['mat']) && !empty($_GET['num'])) {
+            $matricule = $_GET['mat'];
+            $numRapport = (int) $_GET['num'];
+
+            // Exécution de la requête de mise à jour
+            marquerRapportConsulte($matricule, $numRapport);
+        }
+
+        // Redirection vers la liste
+        header('Location: index.php?uc=rapports&action=nouveaux');
+        exit;
         break;
 }

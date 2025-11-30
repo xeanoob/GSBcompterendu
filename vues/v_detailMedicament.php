@@ -96,7 +96,7 @@
     <div class="mt-4">
         <?php
         // Si on vient d'une consultation, retourner aux résultats
-        if (isset($_SESSION['criteres_recherche'])) {
+        if (isset($_SESSION['criteres_recherche']) && !isset($retour)) {
             // Rediriger vers les résultats de recherche en POST
             echo '<form method="POST" action="index.php?uc=rapports&action=rechercher" class="d-inline">';
             echo '<input type="hidden" name="date_debut" value="' . htmlspecialchars($_SESSION['criteres_recherche']['date_debut']) . '">';
@@ -106,11 +106,14 @@
             }
             echo '<button type="submit" class="btn btn-secondary">Retour aux résultats de recherche</button>';
             echo '</form>';
+
+            echo '<a href="index.php?uc=rapports&action=consulter" class="btn btn-outline-secondary ms-2">Retour à la recherche</a>';
+        } elseif (isset($retour) && $retour == 'nouveaux') {
+            echo '<a href="javascript:history.back()" class="btn btn-outline-secondary">Retour au rapport</a>';
+        } else {
+            echo '<a href="index.php?uc=rapports&action=consulter" class="btn btn-outline-secondary">Retour à la recherche</a>';
         }
         ?>
-        <a href="index.php?uc=rapports&action=consulter" class="btn btn-outline-secondary">
-            Retour à la recherche
-        </a>
     </div>
 
 </section>

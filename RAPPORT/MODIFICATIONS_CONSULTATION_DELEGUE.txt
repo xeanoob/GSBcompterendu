@@ -1,0 +1,39 @@
+RAPPORT DE MODIFICATIONS - CONSULTATION DES NOUVEAUX RAPPORTS (DÉLÉGUÉ)
+Date : 03/11/2025
+
+1. ÉTAT INITIAL (Ce qui était déjà présent)
+-------------------------------------------
+Une grande partie de la fonctionnalité semblait déjà pré-implémentée dans le code existant :
+- Modèle (modele/rapport.modele.inc.php) : Les fonctions pour récupérer les nouveaux rapports par région (`getNouveauxRapportsRegion`) et pour changer le statut (`marquerRapportConsulte`) existaient déjà.
+- Contrôleur (controleur/c_rapports.php) : La structure pour l'action `nouveaux` et l'affichage de la liste était présente.
+- Vues : La vue `v_nouveauxRapports.php` pour la liste et le lien dans le menu (`v_header.php`) étaient déjà en place.
+
+2. MODIFICATIONS APPORTÉES (Ce que j'ai fait pour répondre à la demande)
+------------------------------------------------------------------------
+
+A. Logique de validation "Consulté par le délégué"
+   - Demande initiale : Le statut doit passer à "Consulté" (ETAT_CODE = 3) au clic sur le bouton "Retour".
+   - Modification : J'ai modifié le contrôleur (`c_rapports.php`) pour ne PAS marquer le rapport comme lu dès l'ouverture.
+   - Ajout : J'ai créé une nouvelle action `marquer_lu_et_retour` qui effectue la mise à jour du statut uniquement lorsque l'utilisateur clique sur le bouton "Retour" dans le détail du rapport.
+
+B. Navigation et Liens
+   - Dans le détail du rapport (`v_detailRapport.php`) :
+     * J'ai rendu le nom du PRATICIEN cliquable (vers sa fiche détail).
+     * J'ai rendu les noms des MÉDICAMENTS cliquables (vers leur fiche détail).
+     * Ces liens conservent le contexte de navigation (savoir qu'on vient de la liste des nouveaux rapports).
+
+C. Boutons "Retour"
+   - Page Détail Rapport : Le bouton "Retour" déclenche maintenant l'action de validation (passage à l'état "Consulté") et ramène à la liste des nouveaux rapports.
+   - Page Détail Praticien / Médicament : J'ai ajouté une logique pour que le bouton "Retour" ramène correctement à la page précédente (le rapport) lorsqu'on navigue depuis la consultation des nouveaux rapports.
+
+3. FICHIERS MODIFIÉS
+--------------------
+- controleur/c_rapports.php
+- vues/v_detailRapport.php
+- vues/v_detailPraticien.php
+- vues/v_detailMedicament.php
+
+4. CONCLUSION
+-------------
+La fonctionnalité est maintenant complète et respecte le flux de travail demandé :
+Liste des nouveaux rapports -> Détail Rapport (toujours "Validé") -> (Optionnel : Détail Praticien/Médicament -> Retour) -> Retour (Passe à "Consulté") -> Liste mise à jour.
