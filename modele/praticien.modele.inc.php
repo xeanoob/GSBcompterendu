@@ -5,16 +5,32 @@ include_once 'bd.inc.php';
 /**
  * Récupère la liste des praticiens (numéro + nom + prénom)
  * pour alimenter la liste déroulante.
+ * @param string|null $regCode Code de région pour filtrer (optionnel)
+ * @return array Liste des praticiens
  */
-function getAllPraticiens()
+function getAllPraticiens($regCode = null)
 {
     try {
         $pdo = connexionPDO();
-        $sql = 'SELECT PRA_NUM, PRA_NOM, PRA_PRENOM 
-                FROM praticien 
-                ORDER BY PRA_NOM, PRA_PRENOM';
-        $res = $pdo->query($sql);
-        return $res->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($regCode !== null) {
+            // Filtrage par région basé sur le code postal (2 premiers chiffres = département)
+            $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+                    FROM praticien p
+                    LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
+                    WHERE d.REG_CODE = :regCode
+                    ORDER BY p.PRA_NOM, p.PRA_PRENOM';
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $sql = 'SELECT PRA_NUM, PRA_NOM, PRA_PRENOM 
+                    FROM praticien 
+                    ORDER BY PRA_NOM, PRA_PRENOM';
+            $res = $pdo->query($sql);
+            return $res->fetchAll(PDO::FETCH_ASSOC);
+        }
     } catch (PDOException $e) {
         print "Erreur ! : " . $e->getMessage();
         die();
@@ -233,3 +249,30 @@ function supprimerToutesSpecialitesPraticien($praticienNum)
         return false;
     }
 }
+
+/**
+ * Vérifie si un praticien appartient à une région donnée
+ * @param int $praticienNum Numéro du praticien
+ * @param string $regCode Code de la région
+ * @return bool True si le praticien est dans la région, False sinon
+ */
+function isPraticienDansRegion($praticienNum, $regCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT COUNT(*) as nb
+                FROM praticien p
+                LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
+                WHERE p.PRA_NUM = :num AND d.REG_CODE = :regCode';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
+        $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['nb'] > 0;
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
+

@@ -581,25 +581,4 @@ switch ($action) {
             exit;
         }
         break;
-
-    // Marquer le rapport comme consulté et retourner à la liste
-    case 'marquer_lu_et_retour':
-        // Vérification des droits d'accès
-        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
-            header('Location: index.php?uc=accueil');
-            exit;
-        }
-
-        if (!empty($_GET['mat']) && !empty($_GET['num'])) {
-            $matricule = $_GET['mat'];
-            $numRapport = (int) $_GET['num'];
-
-            // Exécution de la requête de mise à jour
-            marquerRapportConsulte($matricule, $numRapport);
-        }
-
-        // Redirection vers la liste
-        header('Location: index.php?uc=rapports&action=nouveaux');
-        exit;
-        break;
 }

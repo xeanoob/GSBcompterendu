@@ -9,7 +9,11 @@ if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
 }
 
 // variables communes
-$listePraticiens = getAllPraticiens();
+// Récupérer la région de l'utilisateur connecté
+$regionUtilisateur = $_SESSION['region'] ?? null;
+
+// Filtrer les praticiens par région si l'utilisateur a une région assignée
+$listePraticiens = getAllPraticiens($regionUtilisateur);
 $listeTypes = getAllTypesPraticien();
 $listeSpecialites = getAllSpecialites();
 $specialitesPraticien = [];
@@ -64,8 +68,14 @@ switch ($action) {
             $num = (int) $_GET['num'];
             $praticien = getPraticienByNum($num);
             if ($praticien) {
-                $mode = 'modification';
-                $specialitesPraticien = getSpecialitesPraticien($num);
+                // Vérifier que le praticien appartient à la région de l'utilisateur
+                if ($regionUtilisateur && !isPraticienDansRegion($num, $regionUtilisateur)) {
+                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
+                    $praticien = null;
+                } else {
+                    $mode = 'modification';
+                    $specialitesPraticien = getSpecialitesPraticien($num);
+                }
             } else {
                 $erreurs[] = "Le praticien sélectionné n'existe pas.";
             }
@@ -173,11 +183,68 @@ switch ($action) {
 
         // Pas d'erreur → enregistrement
         if ($mode === 'creation') {
+            // Vérifier que le code postal correspond à la région de l'utilisateur
+            $codeDept = (int) substr($cp, 0, 2);
+            if ($regionUtilisateur) {
+                // Vérifier que le département existe et correspond à la région
+                try {
+                    $pdo = connexionPDO();
+                    $sqlCheck = 'SELECT REG_CODE FROM departement WHERE NoDEPT = :dept';
+                    $stmtCheck = $pdo->prepare($sqlCheck);
+                    $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
+                    $stmtCheck->execute();
+                    $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                    
+                    if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
+                        $erreurs[] = "Vous ne pouvez créer que des praticiens dans votre région.";
+                        include("vues/v_gererPraticien.php");
+                        break;
+                    }
+                } catch (PDOException $e) {
+                    $erreurs[] = "Erreur lors de la vérification de la région.";
+                    include("vues/v_gererPraticien.php");
+                    break;
+                }
+            }
+            
             // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
             $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type);
             $messageSucces = "Le praticien a été créé avec succès (n°$num).";
             $mode = 'modification';
         } else {
+            // En mode modification, vérifier que le praticien appartient à la région
+            if ($regionUtilisateur && !isPraticienDansRegion($num, $regionUtilisateur)) {
+                $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
+                include("vues/v_gererPraticien.php");
+                break;
+            }
+            
+            // Vérifier que le nouveau code postal (si modifié) reste dans la même région
+            $praticienActuel = getPraticienByNum($num);
+            if ($praticienActuel && $cp !== $praticienActuel['PRA_CP']) {
+                $codeDept = (int) substr($cp, 0, 2);
+                if ($regionUtilisateur) {
+                    try {
+                        $pdo = connexionPDO();
+                        $sqlCheck = 'SELECT REG_CODE FROM departement WHERE NoDEPT = :dept';
+                        $stmtCheck = $pdo->prepare($sqlCheck);
+                        $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
+                        $stmtCheck->execute();
+                        $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                        
+                        if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
+                            $erreurs[] = "Le nouveau code postal doit rester dans votre région.";
+                            include("vues/v_gererPraticien.php");
+                            break;
+                        }
+                    } catch (PDOException $e) {
+                        $erreurs[] = "Erreur lors de la vérification de la région.";
+                        include("vues/v_gererPraticien.php");
+                        break;
+                    }
+                }
+            }
+            
             modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type);
             $messageSucces = "Les informations du praticien ont été mises à jour.";
             $mode = 'modification';
@@ -199,7 +266,7 @@ switch ($action) {
         }
 
         // On recharge la liste (au cas où)
-        $listePraticiens = getAllPraticiens();
+        $listePraticiens = getAllPraticiens($regionUtilisateur);
         $listeTypes = getAllTypesPraticien();
         $listeSpecialites = getAllSpecialites();
         // On récupère les infos à jour depuis la base

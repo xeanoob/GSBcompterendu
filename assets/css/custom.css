@@ -4,6 +4,7 @@ html {
 	margin: 0;
 	padding: 0;
 }
+
 body {
 	background: #f6f9fe !important;
 	width: 100%;
@@ -121,18 +122,22 @@ input[type="submit"] {
 		min-width: 400px;
 		max-width: 400px;
 	}
+
 	.formulaire {
 		width: 300px;
 		min-width: fit-content;
 	}
+
 	.navbar-nav {
 		width: fit-content;
 	}
+
 	.flex-fill {
 		display: flex;
 		justify-content: center !important;
 	}
 }
+
 @media (max-width: 575px) {
 	.rapport {
 		margin: auto;

@@ -35,15 +35,61 @@
                             <a class="nav-link btn-outline-info rounded-pill px-3 fw-bold dropdown-toggle" href="#" id="rapportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Rapports
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="rapportsDropdown">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="rapportsDropdown">
+                                <!-- Section : Mes rapports (Visiteur et Délégué) -->
                                 <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 1 || $_SESSION['habilitation'] == 2)) { ?>
-                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Saisir un rapport de visite</a></li>
+                                    <li><h6 class="dropdown-header">Mes rapports</h6></li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">
+                                            Créer un nouveau rapport
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=liste">
+                                            Voir mes rapports
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
                                 <?php } ?>
-                                <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Consulter les rapports</a></li>
-                                <?php if (isset($_SESSION['habilitation']) && ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3)) { ?>
-                                    <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
-                                        <?php echo ($_SESSION['habilitation'] == 2) ? 'Rapports de la région' : 'Rapports du secteur'; ?>
-                                    </a></li>
+                                
+                                <!-- Section : Consultation (Tous) -->
+                                <li><h6 class="dropdown-header">Consultation</h6></li>
+                                <li>
+                                    <a class="dropdown-item" href="index.php?uc=rapports&action=consulter">
+                                        Rechercher des rapports
+                                    </a>
+                                </li>
+                                
+                                <!-- Section : Gestion (Délégué Régional) -->
+                                <?php if (isset($_SESSION['habilitation']) && $_SESSION['habilitation'] == 2) { ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><h6 class="dropdown-header">Ma région</h6></li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
+                                            Nouveaux rapports à consulter
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=historiqueRegion">
+                                            Historique complet
+                                        </a>
+                                    </li>
+                                <?php } ?>
+                                
+                                <!-- Section : Gestion (Responsable Secteur) -->
+                                <?php if (isset($_SESSION['habilitation']) && $_SESSION['habilitation'] == 3) { ?>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><h6 class="dropdown-header">Mon secteur</h6></li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
+                                            Nouveaux rapports à consulter
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=historiqueRegion">
+                                            Historique complet
+                                        </a>
+                                    </li>
                                 <?php } ?>
                             </ul>
                         </li>

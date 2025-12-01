@@ -70,7 +70,7 @@
                     <button type="submit" class="btn btn-info text-light">
                         Rechercher les rapports
                     </button>
-                    <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
+                    <a href="index.php?uc=accueil" class="btn btn-outline-secondary">
                         Annuler
                     </a>
                 </div>

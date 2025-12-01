@@ -185,7 +185,7 @@
                     <button type="submit" class="btn btn-info text-light">
                         <i class="bi bi-save"></i> Enregistrer le rapport
                     </button>
-                    <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
+                    <a href="index.php?uc=accueil" class="btn btn-outline-secondary">
                         <i class="bi bi-x-circle"></i> Annuler
                     </a>
                 </div>
