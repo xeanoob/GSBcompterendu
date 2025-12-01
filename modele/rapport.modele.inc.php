@@ -519,3 +519,168 @@ function marquerRapportConsulte($matricule, $numRapport)
         return false;
     }
 }
+
+/**
+ * Consulte l'historique des rapports de visite d'une région avec filtres
+ * @param string $regCode Code de la région
+ * @param string $dateDebut Date de début (format Y-m-d)
+ * @param string $dateFin Date de fin (format Y-m-d)
+ * @param string|null $matriculeVisiteur Matricule du visiteur (optionnel)
+ * @return array Liste des rapports
+ */
+function consulterHistoriqueRapportsRegion($regCode, $dateDebut, $dateFin, $matriculeVisiteur = null)
+{
+    try {
+        $pdo = connexionPDO();
+        
+        $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.RAP_MOTIF, r.PRA_NUM,
+                       r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2, r.ETAT_CODE,
+                       p.PRA_NOM, p.PRA_PRENOM,
+                       m.MOT_LIBELLE,
+                       c.COL_NOM, c.COL_PRENOM, c.COL_MATRICULE,
+                       e.ETAT_LIBELLE,
+                       med1.MED_NOMCOMMERCIAL as MED1_NOM,
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                FROM rapport_visite r
+                INNER JOIN collaborateur c ON r.VIS_MATRICULE = c.COL_MATRICULE
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
+                LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
+                LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
+                WHERE c.REG_CODE = :regCode
+                AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+        
+        if ($matriculeVisiteur !== null) {
+            $sql .= ' AND r.VIS_MATRICULE = :matricule';
+        }
+        
+        $sql .= ' ORDER BY r.RAP_DATEVISITE DESC, c.COL_NOM, c.COL_PRENOM';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
+        $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
+        $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        
+        if ($matriculeVisiteur !== null) {
+            $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Consulte l'historique des rapports de visite d'un secteur avec filtres
+ * @param string $secCode Code du secteur
+ * @param string $dateDebut Date de début (format Y-m-d)
+ * @param string $dateFin Date de fin (format Y-m-d)
+ * @param string|null $matriculeVisiteur Matricule du visiteur (optionnel)
+ * @return array Liste des rapports
+ */
+function consulterHistoriqueRapportsSecteur($secCode, $dateDebut, $dateFin, $matriculeVisiteur = null)
+{
+    try {
+        $pdo = connexionPDO();
+        
+        $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.RAP_MOTIF, r.PRA_NUM,
+                       r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2, r.ETAT_CODE,
+                       p.PRA_NOM, p.PRA_PRENOM,
+                       m.MOT_LIBELLE,
+                       c.COL_NOM, c.COL_PRENOM, c.COL_MATRICULE,
+                       e.ETAT_LIBELLE,
+                       med1.MED_NOMCOMMERCIAL as MED1_NOM,
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                FROM rapport_visite r
+                INNER JOIN collaborateur c ON r.VIS_MATRICULE = c.COL_MATRICULE
+                INNER JOIN region reg ON c.REG_CODE = reg.REG_CODE
+                INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
+                LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
+                LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
+                LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
+                WHERE reg.SEC_CODE = :secCode
+                AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+        
+        if ($matriculeVisiteur !== null) {
+            $sql .= ' AND r.VIS_MATRICULE = :matricule';
+        }
+        
+        $sql .= ' ORDER BY r.RAP_DATEVISITE DESC, c.COL_NOM, c.COL_PRENOM';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+        $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
+        $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        
+        if ($matriculeVisiteur !== null) {
+            $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
+        }
+        
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Récupère la liste des visiteurs d'une région
+ * @param string $regCode Code de la région
+ * @return array Liste des visiteurs
+ */
+function getVisiteursRegion($regCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT DISTINCT c.COL_MATRICULE, c.COL_NOM, c.COL_PRENOM
+                FROM collaborateur c
+                WHERE c.REG_CODE = :regCode
+                AND c.HAB_ID IN (1, 2) -- Visiteur ou Délégué Régional
+                ORDER BY c.COL_NOM, c.COL_PRENOM';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
+ * Récupère la liste des visiteurs d'un secteur
+ * @param string $secCode Code du secteur
+ * @return array Liste des visiteurs
+ */
+function getVisiteursSecteur($secCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT DISTINCT c.COL_MATRICULE, c.COL_NOM, c.COL_PRENOM
+                FROM collaborateur c
+                INNER JOIN region r ON c.REG_CODE = r.REG_CODE
+                WHERE r.SEC_CODE = :secCode
+                AND c.HAB_ID IN (1, 2) -- Visiteur ou Délégué Régional
+                ORDER BY c.COL_NOM, c.COL_PRENOM';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+

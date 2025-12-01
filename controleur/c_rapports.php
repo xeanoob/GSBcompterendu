@@ -579,4 +579,86 @@ switch ($action) {
             exit;
         }
         break;
+
+    // Consulter l'historique des rapports de visite de sa région (Cas d'utilisation)
+    case 'historiqueRegion':
+        // Vérification des droits d'accès (Délégué Régional ou Responsable Secteur)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        // Récupérer la liste des visiteurs selon le rôle
+        $listeVisiteurs = [];
+        $titrePage = "";
+        
+        if ($_SESSION['habilitation'] == 2) {
+            // Délégué régional : visiteurs de sa région
+            $region = $_SESSION['region'];
+            $titrePage = "Historique des rapports de visite - Région " . $region;
+            $listeVisiteurs = getVisiteursRegion($region);
+        } elseif ($_SESSION['habilitation'] == 3) {
+            // Responsable secteur : visiteurs de son secteur
+            $secteur = $_SESSION['secteur'];
+            $titrePage = "Historique des rapports de visite - Secteur " . $secteur;
+            $listeVisiteurs = getVisiteursSecteur($secteur);
+        }
+
+        // Initialiser les filtres
+        $dateDebut = '';
+        $dateFin = '';
+        $matriculeVisiteurFiltre = null;
+        $rapports = [];
+
+        // Si le formulaire a été soumis
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $dateDebut = trim($_POST['date_debut'] ?? '');
+            $dateFin = trim($_POST['date_fin'] ?? '');
+            $matriculeVisiteurFiltre = !empty($_POST['visiteur_matricule']) ? $_POST['visiteur_matricule'] : null;
+
+            // Validation des critères
+            if (empty($dateDebut)) {
+                $erreurs[] = "La date de début est obligatoire.";
+            }
+
+            if (empty($dateFin)) {
+                $erreurs[] = "La date de fin est obligatoire.";
+            }
+
+            // Vérifier que date début <= date fin
+            if (!empty($dateDebut) && !empty($dateFin)) {
+                $dateDebutObj = DateTime::createFromFormat('Y-m-d', $dateDebut);
+                $dateFinObj = DateTime::createFromFormat('Y-m-d', $dateFin);
+
+                if (!$dateDebutObj) {
+                    $erreurs[] = "Le format de la date de début est incorrect.";
+                }
+
+                if (!$dateFinObj) {
+                    $erreurs[] = "Le format de la date de fin est incorrect.";
+                }
+
+                if ($dateDebutObj && $dateFinObj && $dateDebutObj > $dateFinObj) {
+                    $erreurs[] = "La date de début doit être antérieure ou égale à la date de fin.";
+                }
+            }
+
+            // Si pas d'erreurs, effectuer la recherche
+            if (empty($erreurs)) {
+                if ($_SESSION['habilitation'] == 2) {
+                    // Délégué régional
+                    $rapports = consulterHistoriqueRapportsRegion($_SESSION['region'], $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+                } elseif ($_SESSION['habilitation'] == 3) {
+                    // Responsable secteur
+                    $rapports = consulterHistoriqueRapportsSecteur($_SESSION['secteur'], $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+                }
+
+                if (empty($rapports)) {
+                    $erreurs[] = "Aucun rapport de visite trouvé pour cette période.";
+                }
+            }
+        }
+
+        include("vues/v_historiqueRapportsRegion.php");
+        break;
 }
