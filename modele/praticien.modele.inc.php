@@ -8,26 +8,31 @@ include_once 'bd.inc.php';
  * @param string|null $regCode Code de région pour filtrer (optionnel)
  * @return array Liste des praticiens
  */
-function getAllPraticiens($regCode = null)
+function getAllPraticiens($regCode = null, $tri = 'nom')
 {
     try {
         $pdo = connexionPDO();
-        
+
+        $orderBy = 'p.PRA_NOM, p.PRA_PRENOM';
+        if ($tri === 'num') {
+            $orderBy = 'p.PRA_NUM';
+        }
+
         if ($regCode !== null) {
             // Filtrage par région basé sur le code postal (2 premiers chiffres = département)
             $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
                     FROM praticien p
                     LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
                     WHERE d.REG_CODE = :regCode
-                    ORDER BY p.PRA_NOM, p.PRA_PRENOM';
+                    ORDER BY ' . $orderBy;
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             $sql = 'SELECT PRA_NUM, PRA_NOM, PRA_PRENOM 
-                    FROM praticien 
-                    ORDER BY PRA_NOM, PRA_PRENOM';
+                    FROM praticien p
+                    ORDER BY ' . $orderBy;
             $res = $pdo->query($sql);
             return $res->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -98,7 +103,7 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
         $stmt->bindValue(':coef', $coef, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
-        
+
         // Retourner l'ID auto-généré
         return (int) $pdo->lastInsertId();
     } catch (PDOException $e) {

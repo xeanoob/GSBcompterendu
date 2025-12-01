@@ -26,6 +26,20 @@
     <div class="card mb-4">
         <div class="card-body">
             <form method="post" action="index.php?uc=praticiens&action=afficher">
+                <div class="mb-3 d-flex justify-content-end align-items-center">
+                    <span class="me-2">Trier par :</span>
+                    <div class="btn-group" role="group">
+                        <a href="index.php?uc=praticiens&action=selection&tri=nom" 
+                           class="btn btn-sm <?= (!isset($tri) || $tri === 'nom') ? 'btn-primary' : 'btn-outline-primary' ?>">
+                            Nom
+                        </a>
+                        <a href="index.php?uc=praticiens&action=selection&tri=num" 
+                           class="btn btn-sm <?= (isset($tri) && $tri === 'num') ? 'btn-primary' : 'btn-outline-primary' ?>">
+                            Numéro
+                        </a>
+                    </div>
+                </div>
+
                 <label class="form-label" for="listePraticiens">Praticiens disponibles :</label>
                 <select name="praticien" id="listePraticiens" class="form-select">
                     <option value="">- Choisissez un praticien -</option>

@@ -12,8 +12,11 @@ if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
 // Récupérer la région de l'utilisateur connecté
 $regionUtilisateur = $_SESSION['region'] ?? null;
 
+// Récupérer le paramètre de tri (par défaut 'nom')
+$tri = $_REQUEST['tri'] ?? 'nom';
+
 // Filtrer les praticiens par région si l'utilisateur a une région assignée
-$listePraticiens = getAllPraticiens($regionUtilisateur);
+$listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
 $listeTypes = getAllTypesPraticien();
 $listeSpecialites = getAllSpecialites();
 $specialitesPraticien = [];
@@ -117,14 +120,14 @@ switch ($action) {
         $mode = isset($_POST['mode']) ? $_POST['mode'] : 'creation';
 
         // Récupération des champs du formulaire avec sanitization
-        $num     = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
-        $prenom  = trim(strip_tags($_POST['PRA_PRENOM'] ?? ''));
-        $nom     = trim(strip_tags($_POST['PRA_NOM'] ?? ''));
+        $num = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
+        $prenom = trim(strip_tags($_POST['PRA_PRENOM'] ?? ''));
+        $nom = trim(strip_tags($_POST['PRA_NOM'] ?? ''));
         $adresse = trim(strip_tags($_POST['PRA_ADRESSE'] ?? ''));
-        $cp      = trim(strip_tags($_POST['PRA_CP'] ?? ''));
-        $ville   = trim(strip_tags($_POST['PRA_VILLE'] ?? ''));
-        $coef    = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
-        $type    = trim($_POST['TYP_CODE'] ?? '');
+        $cp = trim(strip_tags($_POST['PRA_CP'] ?? ''));
+        $ville = trim(strip_tags($_POST['PRA_VILLE'] ?? ''));
+        $coef = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
+        $type = trim($_POST['TYP_CODE'] ?? '');
 
         // Récupération des spécialités sélectionnées (facultatives)
         $specialitesSelectionnees = $_POST['specialites'] ?? [];
@@ -134,23 +137,28 @@ switch ($action) {
         if ($mode === 'modification' && $num <= 0) {
             $erreurs[] = "Le numéro du praticien est obligatoire et doit être positif.";
         }
-        if ($nom === '')    $erreurs[] = "Le nom du praticien est obligatoire.";
-        if ($prenom === '') $erreurs[] = "Le prénom du praticien est obligatoire.";
-        if ($cp === '')     $erreurs[] = "Le code postal est obligatoire.";
-        if ($ville === '')  $erreurs[] = "La ville est obligatoire.";
-        if ($type === '')   $erreurs[] = "Le type de praticien est obligatoire.";
-        
+        if ($nom === '')
+            $erreurs[] = "Le nom du praticien est obligatoire.";
+        if ($prenom === '')
+            $erreurs[] = "Le prénom du praticien est obligatoire.";
+        if ($cp === '')
+            $erreurs[] = "Le code postal est obligatoire.";
+        if ($ville === '')
+            $erreurs[] = "La ville est obligatoire.";
+        if ($type === '')
+            $erreurs[] = "Le type de praticien est obligatoire.";
+
         // Validations supplémentaires
         if (!preg_match('/^\d{5}$/', $cp)) {
             $erreurs[] = "Le code postal doit contenir exactement 5 chiffres.";
         }
-        
+
         if ($coef !== '' && !is_numeric($coef)) {
             $erreurs[] = "Le coefficient de notoriété doit être une valeur numérique.";
         } elseif ($coef < 0) {
             $erreurs[] = "Le coefficient de notoriété ne peut pas être négatif.";
         }
-        
+
         // Vérification que le type existe
         $typeExiste = false;
         foreach ($listeTypes as $t) {
@@ -165,14 +173,14 @@ switch ($action) {
 
         // On reconstruit un tableau praticien pour réafficher le formulaire en cas d'erreur
         $praticien = [
-            'PRA_NUM'            => $num,
-            'PRA_PRENOM'         => $prenom,
-            'PRA_NOM'            => $nom,
-            'PRA_ADRESSE'        => $adresse,
-            'PRA_CP'             => $cp,
-            'PRA_VILLE'          => $ville,
-            'PRA_COEFNOTORIETE'  => $coef,
-            'TYP_CODE'           => $type
+            'PRA_NUM' => $num,
+            'PRA_PRENOM' => $prenom,
+            'PRA_NOM' => $nom,
+            'PRA_ADRESSE' => $adresse,
+            'PRA_CP' => $cp,
+            'PRA_VILLE' => $ville,
+            'PRA_COEFNOTORIETE' => $coef,
+            'TYP_CODE' => $type
         ];
 
         if (!empty($erreurs)) {
@@ -194,7 +202,7 @@ switch ($action) {
                     $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
                     $stmtCheck->execute();
                     $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-                    
+
                     if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
                         $erreurs[] = "Vous ne pouvez créer que des praticiens dans votre région.";
                         include("vues/v_gererPraticien.php");
@@ -206,7 +214,7 @@ switch ($action) {
                     break;
                 }
             }
-            
+
             // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
             $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type);
             $messageSucces = "Le praticien a été créé avec succès (n°$num).";
@@ -218,7 +226,7 @@ switch ($action) {
                 include("vues/v_gererPraticien.php");
                 break;
             }
-            
+
             // Vérifier que le nouveau code postal (si modifié) reste dans la même région
             $praticienActuel = getPraticienByNum($num);
             if ($praticienActuel && $cp !== $praticienActuel['PRA_CP']) {
@@ -231,7 +239,7 @@ switch ($action) {
                         $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
                         $stmtCheck->execute();
                         $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-                        
+
                         if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
                             $erreurs[] = "Le nouveau code postal doit rester dans votre région.";
                             include("vues/v_gererPraticien.php");
@@ -244,7 +252,7 @@ switch ($action) {
                     }
                 }
             }
-            
+
             modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type);
             $messageSucces = "Les informations du praticien ont été mises à jour.";
             $mode = 'modification';
@@ -266,7 +274,7 @@ switch ($action) {
         }
 
         // On recharge la liste (au cas où)
-        $listePraticiens = getAllPraticiens($regionUtilisateur);
+        $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
         $listeTypes = getAllTypesPraticien();
         $listeSpecialites = getAllSpecialites();
         // On récupère les infos à jour depuis la base

@@ -542,3 +542,29 @@ case 'modifier':
 **Fin du rapport pour cette session**
 
 ---
+
+## 📅 **2025-12-01 à 23:15:44**
+
+### 🛠️ **Session : Correction SQL et Tri des Praticiens**
+
+#### ✅ **Actions réalisées :**
+
+1. **Correction d'une erreur SQL critique**
+   - **Problème** : Erreur `Unknown column 'r.PRA_NUM_REMPLACANT'` lors de la consultation des rapports.
+   - **Cause** : La colonne `PRA_NUM_REMPLACANT` n'existe pas dans la base de données mais était référencée dans le code.
+   - **Solution** : Suppression de toutes les références à cette colonne dans `modele/rapport.modele.inc.php` et nettoyage des jointures dupliquées.
+
+2. **Ajout de la fonctionnalité de tri des praticiens**
+   - **Objectif** : Permettre le tri par nom ou par numéro dans "Gérer les praticiens".
+   - **Modifications** :
+     - `modele/praticien.modele.inc.php` : Ajout du paramètre `$tri` à `getAllPraticiens`.
+     - `controleur/c_praticiens.php` : Gestion du paramètre de tri depuis l'URL.
+     - `vues/v_gererPraticien.php` : Ajout des boutons de tri dans l'interface.
+
+#### 📁 **Fichiers modifiés :**
+- `modele/rapport.modele.inc.php`
+- `modele/praticien.modele.inc.php`
+- `controleur/c_praticiens.php`
+- `vues/v_gererPraticien.php`
+
+---
