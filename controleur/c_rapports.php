@@ -270,8 +270,7 @@ switch ($action) {
                 $etatCode,
                 $med1,
                 $med2,
-                $rapMotif,
-                $praticienRemplacant
+                $rapMotif
             );
 
             if ($success) {
@@ -305,8 +304,7 @@ switch ($action) {
                 $etatCode,
                 $med1,
                 $med2,
-                $rapMotif,
-                $praticienRemplacant
+                $rapMotif
             );
 
             if ($success) {
@@ -576,6 +574,30 @@ switch ($action) {
                 header('Location: index.php?uc=rapports&action=nouveaux');
                 exit;
             }
+        } else {
+            header('Location: index.php?uc=rapports&action=nouveaux');
+            exit;
+        }
+        break;
+
+    // Marquer le rapport comme consulté et retourner à la liste
+    case 'marquer_lu_et_retour':
+        // Vérification des droits d'accès (Délégué ou Responsable uniquement)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        if (!empty($_GET['mat']) && !empty($_GET['num'])) {
+            $matricule = $_GET['mat'];
+            $numRapport = (int) $_GET['num'];
+
+            // Marquer comme consulté (ETAT_CODE = 3)
+            marquerRapportConsulte($matricule, $numRapport);
+
+            // Retour à la liste des nouveaux rapports
+            header('Location: index.php?uc=rapports&action=nouveaux');
+            exit;
         } else {
             header('Location: index.php?uc=rapports&action=nouveaux');
             exit;

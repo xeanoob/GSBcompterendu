@@ -1,0 +1,38 @@
+DOCUMENTATION DES NOUVELLES FONCTIONNALITÉS
+=========================================
+
+1. CONSULTER LES NOUVEAUX RAPPORTS
+----------------------------------
+Cette fonctionnalité est destinée aux Délégués Régionaux et aux Responsables de Secteur.
+
+**À quoi ça sert ?**
+Elle permet de voir la liste des rapports de visite qui ont été validés (saisie définitive) par les visiteurs de votre région, mais que vous n'avez pas encore consultés.
+
+**Comment ça marche ?**
+- **La liste** : Affiche le nom du visiteur, le numéro du rapport, la date de visite, le praticien visité et les médicaments présentés.
+- **Le tri** : Les rapports sont classés par nom de visiteur, puis par date de visite (du plus récent au plus ancien).
+- **Le détail** : En cliquant sur "Voir détail", vous accédez à la fiche complète du rapport.
+- **Le retour** : Sur la page de détail, un bouton "Retour à la liste des nouveaux rapports" est présent.
+  - **IMPORTANT** : C'est au moment où vous cliquez sur ce bouton "Retour" que le rapport est marqué comme "Consulté". Il disparaîtra alors de la liste des "nouveaux" rapports.
+
+**Détails techniques :**
+- Les informations du praticien et des médicaments sont accessibles via des liens depuis le détail du rapport.
+- Le bouton retour vous ramène toujours à la liste, en mettant à jour le statut du rapport dans la base de données.
+
+--------------------------------------------------------------------------------
+
+2. GÉRER LES PRATICIENS
+-----------------------
+Cette fonctionnalité permet de consulter, créer et modifier les fiches des praticiens.
+
+**À quoi ça sert ?**
+Elle sert à maintenir à jour la base de données des médecins et pharmaciens visités.
+
+**Les nouveautés :**
+- **Le Tri** : Vous avez maintenant deux boutons au-dessus de la liste déroulante :
+  - "Nom" : Trie la liste par ordre alphabétique (A-Z).
+  - "Numéro" : Trie la liste par numéro d'identifiant croissant.
+  Cela facilite la recherche d'un praticien spécifique.
+
+- **La Consultation** : Quand vous sélectionnez un praticien, sa fiche s'affiche d'abord en lecture seule (on ne peut pas modifier par erreur).
+- **La Modification** : Un bouton "Modifier ce praticien" permet de passer en mode édition pour changer l'adresse, le coefficient de notoriété, etc.
