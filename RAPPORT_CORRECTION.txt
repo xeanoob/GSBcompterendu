@@ -1,0 +1,17 @@
+RAPPORT DE CORRECTION
+---------------------
+
+Problème rencontré :
+Vous aviez une erreur "Field 'PRA_NUM' doesn't have a default value" quand vous essayiez de créer un nouveau praticien.
+
+Explication simple :
+Le logiciel essayait d'ajouter un praticien sans lui donner de numéro, en pensant que la base de données allait le faire toute seule (comme un compteur automatique). Mais la base de données n'était pas réglée pour ça.
+
+La solution appliquée :
+J'ai modifié le code pour qu'il cherche quel est le dernier numéro utilisé, et qu'il prenne le suivant (+1) pour le nouveau praticien.
+
+Résultat :
+Maintenant, quand vous créez un praticien, le logiciel calcule correctement son nouveau numéro et l'enregistrement se fait sans erreur.
+
+Fichier modifié :
+- modele/praticien.modele.inc.php

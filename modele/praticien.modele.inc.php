@@ -91,10 +91,18 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
 {
     try {
         $pdo = connexionPDO();
+        
+        // Calcul du prochain numéro de praticien (simulation AUTO_INCREMENT)
+        $req = "SELECT MAX(PRA_NUM) as maxNum FROM praticien";
+        $res = $pdo->query($req);
+        $ligne = $res->fetch();
+        $prochainNum = $ligne['maxNum'] + 1;
+
         $sql = 'INSERT INTO praticien
-                (PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE)
-                VALUES (:prenom, :nom, :adresse, :cp, :ville, :coef, :type)';
+                (PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE)
+                VALUES (:num, :prenom, :nom, :adresse, :cp, :ville, :coef, :type)';
         $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $prochainNum, PDO::PARAM_INT);
         $stmt->bindValue(':prenom', $prenom, PDO::PARAM_STR);
         $stmt->bindValue(':nom', $nom, PDO::PARAM_STR);
         $stmt->bindValue(':adresse', $adresse, PDO::PARAM_STR);
@@ -104,8 +112,7 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
 
-        // Retourner l'ID auto-généré
-        return (int) $pdo->lastInsertId();
+        return $prochainNum;
     } catch (PDOException $e) {
         print "Erreur ! : " . $e->getMessage();
         die();
