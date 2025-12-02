@@ -131,6 +131,7 @@
 
                 <div class="mb-3">
                     <strong>Spécialités :</strong><br>
+                    <!-- Visible pour tous les utilisateurs (Visiteur, Délégué, Responsable) -->
                     <?php if (!empty($specialitesPraticien)) : ?>
                         <div class="d-flex flex-wrap gap-2 mt-2">
                             <?php foreach ($specialitesPraticien as $spe) : ?>
