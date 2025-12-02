@@ -191,30 +191,6 @@ switch ($action) {
 
         // Pas d'erreur → enregistrement
         if ($mode === 'creation') {
-            // Vérifier que le code postal correspond à la région de l'utilisateur
-            $codeDept = (int) substr($cp, 0, 2);
-            if ($regionUtilisateur) {
-                // Vérifier que le département existe et correspond à la région
-                try {
-                    $pdo = connexionPDO();
-                    $sqlCheck = 'SELECT REG_CODE FROM departement WHERE NoDEPT = :dept';
-                    $stmtCheck = $pdo->prepare($sqlCheck);
-                    $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
-                    $stmtCheck->execute();
-                    $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-                    if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
-                        $erreurs[] = "Vous ne pouvez créer que des praticiens dans votre région.";
-                        include("vues/v_gererPraticien.php");
-                        break;
-                    }
-                } catch (PDOException $e) {
-                    $erreurs[] = "Erreur lors de la vérification de la région.";
-                    include("vues/v_gererPraticien.php");
-                    break;
-                }
-            }
-
             // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
             $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type);
             $messageSucces = "Le praticien a été créé avec succès (n°$num).";
