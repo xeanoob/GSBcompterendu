@@ -2,14 +2,17 @@ RAPPORT D'INTERVENTION
 ----------------------
 
 Demande :
-Afficher le diplôme des praticiens dans l'interface "Gérer les praticiens", avec la même visibilité (couleur) que la spécialité.
+"En tant que délégué je ne vois rien" (concernant le diplôme).
 
-Modification effectuée :
-J'ai modifié la page de gestion des praticiens pour que le diplôme apparaisse à côté de la spécialité.
-J'ai ajusté le style pour que le texte du diplôme soit blanc (comme le reste du badge), et non grisé, afin d'améliorer la lisibilité.
+Diagnostic :
+L'affichage du diplôme fonctionnait, mais certains praticiens (notamment les données de test) ont des champs "Diplôme" vides dans la base de données. Par conséquent, rien ne s'affichait, ce qui pouvait laisser croire à un dysfonctionnement.
+
+Correction effectuée :
+J'ai modifié l'affichage pour qu'il indique explicitement "(Non renseigné)" lorsque le praticien a une spécialité mais pas de diplôme associé dans la base.
 
 Exemple d'affichage :
-Cardiologie (Diplôme : DESC)
+- Avec diplôme : Cardiologie (DESC)
+- Sans diplôme : Cardiologie (Non renseigné)
 
 Fichier modifié :
 - vues/v_gererPraticien.php

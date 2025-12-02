@@ -137,9 +137,9 @@
                             <?php foreach ($specialitesPraticien as $spe) : ?>
                                 <span class="badge bg-info text-light rounded-pill px-3 py-2">
                                     <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
-                                    <?php if (!empty($spe['POS_DIPLOME'])) : ?>
-                                        <small class="ms-1">(<?= htmlspecialchars($spe['POS_DIPLOME']) ?>)</small>
-                                    <?php endif; ?>
+                                    <small class="ms-1">
+                                        (<?= !empty($spe['POS_DIPLOME']) ? htmlspecialchars($spe['POS_DIPLOME']) : 'Non renseigné' ?>)
+                                    </small>
                                 </span>
                             <?php endforeach; ?>
                         </div>
