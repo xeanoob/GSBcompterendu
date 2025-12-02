@@ -1,0 +1,17 @@
+RAPPORT D'INTERVENTION
+----------------------
+
+Demande :
+Afficher le diplôme des praticiens dans l'interface "Gérer les praticiens".
+
+Modification effectuée :
+J'ai modifié la page de gestion des praticiens pour que le diplôme apparaisse à côté de la spécialité, si celui-ci est renseigné.
+
+Exemple d'affichage :
+Cardiologie (Diplôme : DESC)
+
+Fichier modifié :
+- vues/v_gererPraticien.php
+
+Note technique :
+L'information était déjà disponible dans la base de données, il s'agissait uniquement d'une modification visuelle.
