@@ -137,7 +137,7 @@
                                 <span class="badge bg-info text-light rounded-pill px-3 py-2">
                                     <?= htmlspecialchars($spe['SPE_LIBELLE']) ?>
                                     <?php if (!empty($spe['POS_DIPLOME'])) : ?>
-                                        <small class="ms-1 text-white-50">(<?= htmlspecialchars($spe['POS_DIPLOME']) ?>)</small>
+                                        <small class="ms-1">(<?= htmlspecialchars($spe['POS_DIPLOME']) ?>)</small>
                                     <?php endif; ?>
                                 </span>
                             <?php endforeach; ?>
