@@ -276,7 +276,8 @@ switch ($action) {
                 $etatCode,
                 $med1,
                 $med2,
-                $rapMotif
+                $rapMotif,
+                $praticienRemplacant
             );
 
             if ($success) {
@@ -310,7 +311,8 @@ switch ($action) {
                 $etatCode,
                 $med1,
                 $med2,
-                $rapMotif
+                $rapMotif,
+                $praticienRemplacant
             );
 
             if ($success) {

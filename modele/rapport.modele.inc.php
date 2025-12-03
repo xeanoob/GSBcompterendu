@@ -118,14 +118,14 @@ function getTousEtats()
  * Crée un nouveau rapport de visite
  * Retourne true en cas de succès, false sinon
  */
-function creerRapportVisite($matricule, $numRapport, $dateVisite, $bilan, $motifCode, $praticienNum, $etatCode = 1, $med1 = null, $med2 = null, $rapMotif = null)
+function creerRapportVisite($matricule, $numRapport, $dateVisite, $bilan, $motifCode, $praticienNum, $etatCode = 1, $med1 = null, $med2 = null, $rapMotif = null, $praticienRemplacant = null)
 {
     try {
         $pdo = connexionPDO();
 
         $sql = 'INSERT INTO rapport_visite
-                (VIS_MATRICULE, RAP_NUM, RAP_DATEVISITE, RAP_BILAN, MOT_CODE, PRA_NUM, ETAT_CODE, MED_DEPOTLEGAL1, MED_DEPOTLEGAL2, RAP_MOTIF)
-                VALUES (:matricule, :num, :dateVisite, :bilan, :motifCode, :praticienNum, :etatCode, :med1, :med2, :rapMotif)';
+                (VIS_MATRICULE, RAP_NUM, RAP_DATEVISITE, RAP_BILAN, MOT_CODE, PRA_NUM, ETAT_CODE, MED_DEPOTLEGAL1, MED_DEPOTLEGAL2, RAP_MOTIF, PRA_NUM_REMPLACANT)
+                VALUES (:matricule, :num, :dateVisite, :bilan, :motifCode, :praticienNum, :etatCode, :med1, :med2, :rapMotif, :praticienRemplacant)';
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':matricule', $matricule, PDO::PARAM_STR);
@@ -138,6 +138,12 @@ function creerRapportVisite($matricule, $numRapport, $dateVisite, $bilan, $motif
         $stmt->bindValue(':med1', $med1, PDO::PARAM_STR);
         $stmt->bindValue(':med2', $med2, PDO::PARAM_STR);
         $stmt->bindValue(':rapMotif', $rapMotif, PDO::PARAM_STR);
+        
+        if ($praticienRemplacant !== null && $praticienRemplacant > 0) {
+            $stmt->bindValue(':praticienRemplacant', $praticienRemplacant, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':praticienRemplacant', null, PDO::PARAM_NULL);
+        }
 
         return $stmt->execute();
     } catch (PDOException $e) {
@@ -203,9 +209,12 @@ function getRapportVisite($matricule, $numRapport)
         $sql = 'SELECT r.*, p.PRA_NOM, p.PRA_PRENOM, 
                        m.MOT_LIBELLE, e.ETAT_LIBELLE,
                        med1.MED_NOMCOMMERCIAL as MED1_NOM,
-                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM,
+                       p_remp.PRA_NOM as PRA_REMP_NOM,
+                       p_remp.PRA_PRENOM as PRA_REMP_PRENOM
                 FROM rapport_visite r
                 INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN praticien p_remp ON r.PRA_NUM_REMPLACANT = p_remp.PRA_NUM
                 LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
                 LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
                 LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
@@ -281,7 +290,7 @@ function getRapportsEnCours($matricule)
  * Met à jour un rapport de visite existant
  * @return bool true en cas de succès, false sinon
  */
-function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motifCode, $praticienNum, $etatCode, $med1 = null, $med2 = null, $rapMotif = null)
+function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motifCode, $praticienNum, $etatCode, $med1 = null, $med2 = null, $rapMotif = null, $praticienRemplacant = null)
 {
     try {
         $pdo = connexionPDO();
@@ -294,7 +303,8 @@ function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motif
                     ETAT_CODE = :etatCode,
                     MED_DEPOTLEGAL1 = :med1,
                     MED_DEPOTLEGAL2 = :med2,
-                    RAP_MOTIF = :rapMotif
+                    RAP_MOTIF = :rapMotif,
+                    PRA_NUM_REMPLACANT = :praticienRemplacant
                 WHERE VIS_MATRICULE = :matricule AND RAP_NUM = :num';
 
         $stmt = $pdo->prepare($sql);
@@ -308,6 +318,12 @@ function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motif
         $stmt->bindValue(':med1', $med1, PDO::PARAM_STR);
         $stmt->bindValue(':med2', $med2, PDO::PARAM_STR);
         $stmt->bindValue(':rapMotif', $rapMotif, PDO::PARAM_STR);
+        
+        if ($praticienRemplacant !== null && $praticienRemplacant > 0) {
+            $stmt->bindValue(':praticienRemplacant', $praticienRemplacant, PDO::PARAM_INT);
+        } else {
+            $stmt->bindValue(':praticienRemplacant', null, PDO::PARAM_NULL);
+        }
 
         return $stmt->execute();
     } catch (PDOException $e) {
@@ -404,9 +420,12 @@ function getRapportVisiteComplet($matricule, $numRapport)
                        m.MOT_LIBELLE,
                        e.ETAT_LIBELLE,
                        med1.MED_NOMCOMMERCIAL as MED1_NOM,
-                       med2.MED_NOMCOMMERCIAL as MED2_NOM
+                       med2.MED_NOMCOMMERCIAL as MED2_NOM,
+                       p_remp.PRA_NOM as PRA_REMP_NOM,
+                       p_remp.PRA_PRENOM as PRA_REMP_PRENOM
                 FROM rapport_visite r
                 INNER JOIN praticien p ON r.PRA_NUM = p.PRA_NUM
+                LEFT JOIN praticien p_remp ON r.PRA_NUM_REMPLACANT = p_remp.PRA_NUM
                 LEFT JOIN motif_visite m ON r.MOT_CODE = m.MOT_CODE
                 LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
                 LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
