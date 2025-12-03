@@ -649,24 +649,20 @@ switch ($action) {
         }
 
         // Initialiser les variables
-        $dateDebut = '';
-        $dateFin = '';
+        $dateDebut = null;
+        $dateFin = null;
         $matriculeVisiteurFiltre = null;
         $rapports = [];
 
         // Si le formulaire a été soumis
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $dateDebut = trim($_POST['date_debut'] ?? '');
-            $dateFin = trim($_POST['date_fin'] ?? '');
+            $dateDebut = !empty($_POST['date_debut']) ? $_POST['date_debut'] : null;
+            $dateFin = !empty($_POST['date_fin']) ? $_POST['date_fin'] : null;
             $matriculeVisiteurFiltre = !empty($_POST['visiteur_matricule']) ? $_POST['visiteur_matricule'] : null;
 
-            // Validation des critères
-            if (empty($dateDebut)) {
-                $erreurs[] = "La date de début est obligatoire.";
-            }
-
-            if (empty($dateFin)) {
-                $erreurs[] = "La date de fin est obligatoire.";
+            // Validation des critères : les deux dates sont obligatoires
+            if (empty($dateDebut) || empty($dateFin)) {
+                $erreurs[] = "Veuillez saisir une date de début et une date de fin pour filtrer.";
             }
 
             // Vérifier que date début <= date fin
@@ -686,16 +682,20 @@ switch ($action) {
                     $erreurs[] = "La date de début doit être antérieure ou égale à la date de fin.";
                 }
             }
+        }
 
-            // Si pas d'erreurs, effectuer la recherche
-            if (empty($erreurs)) {
-                if ($_SESSION['habilitation'] == 2) {
-                    // Délégué régional
-                    $rapports = consulterHistoriqueRapportsRegion($region, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
-                } else {
-                    // Responsable secteur
-                    $rapports = consulterHistoriqueRapportsSecteur($secteur, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
-                }
+        // Initialiser le flag de recherche
+        $rechercheEffectuee = false;
+
+        // Si pas d'erreurs, effectuer la recherche UNIQUEMENT si le formulaire a été soumis
+        if (empty($erreurs) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $rechercheEffectuee = true;
+            if ($_SESSION['habilitation'] == 2) {
+                // Délégué régional
+                $rapports = consulterHistoriqueRapportsRegion($region, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+            } else {
+                // Responsable secteur
+                $rapports = consulterHistoriqueRapportsSecteur($secteur, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
             }
         }
 

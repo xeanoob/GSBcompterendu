@@ -16,30 +16,30 @@
     <!-- Formulaire de recherche -->
     <div class="card mb-4 shadow-sm border-0">
         <div class="card-header bg-light text-dark">
-            <h5 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Critères de recherche</h5>
+            <h5 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Filtrer les rapports</h5>
         </div>
         <div class="card-body">
             <form method="POST" action="index.php?uc=rapports&action=historiqueRegion">
                 <div class="row g-3">
                     <!-- Date de début -->
                     <div class="col-md-4">
-                        <label for="date_debut" class="form-label fw-semibold">Date de début <span class="text-danger">*</span></label>
+                        <label for="date_debut" class="form-label fw-semibold">Date de début *</label>
                         <input type="date" 
                                name="date_debut" 
                                id="date_debut" 
                                class="form-control" 
-                               value="<?= htmlspecialchars($dateDebut) ?>" 
+                               value="<?= htmlspecialchars($dateDebut ?? '') ?>"
                                required>
                     </div>
 
                     <!-- Date de fin -->
                     <div class="col-md-4">
-                        <label for="date_fin" class="form-label fw-semibold">Date de fin <span class="text-danger">*</span></label>
+                        <label for="date_fin" class="form-label fw-semibold">Date de fin *</label>
                         <input type="date" 
                                name="date_fin" 
                                id="date_fin" 
                                class="form-control" 
-                               value="<?= htmlspecialchars($dateFin) ?>" 
+                               value="<?= htmlspecialchars($dateFin ?? '') ?>"
                                required>
                     </div>
 
@@ -60,7 +60,7 @@
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-info text-white fw-semibold">
-                        <i class="bi bi-search me-1"></i>Rechercher
+                        <i class="bi bi-funnel me-1"></i>Filtrer
                     </button>
                 </div>
             </form>
@@ -68,10 +68,10 @@
     </div>
 
     <!-- Résultats de la recherche -->
-    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs) && !empty($rapports)) : ?>
+    <?php if (empty($erreurs) && !empty($rapports)) : ?>
         <div class="card shadow-sm border-0">
             <div class="card-header bg-light text-dark">
-                <h5 class="mb-0 fw-semibold"><i class="bi bi-list-check me-2"></i>Résultats de la recherche</h5>
+                <h5 class="mb-0 fw-semibold"><i class="bi bi-list-check me-2"></i>Liste des rapports</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -153,10 +153,10 @@
                 </div>
             </div>
         </div>
-    <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs) && empty($rapports)) : ?>
+    <?php elseif (empty($erreurs) && empty($rapports) && isset($rechercheEffectuee) && $rechercheEffectuee) : ?>
         <div class="alert alert-info border-0 shadow-sm">
             <i class="bi bi-info-circle me-2"></i>
-            <span>Aucun rapport de visite trouvé pour cette période.</span>
+            <span>Aucun rapport de visite trouvé.</span>
         </div>
     <?php endif; ?>
 
@@ -168,24 +168,3 @@
 
 </div>
 </section>
-
-<script>
-// Mettre automatiquement la date de fin à aujourd'hui si elle n'est pas remplie
-document.addEventListener('DOMContentLoaded', function() {
-    const dateDebut = document.getElementById('date_debut');
-    const dateFin = document.getElementById('date_fin');
-    
-    if (!dateDebut.value) {
-        // Date de début : il y a 1 mois
-        const unMoisAvant = new Date();
-        unMoisAvant.setMonth(unMoisAvant.getMonth() - 1);
-        dateDebut.value = unMoisAvant.toISOString().split('T')[0];
-    }
-    
-    if (!dateFin.value) {
-        // Date de fin : aujourd'hui
-        const aujourd'hui = new Date();
-        dateFin.value = aujourd'hui.toISOString().split('T')[0];
-    }
-});
-</script>

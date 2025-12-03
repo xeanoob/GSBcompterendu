@@ -548,12 +548,12 @@ function marquerRapportConsulte($matricule, $numRapport)
 /**
  * Consulte l'historique des rapports de visite d'une région avec filtres
  * @param string $regCode Code de la région
- * @param string $dateDebut Date de début (format Y-m-d)
- * @param string $dateFin Date de fin (format Y-m-d)
+ * @param string|null $dateDebut Date de début (format Y-m-d)
+ * @param string|null $dateFin Date de fin (format Y-m-d)
  * @param string|null $matriculeVisiteur Matricule du visiteur (optionnel)
  * @return array Liste des rapports
  */
-function consulterHistoriqueRapportsRegion($regCode, $dateDebut, $dateFin, $matriculeVisiteur = null)
+function consulterHistoriqueRapportsRegion($regCode, $dateDebut = null, $dateFin = null, $matriculeVisiteur = null)
 {
     try {
         $pdo = connexionPDO();
@@ -573,8 +573,11 @@ function consulterHistoriqueRapportsRegion($regCode, $dateDebut, $dateFin, $matr
                 LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
                 LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
                 LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
-                WHERE c.REG_CODE = :regCode
-                AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+                WHERE c.REG_CODE = :regCode';
+
+        if ($dateDebut && $dateFin) {
+            $sql .= ' AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+        }
         
         if ($matriculeVisiteur !== null) {
             $sql .= ' AND r.VIS_MATRICULE = :matricule';
@@ -584,8 +587,11 @@ function consulterHistoriqueRapportsRegion($regCode, $dateDebut, $dateFin, $matr
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
-        $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
-        $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        
+        if ($dateDebut && $dateFin) {
+            $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
+            $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        }
         
         if ($matriculeVisiteur !== null) {
             $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
@@ -603,12 +609,12 @@ function consulterHistoriqueRapportsRegion($regCode, $dateDebut, $dateFin, $matr
 /**
  * Consulte l'historique des rapports de visite d'un secteur avec filtres
  * @param string $secCode Code du secteur
- * @param string $dateDebut Date de début (format Y-m-d)
- * @param string $dateFin Date de fin (format Y-m-d)
+ * @param string|null $dateDebut Date de début (format Y-m-d)
+ * @param string|null $dateFin Date de fin (format Y-m-d)
  * @param string|null $matriculeVisiteur Matricule du visiteur (optionnel)
  * @return array Liste des rapports
  */
-function consulterHistoriqueRapportsSecteur($secCode, $dateDebut, $dateFin, $matriculeVisiteur = null)
+function consulterHistoriqueRapportsSecteur($secCode, $dateDebut = null, $dateFin = null, $matriculeVisiteur = null)
 {
     try {
         $pdo = connexionPDO();
@@ -629,8 +635,11 @@ function consulterHistoriqueRapportsSecteur($secCode, $dateDebut, $dateFin, $mat
                 LEFT JOIN etat e ON r.ETAT_CODE = e.ETAT_CODE
                 LEFT JOIN medicament med1 ON r.MED_DEPOTLEGAL1 = med1.MED_DEPOTLEGAL
                 LEFT JOIN medicament med2 ON r.MED_DEPOTLEGAL2 = med2.MED_DEPOTLEGAL
-                WHERE reg.SEC_CODE = :secCode
-                AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+                WHERE reg.SEC_CODE = :secCode';
+
+        if ($dateDebut && $dateFin) {
+            $sql .= ' AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+        }
         
         if ($matriculeVisiteur !== null) {
             $sql .= ' AND r.VIS_MATRICULE = :matricule';
@@ -640,8 +649,11 @@ function consulterHistoriqueRapportsSecteur($secCode, $dateDebut, $dateFin, $mat
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
-        $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
-        $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        
+        if ($dateDebut && $dateFin) {
+            $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
+            $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
+        }
         
         if ($matriculeVisiteur !== null) {
             $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
