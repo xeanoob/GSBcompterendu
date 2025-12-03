@@ -151,10 +151,6 @@
                         </tbody>
                     </table>
                 </div>
-
-                <p class="text-muted mt-3">
-                    Total : <?= count($rapports) ?> rapport<?= count($rapports) > 1 ? 's' : '' ?> trouvé<?= count($rapports) > 1 ? 's' : '' ?>
-                </p>
             </div>
         </div>
     <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs) && empty($rapports)) : ?>

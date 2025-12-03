@@ -127,9 +127,7 @@ function creerRapportVisite($matricule, $numRapport, $dateVisite, $bilan, $motif
     }
 }
 
-/**
- * Ajoute un échantillon offert lors d'une visite
- */
+
 function ajouterEchantillonOffert($matricule, $numRapport, $medDepotLegal, $quantite)
 {
     try {
@@ -152,9 +150,7 @@ function ajouterEchantillonOffert($matricule, $numRapport, $medDepotLegal, $quan
     }
 }
 
-/**
- * Récupère les rapports d'un visiteur
- */
+
 function getRapportsParVisiteur($matricule)
 {
     try {

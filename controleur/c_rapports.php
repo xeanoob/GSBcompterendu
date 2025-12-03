@@ -211,7 +211,6 @@ switch ($action) {
                 } elseif ($qte > 1000) {
                     $erreurs[] = "La quantité de l'échantillon ne peut pas dépasser 1000.";
                 } else {
-                    // Vérifier les doublons
                     if (in_array($medDepot, $medicamentsEchantillons)) {
                         $erreurs[] = "Le médicament $medDepot est présent plusieurs fois dans les échantillons.";
                     } else {
@@ -225,7 +224,6 @@ switch ($action) {
             }
         }
 
-        // Vérifier le nombre max d'échantillons (10)
         if (count($echantillonsValides) > 10) {
             $erreurs[] = "Vous ne pouvez pas ajouter plus de 10 échantillons.";
         }
@@ -602,5 +600,67 @@ switch ($action) {
             header('Location: index.php?uc=rapports&action=nouveaux');
             exit;
         }
+        break;
+
+    // Afficher l'historique complet des rapports de la région (pour délégués uniquement)
+    case 'historiqueRegion':
+        // Vérification des droits d'accès (Délégué régional uniquement)
+        if ($_SESSION['habilitation'] != 2) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        $region = $_SESSION['region'];
+        $titrePage = "Historique complet des rapports de la région " . $region;
+        
+        // Récupérer la liste des visiteurs de la région pour le filtre
+        $listeVisiteurs = getVisiteursRegion($region);
+
+        // Initialiser les variables
+        $dateDebut = '';
+        $dateFin = '';
+        $matriculeVisiteurFiltre = null;
+        $rapports = [];
+
+        // Si le formulaire a été soumis
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $dateDebut = trim($_POST['date_debut'] ?? '');
+            $dateFin = trim($_POST['date_fin'] ?? '');
+            $matriculeVisiteurFiltre = !empty($_POST['visiteur_matricule']) ? $_POST['visiteur_matricule'] : null;
+
+            // Validation des critères
+            if (empty($dateDebut)) {
+                $erreurs[] = "La date de début est obligatoire.";
+            }
+
+            if (empty($dateFin)) {
+                $erreurs[] = "La date de fin est obligatoire.";
+            }
+
+            // Vérifier que date début <= date fin
+            if (!empty($dateDebut) && !empty($dateFin)) {
+                $dateDebutObj = DateTime::createFromFormat('Y-m-d', $dateDebut);
+                $dateFinObj = DateTime::createFromFormat('Y-m-d', $dateFin);
+
+                if (!$dateDebutObj) {
+                    $erreurs[] = "Le format de la date de début est incorrect.";
+                }
+
+                if (!$dateFinObj) {
+                    $erreurs[] = "Le format de la date de fin est incorrect.";
+                }
+
+                if ($dateDebutObj && $dateFinObj && $dateDebutObj > $dateFinObj) {
+                    $erreurs[] = "La date de début doit être antérieure ou égale à la date de fin.";
+                }
+            }
+
+            // Si pas d'erreurs, effectuer la recherche
+            if (empty($erreurs)) {
+                $rapports = consulterHistoriqueRapportsRegion($region, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+            }
+        }
+
+        include("vues/v_historiqueRapportsRegion.php");
         break;
 }
