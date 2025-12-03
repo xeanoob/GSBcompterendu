@@ -41,28 +41,19 @@
                                     <li><h6 class="dropdown-header">Mes rapports</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">
-                                            Créer un nouveau rapport
+                                            Créer
                                         </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="index.php?uc=rapports&action=liste">
-                                            Voir mes rapports
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=consulter">
+                                            Rechercher
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>
                                 <?php } ?>
                                 
-                                <!-- Section : Consultation (Tous) -->
-                                <li><h6 class="dropdown-header">Consultation</h6></li>
-                                <li>
-                                    <a class="dropdown-item" href="index.php?uc=rapports&action=consulter">
-                                        Rechercher des rapports
-                                    </a>
-                                </li>
                                 
                                 <!-- Section : Gestion (Délégué Régional) -->
-                                <?php if (isset($_SESSION['habilitation']) && $_SESSION['habilitation'] == 2) { ?>
-                                    <li><hr class="dropdown-divider"></li>
+                                 <?php if (isset($_SESSION['habilitation']) && $_SESSION['habilitation'] == 2) { ?>
                                     <li><h6 class="dropdown-header">Ma région</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
@@ -78,7 +69,6 @@
                                 
                                 <!-- Section : Gestion (Responsable Secteur) -->
                                 <?php if (isset($_SESSION['habilitation']) && $_SESSION['habilitation'] == 3) { ?>
-                                    <li><hr class="dropdown-divider"></li>
                                     <li><h6 class="dropdown-header">Mon secteur</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">

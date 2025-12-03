@@ -47,10 +47,7 @@
                                         if (!empty($rap['MED2_NOM'])) $meds[] = $rap['MED_DEPOTLEGAL2'] . ': ' . $rap['MED2_NOM'];
                                         
                                         if (empty($meds)) {
-                                            // Check if we have the codes available in the $rap array. 
-                                            // The query in rapport.modele.inc.php selects med1.MED_NOMCOMMERCIAL but NOT the codes explicitly in the main SELECT list, 
-                                            // BUT it selects r.* which includes MED_DEPOTLEGAL1 and MED_DEPOTLEGAL2.
-                                            // Let's verify the query in rapport.modele.inc.php first.
+                                         
                                             echo '-';
                                         } else {
                                             echo htmlspecialchars(implode(', ', $meds));
@@ -60,7 +57,7 @@
                                     <td>
                                         <a href="index.php?uc=rapports&action=consulter_detail&mat=<?= $rap['VIS_MATRICULE'] ?>&num=<?= $rap['RAP_NUM'] ?>"
                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i> Voir détail
+                                            <i></i> Voir détail
                                         </a>
                                     </td>
                                 </tr>
@@ -71,9 +68,6 @@
             </div>
         </div>
 
-        <p class="text-muted mt-3">
-            Total : <?= count($rapports) ?> rapport<?= count($rapports) > 1 ? 's' : '' ?>
-        </p>
     <?php endif; ?>
     </div>
 

@@ -31,8 +31,8 @@
                                 <li class="pb-2 dropdown">
                                     <i class='bx-fw bx bxs-chevron-right bx-xs'></i><a class="text-decoration-none text-light py-1" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rapport de visite</a>
                                     <ul class="dropdown-menu dropdown-menu-dark p-0">
-                                        <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Saisir un rapport</a></li>
-                                        <li><a class="dropdown-item" href="index.php?uc=rapports&action=liste">Mes rapports</a></li>
+                                        <li><a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">Créer</a></li>
+                                        <li><a class="dropdown-item" href="index.php?uc=rapports&action=consulter">Rechercher</a></li>
                                         <?php if ($_SESSION['habilitation'] == 2) { ?>
                                         <li><a class="dropdown-item" href="index.php?uc=rapports&action=historiqueRegion">Historique de ma région</a></li>
                                         <?php } ?>

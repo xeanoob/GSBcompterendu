@@ -43,9 +43,7 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <strong>Praticien visité :</strong><br>
-                    <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rapport['PRA_NUM'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
-                        <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
-                    </a>
+                    <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
                 </div>
                 <div class="col-md-6">
                     <strong>Praticien de remplacement :</strong><br>
@@ -140,10 +138,6 @@
                 </div>
             </div>
         </div>
-    <?php else : ?>
-        <div class="alert alert-info">
-            <p class="mb-0">Aucun échantillon n'a été offert lors de cette visite.</p>
-        </div>
     <?php endif; ?>
 
     <!-- Boutons d'action -->
@@ -153,8 +147,8 @@
                 Retour à la liste des nouveaux rapports
             </a>
         <?php else : ?>
-            <a href="index.php?uc=rapports&action=liste" class="btn btn-outline-secondary">
-                Retour à la liste
+            <a href="index.php?uc=rapports&action=nouveau" class="btn btn-outline-secondary">
+                Retour
             </a>
         <?php endif; ?>
     </div>

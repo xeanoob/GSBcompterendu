@@ -12,7 +12,7 @@ if (empty($_SESSION['login'])) {
 $matriculeVisiteur = $_SESSION['matricule'];
 
 if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
-    $action = "liste";
+    $action = "nouveau";
 } else {
     $action = $_REQUEST['action'];
 }
@@ -23,17 +23,12 @@ $messageSucces = "";
 
 switch ($action) {
 
-    // Afficher la liste des rapports du visiteur
-    case 'liste':
-        $rapports = getRapportsParVisiteur($matriculeVisiteur);
-        include("vues/v_listeRapports.php");
-        break;
 
     // Afficher le formulaire de création d'un nouveau rapport
     case 'nouveau':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
         if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
 
@@ -69,7 +64,7 @@ switch ($action) {
     case 'creerNouveau':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
         if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
 
@@ -98,7 +93,7 @@ switch ($action) {
     case 'modifier':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
         if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
 
@@ -117,11 +112,11 @@ switch ($action) {
             } else {
                 // Le rapport n'existe pas ou est déjà validé
                 $erreurs[] = "Ce rapport ne peut pas être modifié.";
-                header('Location: index.php?uc=rapports&action=liste');
+                header('Location: index.php?uc=rapports&action=nouveau');
                 exit;
             }
         } else {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
         break;
@@ -130,7 +125,7 @@ switch ($action) {
     case 'enregistrer':
         // Vérification des droits d'accès (Visiteur ou Délégué uniquement)
         if ($_SESSION['habilitation'] != 1 && $_SESSION['habilitation'] != 2) {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
 
@@ -390,11 +385,11 @@ switch ($action) {
                 include("vues/v_detailRapport.php");
             } else {
                 $erreurs[] = "Le rapport demandé n'existe pas.";
-                $rapports = getRapportsParVisiteur($matriculeVisiteur);
-                include("vues/v_listeRapports.php");
+                header('Location: index.php?uc=rapports&action=nouveau');
+                exit;
             }
         } else {
-            header('Location: index.php?uc=rapports&action=liste');
+            header('Location: index.php?uc=rapports&action=nouveau');
             exit;
         }
         break;
