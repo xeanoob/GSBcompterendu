@@ -1,7 +1,7 @@
-<section class="py-5">
+<section class="py-5" style="background-color: #f6f9fe;">
 <div class="container mt-4 mb-5">
 
-    <h1 class="mb-4"><?= htmlspecialchars($titrePage) ?></h1>
+    <h1 class="mb-4 mt-4"><?= htmlspecialchars($titrePage) ?></h1>
 
     <?php if (!empty($erreurs)) : ?>
         <div class="alert alert-danger">
@@ -14,16 +14,16 @@
     <?php endif; ?>
 
     <!-- Formulaire de recherche -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Critères de recherche</h5>
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header bg-light text-dark">
+            <h5 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Critères de recherche</h5>
         </div>
         <div class="card-body">
             <form method="POST" action="index.php?uc=rapports&action=historiqueRegion">
                 <div class="row g-3">
                     <!-- Date de début -->
                     <div class="col-md-4">
-                        <label for="date_debut" class="form-label">Date de début *</label>
+                        <label for="date_debut" class="form-label fw-semibold">Date de début <span class="text-danger">*</span></label>
                         <input type="date" 
                                name="date_debut" 
                                id="date_debut" 
@@ -34,7 +34,7 @@
 
                     <!-- Date de fin -->
                     <div class="col-md-4">
-                        <label for="date_fin" class="form-label">Date de fin *</label>
+                        <label for="date_fin" class="form-label fw-semibold">Date de fin <span class="text-danger">*</span></label>
                         <input type="date" 
                                name="date_fin" 
                                id="date_fin" 
@@ -45,7 +45,7 @@
 
                     <!-- Visiteur (optionnel) -->
                     <div class="col-md-4">
-                        <label for="visiteur_matricule" class="form-label">Visiteur (optionnel)</label>
+                        <label for="visiteur_matricule" class="form-label fw-semibold">Visiteur (optionnel)</label>
                         <select name="visiteur_matricule" id="visiteur_matricule" class="form-select">
                             <option value="">-- Tous les visiteurs --</option>
                             <?php foreach ($listeVisiteurs as $visiteur) : ?>
@@ -59,8 +59,8 @@
                 </div>
 
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Rechercher
+                    <button type="submit" class="btn btn-info text-white fw-semibold">
+                        <i class="bi bi-search me-1"></i>Rechercher
                     </button>
                 </div>
             </form>
@@ -69,14 +69,14 @@
 
     <!-- Résultats de la recherche -->
     <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs) && !empty($rapports)) : ?>
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="bi bi-list-check"></i> Résultats de la recherche</h5>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-light text-dark">
+                <h5 class="mb-0 fw-semibold"><i class="bi bi-list-check me-2"></i>Résultats de la recherche</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-striped">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>N° Rapport</th>
                                 <th>Date visite</th>
@@ -142,8 +142,8 @@
                                     </td>
                                     <td>
                                         <a href="index.php?uc=rapports&action=detailConsultation&mat=<?= urlencode($rap['VIS_MATRICULE']) ?>&num=<?= $rap['RAP_NUM'] ?>"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i> Voir détail
+                                           class="btn btn-sm btn-secondary text-white fw-semibold">
+                                            <i class="bi bi-eye me-1"></i>Voir détail
                                         </a>
                                     </td>
                                 </tr>
@@ -154,14 +154,15 @@
             </div>
         </div>
     <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($erreurs) && empty($rapports)) : ?>
-        <div class="alert alert-info">
-            <p class="mb-0"><i class="bi bi-info-circle"></i> Aucun rapport de visite trouvé pour cette période.</p>
+        <div class="alert alert-info border-0 shadow-sm">
+            <i class="bi bi-info-circle me-2"></i>
+            <span>Aucun rapport de visite trouvé pour cette période.</span>
         </div>
     <?php endif; ?>
 
     <div class="mt-3">
-        <a href="index.php?uc=accueil" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Retour à l'accueil
+        <a href="index.php?uc=accueil" class="btn btn-danger text-white">
+            <i class="bi bi-arrow-left me-1"></i>Retour à l'accueil
         </a>
     </div>
 

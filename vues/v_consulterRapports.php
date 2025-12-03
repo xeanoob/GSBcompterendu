@@ -1,11 +1,7 @@
-<section class="bg-light py-5">
+<section class="py-5" style="background-color: #f6f9fe;">
 <div class="container mt-4 mb-5">
 
-    <h1 class="mb-4">Consulter les rapports de visite</h1>
-
-    <p class="text-muted mb-4">
-        Recherchez des rapports de visite en spécifiant une période et éventuellement un praticien.
-    </p>
+    <h1 class="mb-4 mt-4">Consulter les rapports de visite</h1>
 
     <?php if (!empty($erreurs)) : ?>
         <div class="alert alert-danger">
@@ -17,16 +13,18 @@
         </div>
     <?php endif; ?>
 
-    <div class="card">
-        <div class="card-header">
-            <h2 class="h5 mb-0">Critères de recherche</h2>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-light text-dark">
+            <h2 class="h5 mb-0 fw-semibold">
+                <i class="bi bi-funnel me-2"></i>Critères de recherche
+            </h2>
         </div>
         <div class="card-body">
             <form method="POST" action="index.php?uc=rapports&action=rechercher">
 
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="date_debut" class="form-label">
+                        <label for="date_debut" class="form-label fw-semibold">
                             Date de début <span class="text-danger">*</span>
                         </label>
                         <input type="date"
@@ -38,7 +36,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="date_fin" class="form-label">
+                        <label for="date_fin" class="form-label fw-semibold">
                             Date de fin <span class="text-danger">*</span>
                         </label>
                         <input type="date"
@@ -51,7 +49,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="praticien_num" class="form-label">
+                    <label for="praticien_num" class="form-label fw-semibold">
                         Praticien (optionnel)
                     </label>
                     <select class="form-select" id="praticien_num" name="praticien_num">
@@ -67,11 +65,11 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-info text-light">
-                        Rechercher les rapports
+                    <button type="submit" class="btn btn-info text-white fw-semibold">
+                        <i class="bi bi-search me-1"></i>Rechercher les rapports
                     </button>
-                    <a href="index.php?uc=accueil" class="btn btn-outline-secondary">
-                        Annuler
+                    <a href="index.php?uc=accueil" class="btn btn-danger text-white">
+                        <i class="bi bi-x-circle me-1"></i>Annuler
                     </a>
                 </div>
 

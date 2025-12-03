@@ -191,10 +191,10 @@
                 <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-info text-light">
+                    <button type="submit" class="btn btn-success text-white">
                         <i class="bi bi-save"></i> Enregistrer le rapport
                     </button>
-                    <a href="index.php?uc=accueil" class="btn btn-outline-secondary">
+                    <a href="index.php?uc=accueil" class="btn btn-danger text-white">
                         <i class="bi bi-x-circle"></i> Annuler
                     </a>
                 </div>

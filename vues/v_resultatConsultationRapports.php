@@ -29,9 +29,6 @@
     <?php endif; ?>
 
     <div class="mb-3 d-flex justify-content-between align-items-center">
-        <p class="text-muted mb-0">
-            <strong><?= count($rapports) ?></strong> rapport<?= count($rapports) > 1 ? 's' : '' ?> trouvé<?= count($rapports) > 1 ? 's' : '' ?>
-        </p>
         <a href="index.php?uc=rapports&action=consulter" class="btn btn-outline-secondary btn-sm">
             Nouvelle recherche
         </a>
@@ -64,11 +61,7 @@
                                     ?>
                                 </td>
                                 <td>
-                                    <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rap['PRA_NUM'] ?>"
-                                       class="text-decoration-none"
-                                       title="Voir le détail du praticien">
-                                        <?= htmlspecialchars($rap['PRA_NOM'] . ' ' . $rap['PRA_PRENOM']) ?>
-                                    </a>
+                                    <?= htmlspecialchars($rap['PRA_NOM'] . ' ' . $rap['PRA_PRENOM']) ?>
                                 </td>
                                 <td>
                                     <?php
@@ -106,8 +99,8 @@
                                 </td>
                                 <td>
                                     <a href="index.php?uc=rapports&action=detailConsultation&mat=<?= urlencode($rap['VIS_MATRICULE']) ?>&num=<?= $rap['RAP_NUM'] ?>"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Détail rapport
+                                       class="btn btn-sm btn-secondary text-white">
+                                        Voir détail
                                     </a>
                                 </td>
                             </tr>

@@ -575,8 +575,8 @@ switch ($action) {
             $matricule = $_GET['mat'];
             $numRapport = (int) $_GET['num'];
 
-            // Note: On ne marque PAS comme consulté ici, car la demande spécifie
-            // que la requête doit être faite au clic sur le bouton retour.
+            // Marquer comme consulté (ETAT_CODE = 3) dès l'ouverture
+            marquerRapportConsulte($matricule, $numRapport);
 
             $rapport = getRapportVisiteComplet($matricule, $numRapport);
             $echantillons = getEchantillonsOfferts($matricule, $numRapport);
@@ -620,19 +620,30 @@ switch ($action) {
         }
         break;
 
-    // Afficher l'historique complet des rapports de la région (pour délégués uniquement)
+    // Afficher l'historique complet des rapports de la région/secteur (pour délégués et responsables)
     case 'historiqueRegion':
-        // Vérification des droits d'accès (Délégué régional uniquement)
-        if ($_SESSION['habilitation'] != 2) {
+        // Vérification des droits d'accès (Délégué régional ou Responsable secteur)
+        if ($_SESSION['habilitation'] != 2 && $_SESSION['habilitation'] != 3) {
             header('Location: index.php?uc=accueil');
             exit;
         }
 
-        $region = $_SESSION['region'];
-        $titrePage = "Historique complet des rapports de la région " . $region;
-        
-        // Récupérer la liste des visiteurs de la région pour le filtre
-        $listeVisiteurs = getVisiteursRegion($region);
+        // Initialiser les variables selon l'habilitation
+        if ($_SESSION['habilitation'] == 2) {
+            // Délégué régional : rapports de sa région
+            $region = $_SESSION['region'];
+            $titrePage = "Historique complet des rapports de la région " . $region;
+            
+            // Récupérer la liste des visiteurs de la région pour le filtre
+            $listeVisiteurs = getVisiteursRegion($region);
+        } else {
+            // Responsable secteur : rapports de son secteur
+            $secteur = $_SESSION['secteur'];
+            $titrePage = "Historique complet des rapports du secteur " . $secteur;
+            
+            // Récupérer la liste des visiteurs du secteur pour le filtre
+            $listeVisiteurs = getVisiteursSecteur($secteur);
+        }
 
         // Initialiser les variables
         $dateDebut = '';
@@ -675,7 +686,13 @@ switch ($action) {
 
             // Si pas d'erreurs, effectuer la recherche
             if (empty($erreurs)) {
-                $rapports = consulterHistoriqueRapportsRegion($region, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+                if ($_SESSION['habilitation'] == 2) {
+                    // Délégué régional
+                    $rapports = consulterHistoriqueRapportsRegion($region, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+                } else {
+                    // Responsable secteur
+                    $rapports = consulterHistoriqueRapportsSecteur($secteur, $dateDebut, $dateFin, $matriculeVisiteurFiltre);
+                }
             }
         }
 

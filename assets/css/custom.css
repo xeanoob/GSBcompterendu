@@ -297,3 +297,16 @@ textarea {
 .fit {
 	width: fit-content;
 }
+
+/* Couleurs du dropdown menu navbar - Sélecteurs renforcés */
+#main_nav .dropdown-menu .dropdown-item {
+	color: #212529;
+}
+
+#main_nav .dropdown-menu .dropdown-item:hover,
+#main_nav .dropdown-menu .dropdown-item:focus,
+#main_nav .dropdown-menu .dropdown-item:active,
+#main_nav .dropdown-menu .dropdown-item.active {
+	background-color: #17a2b8 !important;
+	color: #ffffff !important;
+}

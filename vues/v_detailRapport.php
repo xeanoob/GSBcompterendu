@@ -143,11 +143,11 @@
     <!-- Boutons d'action -->
     <div class="mt-4">
         <?php if (isset($retourNouveaux) && $retourNouveaux) : ?>
-            <a href="index.php?uc=rapports&action=marquer_lu_et_retour&mat=<?= $rapport['VIS_MATRICULE'] ?>&num=<?= $rapport['RAP_NUM'] ?>" class="btn btn-outline-secondary">
+            <a href="index.php?uc=rapports&action=marquer_lu_et_retour&mat=<?= $rapport['VIS_MATRICULE'] ?>&num=<?= $rapport['RAP_NUM'] ?>" class="btn btn-danger text-white">
                 Retour à la liste des nouveaux rapports
             </a>
         <?php else : ?>
-            <a href="index.php?uc=rapports&action=nouveau" class="btn btn-outline-secondary">
+            <a href="index.php?uc=rapports&action=nouveau" class="btn btn-danger text-white">
                 Retour
             </a>
         <?php endif; ?>

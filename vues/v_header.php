@@ -41,12 +41,12 @@
                                     <li><h6 class="dropdown-header">Mes rapports</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveau">
-                                            Créer
+                                            Saisir
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=consulter">
-                                            Rechercher
+                                            Consulter
                                         </a>
                                     </li>
                                 <?php } ?>
@@ -57,12 +57,12 @@
                                     <li><h6 class="dropdown-header">Ma région</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
-                                            Nouveaux rapports à consulter
+                                            Nouveaux rapports
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=historiqueRegion">
-                                            Historique complet
+                                            Historique
                                         </a>
                                     </li>
                                 <?php } ?>
@@ -72,12 +72,12 @@
                                     <li><h6 class="dropdown-header">Mon secteur</h6></li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=nouveaux">
-                                            Nouveaux rapports à consulter
+                                            Nouveaux rapports
                                         </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="index.php?uc=rapports&action=historiqueRegion">
-                                            Historique complet
+                                            Historique
                                         </a>
                                     </li>
                                 <?php } ?>

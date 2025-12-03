@@ -30,11 +30,11 @@
                     <span class="me-2">Trier par :</span>
                     <div class="btn-group" role="group">
                         <a href="index.php?uc=praticiens&action=selection&tri=nom" 
-                           class="btn btn-sm <?= (!isset($tri) || $tri === 'nom') ? 'btn-primary' : 'btn-outline-primary' ?>">
+                           class="btn btn-sm <?= (!isset($tri) || $tri === 'nom') ? 'btn-info' : 'btn-outline-info' ?>">
                             Nom
                         </a>
                         <a href="index.php?uc=praticiens&action=selection&tri=num" 
-                           class="btn btn-sm <?= (isset($tri) && $tri === 'num') ? 'btn-primary' : 'btn-outline-primary' ?>">
+                           class="btn btn-sm <?= (isset($tri) && $tri === 'num') ? 'btn-info' : 'btn-outline-info' ?>">
                             Numéro
                         </a>
                     </div>
@@ -63,9 +63,9 @@
                 </select>
 
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-info text-light">Afficher les informations</button>
+                    <button type="submit" class="btn btn-info text-white">Afficher les informations</button>
                     <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
-                        <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-info text-light ms-2">
+                        <a href="index.php?uc=praticiens&action=nouveau" class="btn btn-info text-white ms-2">
                             + Créer un nouveau praticien
                         </a>
                     <?php endif; ?>
@@ -147,12 +147,12 @@
                 <div class="mt-4">
                     <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
                         <a href="index.php?uc=praticiens&action=modifier&num=<?= $praticien['PRA_NUM'] ?>"
-                           class="btn btn-info text-light">
+                           class="btn btn-info text-white">
                             Modifier ce praticien
                         </a>
                     <?php endif; ?>
                     <a href="index.php?uc=praticiens&action=selection"
-                       class="btn btn-outline-secondary ms-2">
+                       class="btn btn-danger text-white ms-2">
                         Retour à la liste
                     </a>
                 </div>
@@ -270,10 +270,10 @@
 
                     <p class="text-muted">Les champs marqués d'un * sont obligatoires.</p>
 
-                    <button type="submit" name="btn" value="valider" class="btn btn-info text-light">
+                    <button type="submit" name="btn" value="valider" class="btn btn-success text-white">
                         Valider
                     </button>
-                    <button type="submit" name="btn" value="annuler" class="btn btn-outline-secondary ms-2">
+                    <button type="submit" name="btn" value="annuler" class="btn btn-danger text-white ms-2">
                         Annuler
                     </button>
                 </form>
