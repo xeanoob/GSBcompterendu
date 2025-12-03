@@ -43,12 +43,16 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <strong>Praticien visité :</strong><br>
-                    <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
+                    <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rapport['PRA_NUM'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
+                        <?= htmlspecialchars($rapport['PRA_NOM'] . ' ' . $rapport['PRA_PRENOM']) ?>
+                    </a>
                 </div>
                 <div class="col-md-6">
                     <strong>Praticien de remplacement :</strong><br>
                     <?php if (!empty($rapport['PRA_NUM_REMPLACANT']) && !empty($rapport['PRA_REMP_NOM'])) : ?>
-                        <?= htmlspecialchars($rapport['PRA_REMP_NOM'] . ' ' . $rapport['PRA_REMP_PRENOM']) ?>
+                        <a href="index.php?uc=rapports&action=detailPraticien&pra=<?= $rapport['PRA_NUM_REMPLACANT'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
+                            <?= htmlspecialchars($rapport['PRA_REMP_NOM'] . ' ' . $rapport['PRA_REMP_PRENOM']) ?>
+                        </a>
                     <?php else : ?>
                         <em class="text-muted">Aucun</em>
                     <?php endif; ?>
@@ -122,7 +126,11 @@
                         <tbody>
                             <?php foreach ($echantillons as $ech) : ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($ech['MED_NOMCOMMERCIAL']) ?></td>
+                                    <td>
+                                        <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $ech['MED_DEPOTLEGAL'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
+                                            <?= htmlspecialchars($ech['MED_NOMCOMMERCIAL']) ?>
+                                        </a>
+                                    </td>
                                     <td>
                                         <?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?>
                                     </td>

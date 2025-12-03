@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="mb-0">
+            <div class="mb-3">
                 <strong>Coefficient de notoriété :</strong><br>
                 <?php
                 if (isset($praticien['PRA_COEFNOTORIETE'])) {
@@ -64,21 +64,17 @@
                 }
                 ?>
             </div>
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-body bg-light">
-            <h6 class="mb-2">Coordonnées complètes :</h6>
-            <address class="mb-0">
-                <strong><?= htmlspecialchars($praticien['PRA_PRENOM'] . ' ' . $praticien['PRA_NOM']) ?></strong><br>
-                <?php if (!empty($praticien['PRA_ADRESSE'])): ?>
-                    <?= htmlspecialchars($praticien['PRA_ADRESSE']) ?><br>
-                <?php endif; ?>
-                <?php if (!empty($praticien['PRA_CP']) || !empty($praticien['PRA_VILLE'])): ?>
-                    <?= htmlspecialchars($praticien['PRA_CP']) ?>     <?= htmlspecialchars($praticien['PRA_VILLE']) ?>
-                <?php endif; ?>
-            </address>
+            <div class="mb-0">
+                <strong>Coefficient de confiance :</strong><br>
+                <?php
+                if (isset($praticien['PRA_COEFCONFIANCE'])) {
+                    echo '<span class="badge bg-info">' . htmlspecialchars($praticien['PRA_COEFCONFIANCE']) . '</span>';
+                } else {
+                    echo 'Non renseigné';
+                }
+                ?>
+            </div>
         </div>
     </div>
 

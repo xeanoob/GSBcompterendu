@@ -402,7 +402,7 @@ switch ($action) {
             exit;
         }
         // Récupérer la liste des praticiens pour le filtre
-        $listePraticiens = getTousPraticiens();
+        $listePraticiens = getPraticiensAyantVisite();
         include("vues/v_consulterRapports.php");
         break;
 
@@ -447,7 +447,7 @@ switch ($action) {
 
         // Si erreurs, réafficher le formulaire
         if (!empty($erreurs)) {
-            $listePraticiens = getTousPraticiens();
+            $listePraticiens = getPraticiensAyantVisite();
             include("vues/v_consulterRapports.php");
             break;
         }
@@ -464,7 +464,7 @@ switch ($action) {
 
         if (empty($rapports)) {
             $erreurs[] = "Aucun rapport de visite trouvé pour cette période.";
-            $listePraticiens = getTousPraticiens();
+            $listePraticiens = getPraticiensAyantVisite();
             include("vues/v_consulterRapports.php");
         } else {
             include("vues/v_resultatConsultationRapports.php");
@@ -525,7 +525,8 @@ switch ($action) {
             $retour = $_GET['retour'] ?? null;
 
             if ($medicament) {
-                include("vues/v_detailMedicament.php");
+                $carac = $medicament;
+                include("vues/v_afficherMedicament.php");
             } else {
                 $erreurs[] = "Le médicament demandé n'existe pas.";
                 header('Location: index.php?uc=rapports&action=consulter');

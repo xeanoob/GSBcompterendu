@@ -42,6 +42,25 @@ function getTousPraticiens()
 }
 
 /**
+ * Récupère la liste des praticiens ayant déjà fait l'objet d'un rapport de visite
+ */
+function getPraticiensAyantVisite()
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT DISTINCT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM, p.PRA_VILLE
+                FROM praticien p
+                INNER JOIN rapport_visite r ON p.PRA_NUM = r.PRA_NUM
+                ORDER BY p.PRA_NOM, p.PRA_PRENOM';
+        $res = $pdo->query($sql);
+        return $res->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
+
+/**
  * Récupère la liste de tous les motifs de visite
  */
 function getTousMotifsVisite()

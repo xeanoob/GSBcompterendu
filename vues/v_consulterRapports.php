@@ -58,7 +58,7 @@
                             <option value="<?= $prat['PRA_NUM'] ?>"
                                 <?= (isset($_POST['praticien_num']) && $_POST['praticien_num'] == $prat['PRA_NUM']) ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($prat['PRA_NOM'] . ' ' . $prat['PRA_PRENOM']) ?>
-                                <?= !empty($prat['PRA_VILLE']) ? '(' . htmlspecialchars($prat['PRA_VILLE']) . ')' : '' ?>
+
                             </option>
                         <?php endforeach; ?>
                     </select>

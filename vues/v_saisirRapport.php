@@ -317,6 +317,14 @@ document.getElementById('formRapport').addEventListener('submit', function(e) {
         }
     });
 
+    // Vérifier si aucun échantillon n'est sélectionné
+    if (medicaments.length === 0) {
+        if (!confirm("Voulez-vous vraiment enregistrer ce rapport sans échantillon ?")) {
+            e.preventDefault();
+            return false;
+        }
+    }
+
     // Vérifier si aucun médicament n'est sélectionné (ni présenté, ni échantillon)
     const med1 = document.getElementById('MED_DEPOTLEGAL1').value;
     const med2 = document.getElementById('MED_DEPOTLEGAL2').value;
