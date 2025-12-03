@@ -20,11 +20,17 @@ function getAllPraticiens($regCode = null, $tri = 'nom')
 
         if ($regCode !== null) {
             // Filtrage par région basé sur le code postal (2 premiers chiffres = département)
-            $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+            /**$sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
                     FROM praticien p
                     LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
                     WHERE d.REG_CODE = :regCode
                     ORDER BY ' . $orderBy;
+                    */
+                    $sql='SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+                    FROM praticien p
+                    where SUBSTRING(p.PRA_CP,1,2) IN 
+                    (SELECT NoDEPT FROM departement WHERE REG_CODE LIKE :regCode)
+                    ORDER BY PRA_NOM;';
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
             $stmt->execute();
