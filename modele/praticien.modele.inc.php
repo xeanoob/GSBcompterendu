@@ -288,3 +288,26 @@ function isPraticienDansRegion($praticienNum, $regCode)
     }
 }
 
+/**
+ * Met à jour le coefficient de confiance d'un praticien
+ * @param int $praticienNum Numéro du praticien
+ * @param float $coefConfiance Nouveau coefficient de confiance
+ * @return bool Succès de l'opération
+ */
+function mettreAJourCoefConfiance($praticienNum, $coefConfiance)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'UPDATE praticien
+                SET PRA_COEFCONFIANCE = :coef
+                WHERE PRA_NUM = :num';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
+        $stmt->bindValue(':coef', $coefConfiance, PDO::PARAM_STR);
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
+

@@ -144,6 +144,9 @@ switch ($action) {
         $praticienRemplacant = !empty($_POST['PRA_NUM_REMPLACANT']) ? (int) $_POST['PRA_NUM_REMPLACANT'] : null;
         $med1 = !empty($_POST['MED_DEPOTLEGAL1']) ? $_POST['MED_DEPOTLEGAL1'] : null;
         $med2 = !empty($_POST['MED_DEPOTLEGAL2']) ? $_POST['MED_DEPOTLEGAL2'] : null;
+        
+        // Récupérer le coefficient de confiance du praticien
+        $praCoefConfiance = !empty($_POST['PRA_COEFCONFIANCE']) ? (float) $_POST['PRA_COEFCONFIANCE'] : null;
 
         // Récupérer l'état en fonction de la case "Saisie définitive"
         $saisieDefinitive = isset($_POST['saisie_definitive']) && $_POST['saisie_definitive'] == '1';
@@ -198,6 +201,15 @@ switch ($action) {
             $erreurs[] = "Le praticien est obligatoire.";
         }
 
+        // Validation du coefficient de confiance
+        if ($praCoefConfiance !== null) {
+            if ($praCoefConfiance < 0) {
+                $erreurs[] = "Le coefficient de confiance ne peut pas être négatif.";
+            } elseif ($praCoefConfiance > 1000) {
+                $erreurs[] = "Le coefficient de confiance ne peut pas dépasser 1000.";
+            }
+        }
+
         // Validation des échantillons
         $echantillonsValides = [];
         $medicamentsEchantillons = [];
@@ -244,6 +256,7 @@ switch ($action) {
                 'PRA_NUM_REMPLACANT' => $praticienRemplacant,
                 'MED_DEPOTLEGAL1' => $med1,
                 'MED_DEPOTLEGAL2' => $med2,
+                'PRA_COEFCONFIANCE' => $praCoefConfiance,
                 'saisie_definitive' => $saisieDefinitive
             ];
 
@@ -326,6 +339,16 @@ switch ($action) {
         }
 
         if ($success) {
+
+            // Mettre à jour le coefficient de confiance du praticien si renseigné
+            if ($praCoefConfiance !== null) {
+                require_once 'modele/praticien.modele.inc.php';
+                $coefUpdateSuccess = mettreAJourCoefConfiance($praticienNum, $praCoefConfiance);
+                if (!$coefUpdateSuccess) {
+                    // Log l'erreur mais ne bloque pas le processus
+                    error_log("Erreur lors de la mise à jour du coefficient de confiance pour le praticien $praticienNum");
+                }
+            }
 
             // Rediriger vers la liste des rapports avec le message
             $_SESSION['message_succes_rapport'] = $messageSucces;
