@@ -559,7 +559,8 @@ switch ($action) {
         } elseif ($_SESSION['habilitation'] == 3) {
             // Responsable secteur : rapports de son secteur
             $secteur = $_SESSION['secteur'];
-            $titrePage = "Nouveaux rapports du secteur " . $secteur;
+            $secteurLibelle = getSecteurLibelle($secteur);
+            $titrePage = "Nouveaux rapports du secteur " . $secteurLibelle;
             $rapports = getNouveauxRapportsSecteur($secteur);
         }
 
@@ -642,7 +643,8 @@ switch ($action) {
         } else {
             // Responsable secteur : rapports de son secteur
             $secteur = $_SESSION['secteur'];
-            $titrePage = "Historique complet des rapports du secteur " . $secteur;
+            $secteurLibelle = getSecteurLibelle($secteur);
+            $titrePage = "Historique complet des rapports du secteur " . $secteurLibelle;
             
             // Récupérer la liste des visiteurs du secteur pour le filtre
             $listeVisiteurs = getVisiteursSecteur($secteur);

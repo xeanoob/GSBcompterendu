@@ -721,3 +721,24 @@ function getVisiteursSecteur($secCode)
     }
 }
 
+
+/**
+ * Récupère le libellé d'un secteur à partir de son code
+ * @param string $secCode Code du secteur
+ * @return string Libellé du secteur
+ */
+function getSecteurLibelle($secCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT SEC_LIBELLE FROM secteur WHERE SEC_CODE = :secCode';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['SEC_LIBELLE'] : $secCode;
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        die();
+    }
+}
