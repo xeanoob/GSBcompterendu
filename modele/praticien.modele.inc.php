@@ -280,8 +280,10 @@ function isPraticienDansRegion($praticienNum, $regCode)
         $pdo = connexionPDO();
         $sql = 'SELECT COUNT(*) as nb
                 FROM praticien p
-                LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
-                WHERE p.PRA_NUM = :num AND d.REG_CODE = :regCode';
+                WHERE p.PRA_NUM = :num 
+                AND SUBSTRING(p.PRA_CP, 1, 2) IN (
+                    SELECT NoDEPT FROM departement WHERE REG_CODE = :regCode
+                )';
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
         $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
