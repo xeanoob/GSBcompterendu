@@ -9,7 +9,7 @@ if (isset($_SESSION['message_succes_stats'])) {
 <section class="bg-light py-4">
     <div class="container">
         <div class="structure-hero pt-3">
-            <h1 class="titre text-center"><i class="bi bi-bar-chart-fill me-2"></i><?php echo htmlspecialchars($titrePage); ?></h1>
+            <h1 class="titre text-center"><?php echo htmlspecialchars($titrePage); ?></h1>
             <p class="text text-center mb-4">Consultez les statistiques des médicaments offerts lors des visites de votre secteur.</p>
         </div>
 
@@ -37,8 +37,8 @@ if (isset($_SESSION['message_succes_stats'])) {
 
         <!-- Formulaire de filtres -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0"><i class="bi bi-funnel-fill me-2"></i>Critères de recherche</h5>
+            <div class="card-header bg-white text-dark border-bottom">
+                <h5 class="mb-0">Critères de recherche</h5>
             </div>
             <div class="card-body">
                 <form method="post" action="index.php?uc=rapports&action=statistiques">
@@ -86,27 +86,27 @@ if (isset($_SESSION['message_succes_stats'])) {
             <!-- Statistiques globales -->
             <?php if ($statsGlobales) : ?>
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Statistiques globales du secteur</h5>
+                    <div class="card-header bg-white text-dark border-bottom">
+                        <h5 class="mb-0">Statistiques globales du secteur</h5>
                     </div>
                     <div class="card-body">
                         <div class="row text-center">
                             <div class="col-md-4">
                                 <div class="p-3 bg-light rounded">
-                                    <h2 class="text-primary mb-0"><?php echo $statsGlobales['NB_VISITES']; ?></h2>
-                                    <p class="text-muted mb-0"><i class="bi bi-calendar-check me-1"></i>Visites effectuées</p>
+                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_VISITES']; ?></h2>
+                                    <p class="text-muted mb-0">Visites effectuées</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="p-3 bg-light rounded">
-                                    <h2 class="text-success mb-0"><?php echo $statsGlobales['NB_VISITEURS']; ?></h2>
-                                    <p class="text-muted mb-0"><i class="bi bi-people me-1"></i>Visiteurs actifs</p>
+                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_VISITEURS']; ?></h2>
+                                    <p class="text-muted mb-0">Visiteurs actifs</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="p-3 bg-light rounded">
-                                    <h2 class="text-info mb-0"><?php echo $statsGlobales['NB_PRATICIENS']; ?></h2>
-                                    <p class="text-muted mb-0"><i class="bi bi-person-badge me-1"></i>Praticiens visités</p>
+                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_PRATICIENS']; ?></h2>
+                                    <p class="text-muted mb-0">Praticiens visités</p>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +116,7 @@ if (isset($_SESSION['message_succes_stats'])) {
 
             <!-- Tableau des statistiques des médicaments -->
             <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-white text-dark border-bottom">
                     <h5 class="mb-0"><i class="bi bi-capsule me-2"></i>Statistiques des médicaments offerts</h5>
                 </div>
                 <div class="card-body">
@@ -191,8 +191,8 @@ if (isset($_SESSION['message_succes_stats'])) {
                             </table>
                         </div>
                     <?php else : ?>
-                        <div class="alert alert-warning text-center mb-0">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
+                        <div class="alert alert-light border text-center mb-0">
+
                             Aucun médicament n'a été offert lors des visites de votre secteur pour cette période.
                         </div>
                     <?php endif; ?>
@@ -203,7 +203,6 @@ if (isset($_SESSION['message_succes_stats'])) {
             <!-- Message d'information avant la recherche -->
             <div class="card shadow-sm">
                 <div class="card-body text-center py-5">
-                    <i class="bi bi-bar-chart-line text-info" style="font-size: 4rem;"></i>
                     <h4 class="mt-3">Visualisez les statistiques de votre secteur</h4>
                     <p class="text-muted">
                         Sélectionnez une période de dates ci-dessus pour afficher les statistiques des médicaments offerts aux praticiens lors des visites.

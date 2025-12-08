@@ -138,7 +138,7 @@ function creerRapportVisite($matricule, $numRapport, $dateVisite, $bilan, $motif
         $stmt->bindValue(':med1', $med1, PDO::PARAM_STR);
         $stmt->bindValue(':med2', $med2, PDO::PARAM_STR);
         $stmt->bindValue(':rapMotif', $rapMotif, PDO::PARAM_STR);
-        
+
         if ($praticienRemplacant !== null && $praticienRemplacant > 0) {
             $stmt->bindValue(':praticienRemplacant', $praticienRemplacant, PDO::PARAM_INT);
         } else {
@@ -318,7 +318,7 @@ function mettreAJourRapport($matricule, $numRapport, $dateVisite, $bilan, $motif
         $stmt->bindValue(':med1', $med1, PDO::PARAM_STR);
         $stmt->bindValue(':med2', $med2, PDO::PARAM_STR);
         $stmt->bindValue(':rapMotif', $rapMotif, PDO::PARAM_STR);
-        
+
         if ($praticienRemplacant !== null && $praticienRemplacant > 0) {
             $stmt->bindValue(':praticienRemplacant', $praticienRemplacant, PDO::PARAM_INT);
         } else {
@@ -557,7 +557,7 @@ function consulterHistoriqueRapportsRegion($regCode, $dateDebut = null, $dateFin
 {
     try {
         $pdo = connexionPDO();
-        
+
         $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.RAP_MOTIF, r.PRA_NUM,
                        r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2, r.ETAT_CODE,
                        p.PRA_NOM, p.PRA_PRENOM,
@@ -578,25 +578,25 @@ function consulterHistoriqueRapportsRegion($regCode, $dateDebut = null, $dateFin
         if ($dateDebut && $dateFin) {
             $sql .= ' AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
         }
-        
+
         if ($matriculeVisiteur !== null) {
             $sql .= ' AND r.VIS_MATRICULE = :matricule';
         }
-        
+
         $sql .= ' ORDER BY r.RAP_DATEVISITE DESC, c.COL_NOM, c.COL_PRENOM';
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
-        
+
         if ($dateDebut && $dateFin) {
             $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
             $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
         }
-        
+
         if ($matriculeVisiteur !== null) {
             $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
         }
-        
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -618,7 +618,7 @@ function consulterHistoriqueRapportsSecteur($secCode, $dateDebut = null, $dateFi
 {
     try {
         $pdo = connexionPDO();
-        
+
         $sql = 'SELECT r.VIS_MATRICULE, r.RAP_NUM, r.RAP_DATEVISITE, r.RAP_BILAN, r.RAP_MOTIF, r.PRA_NUM,
                        r.MED_DEPOTLEGAL1, r.MED_DEPOTLEGAL2, r.ETAT_CODE,
                        p.PRA_NOM, p.PRA_PRENOM,
@@ -640,25 +640,25 @@ function consulterHistoriqueRapportsSecteur($secCode, $dateDebut = null, $dateFi
         if ($dateDebut && $dateFin) {
             $sql .= ' AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
         }
-        
+
         if ($matriculeVisiteur !== null) {
             $sql .= ' AND r.VIS_MATRICULE = :matricule';
         }
-        
+
         $sql .= ' ORDER BY r.RAP_DATEVISITE DESC, c.COL_NOM, c.COL_PRENOM';
 
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
-        
+
         if ($dateDebut && $dateFin) {
             $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
             $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
         }
-        
+
         if ($matriculeVisiteur !== null) {
             $stmt->bindValue(':matricule', $matriculeVisiteur, PDO::PARAM_STR);
         }
-        
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -755,7 +755,7 @@ function getStatistiquesEchantillonsSecteur($secCode, $dateDebut, $dateFin, $med
 {
     try {
         $pdo = connexionPDO();
-        
+
         $sql = 'SELECT m.MED_DEPOTLEGAL, m.MED_NOMCOMMERCIAL, m.FAM_CODE, f.FAM_LIBELLE,
                        SUM(o.OFF_QTE) as TOTAL_QUANTITE,
                        COUNT(DISTINCT CONCAT(o.VIS_MATRICULE, "-", o.RAP_NUM)) as NB_VISITES
@@ -767,11 +767,11 @@ function getStatistiquesEchantillonsSecteur($secCode, $dateDebut, $dateFin, $med
                 INNER JOIN famille f ON m.FAM_CODE = f.FAM_CODE
                 WHERE reg.SEC_CODE = :secCode
                 AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
-        
+
         if ($medDepotLegal !== null && $medDepotLegal !== '') {
             $sql .= ' AND o.MED_DEPOTLEGAL = :medDepotLegal';
         }
-        
+
         $sql .= ' GROUP BY m.MED_DEPOTLEGAL, m.MED_NOMCOMMERCIAL, m.FAM_CODE, f.FAM_LIBELLE
                   ORDER BY TOTAL_QUANTITE DESC';
 
@@ -779,11 +779,11 @@ function getStatistiquesEchantillonsSecteur($secCode, $dateDebut, $dateFin, $med
         $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
         $stmt->bindValue(':dateDebut', $dateDebut, PDO::PARAM_STR);
         $stmt->bindValue(':dateFin', $dateFin, PDO::PARAM_STR);
-        
+
         if ($medDepotLegal !== null && $medDepotLegal !== '') {
             $stmt->bindValue(':medDepotLegal', $medDepotLegal, PDO::PARAM_STR);
         }
-        
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -804,7 +804,7 @@ function getStatsGlobalesVisitesSecteur($secCode, $dateDebut, $dateFin)
 {
     try {
         $pdo = connexionPDO();
-        
+
         $sql = 'SELECT COUNT(r.RAP_NUM) as NB_VISITES,
                        COUNT(DISTINCT r.VIS_MATRICULE) as NB_VISITEURS,
                        COUNT(DISTINCT r.PRA_NUM) as NB_PRATICIENS
@@ -839,7 +839,7 @@ function getDetailVisitesMedicamentSecteur($secCode, $dateDebut, $dateFin, $medD
 {
     try {
         $pdo = connexionPDO();
-        
+
         $sql = 'SELECT o.VIS_MATRICULE, o.RAP_NUM, o.OFF_QTE,
                        r.RAP_DATEVISITE,
                        c.COL_NOM, c.COL_PRENOM,

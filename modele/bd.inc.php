@@ -4,7 +4,7 @@ function connexionPDO()
 {
     $login = 'root';
     $mdp = '';
-    $bd = 'gsbv0v3_test';
+    $bd = 'gsbv0v3';
     $serveur = 'localhost';
 
     try {
