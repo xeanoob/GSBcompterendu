@@ -80,6 +80,11 @@
                                             Historique
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="dropdown-item" href="index.php?uc=rapports&action=statistiques">
+                                            <i class="bi bi-bar-chart-fill me-1"></i>Statistiques
+                                        </a>
+                                    </li>
                                 <?php } ?>
                             </ul>
                         </li>

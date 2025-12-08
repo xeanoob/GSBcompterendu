@@ -1,0 +1,368 @@
+================================================================================
+    RAPPORT D'IMPLEMENTATION - CAS D'UTILISATION
+    "Établir des statistiques des visites de son secteur"
+================================================================================
+
+Date : 08/12/2025
+Auteur : Développement GSB
+Version : 1.0
+
+================================================================================
+1. INTRODUCTION - C'EST QUOI CE CAS D'UTILISATION ?
+================================================================================
+
+Le cas d'utilisation permet au RESPONSABLE DE SECTEUR (et lui seul) de voir 
+combien de médicaments ont été offerts aux praticiens pendant les visites 
+de son secteur.
+
+En gros : "Montre-moi ce qu'on a donné comme échantillons de médicaments 
+           entre telle date et telle date dans mon secteur"
+
+================================================================================
+2. LES 4 FICHIERS MODIFIES/CREES
+================================================================================
+
+    FICHIER 1 : modele/rapport.modele.inc.php    --> Les requêtes SQL
+    FICHIER 2 : controleur/c_rapports.php        --> La logique métier  
+    FICHIER 3 : vues/v_statistiquesVisites.php   --> L'affichage HTML (NOUVEAU)
+    FICHIER 4 : vues/v_header.php                --> Le lien dans le menu
+
+================================================================================
+3. FICHIER 1 : modele/rapport.modele.inc.php
+================================================================================
+
+POURQUOI ? --> On a besoin de fonctions pour aller chercher les données 
+               dans la base de données
+
+J'ai ajouté 3 FONCTIONS à la fin du fichier :
+
+-------------------------------------------------------------------------------
+FONCTION 1 : getStatistiquesEchantillonsSecteur()
+-------------------------------------------------------------------------------
+
+ROLE : Récupère la liste des médicaments offerts avec le total des quantités
+
+CODE SIMPLIFIE :
+
+function getStatistiquesEchantillonsSecteur($secCode, $dateDebut, $dateFin, $medDepotLegal = null)
+{
+    // On se connecte à la base de données
+    $pdo = connexionPDO();
+    
+    // La requête SQL qui fait le travail :
+    // - Elle va dans la table "offrir" (les échantillons donnés)
+    // - Elle relie avec "rapport_visite" (les visites)
+    // - Elle relie avec "collaborateur" (les visiteurs)
+    // - Elle relie avec "region" et filtre sur le SECTEUR
+    // - Elle regroupe par médicament et fait la SOMME des quantités
+    
+    $sql = 'SELECT m.MED_DEPOTLEGAL,           -- Le code du médicament
+                   m.MED_NOMCOMMERCIAL,         -- Le nom du médicament
+                   SUM(o.OFF_QTE) as TOTAL,     -- La somme des quantités offertes
+                   COUNT(*) as NB_VISITES       -- Le nombre de visites où ce médicament a été offert
+            FROM offrir o                       -- Table des échantillons offerts
+            INNER JOIN rapport_visite r ON ...  -- On relie aux rapports de visite
+            INNER JOIN collaborateur c ON ...   -- On relie aux collaborateurs
+            INNER JOIN region reg ON ...        -- On relie aux régions
+            WHERE reg.SEC_CODE = :secCode       -- On filtre sur le secteur
+            AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin  -- On filtre les dates
+            GROUP BY m.MED_DEPOTLEGAL           -- On regroupe par médicament
+            ORDER BY TOTAL DESC';               -- On trie du plus offert au moins offert
+    
+    // On exécute et on retourne les résultats
+    return $stmt->fetchAll();
+}
+
+EXPLICATION SIMPLE :
+- Tu donnes le code du secteur (ex: "P" pour Paris)
+- Tu donnes une date de début et une date de fin
+- La fonction te retourne la liste : "Médicament X : 50 offerts en 10 visites"
+
+-------------------------------------------------------------------------------
+FONCTION 2 : getStatsGlobalesVisitesSecteur()
+-------------------------------------------------------------------------------
+
+ROLE : Récupère les chiffres globaux (combien de visites au total, etc.)
+
+CODE SIMPLIFIE :
+
+function getStatsGlobalesVisitesSecteur($secCode, $dateDebut, $dateFin)
+{
+    $sql = 'SELECT COUNT(r.RAP_NUM) as NB_VISITES,              -- Nombre total de visites
+                   COUNT(DISTINCT r.VIS_MATRICULE) as NB_VISITEURS,  -- Nombre de visiteurs différents
+                   COUNT(DISTINCT r.PRA_NUM) as NB_PRATICIENS   -- Nombre de praticiens visités
+            FROM rapport_visite r
+            INNER JOIN collaborateur c ON ...
+            INNER JOIN region reg ON ...
+            WHERE reg.SEC_CODE = :secCode
+            AND r.RAP_DATEVISITE BETWEEN :dateDebut AND :dateFin';
+    
+    return $stmt->fetch();
+}
+
+EXPLICATION SIMPLE :
+- Tu donnes le secteur et les dates
+- Ca te retourne : "15 visites, par 3 visiteurs, chez 10 praticiens"
+
+-------------------------------------------------------------------------------
+FONCTION 3 : getDetailVisitesMedicamentSecteur()
+-------------------------------------------------------------------------------
+
+ROLE : Voir le détail des visites pour UN médicament précis
+
+(Cette fonction est prévue pour une extension future, on pourrait cliquer 
+sur un médicament pour voir "qui l'a donné, à quel praticien, quand")
+
+================================================================================
+4. FICHIER 2 : controleur/c_rapports.php
+================================================================================
+
+POURQUOI ? --> C'est le "chef d'orchestre" qui décide quoi faire quand 
+               l'utilisateur clique sur quelque chose
+
+J'ai ajouté un nouveau CAS dans le switch à la fin du fichier :
+
+-------------------------------------------------------------------------------
+CAS : 'statistiques'
+-------------------------------------------------------------------------------
+
+CODE SIMPLIFIE ET EXPLIQUE :
+
+case 'statistiques':
+
+    // ETAPE 1 : VERIFIER LES DROITS
+    // Seul le Responsable Secteur (habilitation = 3) peut accéder
+    if ($_SESSION['habilitation'] != 3) {
+        header('Location: index.php?uc=accueil');  // Sinon, on le renvoie à l'accueil
+        exit;
+    }
+
+    // ETAPE 2 : RECUPERER LES INFOS DE L'UTILISATEUR
+    $secteur = $_SESSION['secteur'];  // Ex: "P" pour Paris
+    $secteurLibelle = getSecteurLibelle($secteur);  // Ex: "Paris centre"
+    
+    // ETAPE 3 : PREPARER LES DONNEES POUR LE FORMULAIRE
+    $listeMedicaments = getTousMedicaments();  // Liste pour le menu déroulant
+    
+    // ETAPE 4 : SI LE FORMULAIRE A ETE SOUMIS (POST)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        
+        // On récupère ce que l'utilisateur a saisi
+        $dateDebut = $_POST['date_debut'];
+        $dateFin = $_POST['date_fin'];
+        $medDepotLegal = $_POST['medicament'];  // Optionnel
+        
+        // On vérifie que les dates sont correctes
+        if (empty($dateDebut) || empty($dateFin)) {
+            $erreurs[] = "Veuillez saisir les deux dates.";
+        }
+        
+        // Si tout est OK, on va chercher les stats
+        if (empty($erreurs)) {
+            $statsGlobales = getStatsGlobalesVisitesSecteur($secteur, $dateDebut, $dateFin);
+            $statistiques = getStatistiquesEchantillonsSecteur($secteur, $dateDebut, $dateFin, $medDepotLegal);
+        }
+    }
+
+    // ETAPE 5 : AFFICHER LA PAGE
+    include("vues/v_statistiquesVisites.php");
+    break;
+
+EXPLICATION SIMPLE :
+1. L'utilisateur clique sur "Statistiques" dans le menu
+2. Le contrôleur vérifie qu'il est bien Responsable Secteur
+3. Si c'est la première visite : on affiche juste le formulaire vide
+4. Si l'utilisateur a cliqué sur "Afficher" : on récupère les stats et on les affiche
+
+================================================================================
+5. FICHIER 3 : vues/v_statistiquesVisites.php (NOUVEAU FICHIER)
+================================================================================
+
+POURQUOI ? --> C'est la page que l'utilisateur va voir (l'interface graphique)
+
+STRUCTURE SIMPLIFIEE :
+
+-------------------------------------------------------------------------------
+PARTIE 1 : LE TITRE
+-------------------------------------------------------------------------------
+
+<h1>Statistiques des visites du secteur Paris centre</h1>
+
+-------------------------------------------------------------------------------
+PARTIE 2 : LE FORMULAIRE DE RECHERCHE
+-------------------------------------------------------------------------------
+
+<form method="post">
+    
+    <!-- Champ date de début (obligatoire) -->
+    <input type="date" name="date_debut" required>
+    
+    <!-- Champ date de fin (obligatoire) -->
+    <input type="date" name="date_fin" required>
+    
+    <!-- Liste déroulante des médicaments (optionnel) -->
+    <select name="medicament">
+        <option value="">-- Tous les médicaments --</option>
+        <!-- La boucle PHP remplit la liste avec tous les médicaments -->
+        <?php foreach ($listeMedicaments as $med) : ?>
+            <option value="<?php echo $med['MED_DEPOTLEGAL']; ?>">
+                <?php echo $med['MED_NOMCOMMERCIAL']; ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    
+    <!-- Bouton pour lancer la recherche -->
+    <button type="submit">Afficher les statistiques</button>
+    
+</form>
+
+-------------------------------------------------------------------------------
+PARTIE 3 : LES RESULTATS (affichés seulement après la recherche)
+-------------------------------------------------------------------------------
+
+<?php if ($rechercheEffectuee) : ?>
+
+    <!-- Les 3 gros chiffres en haut -->
+    <div>
+        <h2>15</h2> Visites effectuées
+        <h2>3</h2> Visiteurs actifs  
+        <h2>10</h2> Praticiens visités
+    </div>
+    
+    <!-- Le tableau des médicaments -->
+    <table>
+        <tr>
+            <th>Médicament</th>
+            <th>Famille</th>
+            <th>Quantité totale</th>
+            <th>Nb de visites</th>
+            <th>Moyenne/visite</th>
+        </tr>
+        
+        <!-- La boucle PHP affiche chaque ligne -->
+        <?php foreach ($statistiques as $stat) : ?>
+            <tr>
+                <td><?php echo $stat['MED_NOMCOMMERCIAL']; ?></td>
+                <td><?php echo $stat['FAM_LIBELLE']; ?></td>
+                <td><?php echo $stat['TOTAL_QUANTITE']; ?></td>
+                <td><?php echo $stat['NB_VISITES']; ?></td>
+                <td><?php echo $stat['TOTAL_QUANTITE'] / $stat['NB_VISITES']; ?></td>
+            </tr>
+        <?php endforeach; ?>
+        
+    </table>
+
+<?php else : ?>
+
+    <!-- Message affiché avant la première recherche -->
+    <p>Sélectionnez une période pour voir les statistiques</p>
+
+<?php endif; ?>
+
+================================================================================
+6. FICHIER 4 : vues/v_header.php
+================================================================================
+
+POURQUOI ? --> On doit ajouter un lien dans le menu pour accéder aux stats
+
+J'ai ajouté CES LIGNES dans le menu déroulant "Rapports" :
+
+CODE AJOUTE :
+
+<li>
+    <a href="index.php?uc=rapports&action=statistiques">
+        Statistiques
+    </a>
+</li>
+
+OU EXACTEMENT ? --> Dans la section "Mon secteur" qui n'est visible que 
+                    pour le Responsable Secteur (habilitation == 3)
+
+AVANT :
+    - Nouveaux rapports
+    - Historique
+
+APRES :
+    - Nouveaux rapports
+    - Historique
+    - Statistiques  <-- NOUVEAU !
+
+================================================================================
+7. RESUME : COMMENT CA MARCHE ?
+================================================================================
+
+ETAPE 1 : L'utilisateur clique sur "Rapports" > "Statistiques" dans le menu
+          --> v_header.php envoie vers index.php?uc=rapports&action=statistiques
+
+ETAPE 2 : Le fichier index.php charge le contrôleur c_rapports.php
+          --> Le switch tombe sur le cas 'statistiques'
+
+ETAPE 3 : Le contrôleur vérifie que c'est bien un Responsable Secteur
+          --> Si non : redirection vers l'accueil
+          --> Si oui : on continue
+
+ETAPE 4 : Le contrôleur prépare les données et charge la vue
+          --> include("vues/v_statistiquesVisites.php")
+
+ETAPE 5 : L'utilisateur voit le formulaire et remplit les dates
+
+ETAPE 6 : L'utilisateur clique sur "Afficher les statistiques"
+          --> Le formulaire s'envoie en POST
+
+ETAPE 7 : Le contrôleur détecte le POST et appelle les fonctions SQL
+          --> getStatsGlobalesVisitesSecteur()
+          --> getStatistiquesEchantillonsSecteur()
+
+ETAPE 8 : Les résultats sont passés à la vue qui les affiche
+          --> Tableau avec médicaments, quantités, visites, moyennes
+
+================================================================================
+8. LES TABLES DE LA BASE DE DONNEES UTILISEES
+================================================================================
+
+Table OFFRIR :
+    - VIS_MATRICULE : Le visiteur qui a offert
+    - RAP_NUM : Le numéro du rapport de visite
+    - MED_DEPOTLEGAL : Le code du médicament offert
+    - OFF_QTE : La quantité offerte
+
+Table RAPPORT_VISITE :
+    - VIS_MATRICULE : Le visiteur
+    - RAP_NUM : Numéro du rapport
+    - RAP_DATEVISITE : La date de la visite
+    - PRA_NUM : Le praticien visité
+
+Table COLLABORATEUR :
+    - COL_MATRICULE : Le matricule du collaborateur
+    - REG_CODE : Sa région
+    - SEC_CODE : Son secteur
+
+Table REGION :
+    - REG_CODE : Code de la région (ex: "CE" = Centre)
+    - SEC_CODE : Code du secteur (ex: "P" = Paris centre)
+
+Table MEDICAMENT :
+    - MED_DEPOTLEGAL : Le code unique du médicament
+    - MED_NOMCOMMERCIAL : Le nom (ex: "DOLIPRANE")
+    - FAM_CODE : Sa famille thérapeutique
+
+================================================================================
+9. SECURITE
+================================================================================
+
+VERIFICATION DES DROITS :
+    - Seul le Responsable Secteur (habilitation = 3) peut accéder
+    - Si quelqu'un d'autre essaie, il est redirigé vers l'accueil
+
+VALIDATION DES DONNEES :
+    - Les deux dates sont obligatoires
+    - La date de début doit être avant la date de fin
+    - Les erreurs sont affichées clairement
+
+PROTECTION SQL :
+    - Utilisation de requêtes préparées avec bindValue()
+    - Pas d'injection SQL possible
+
+================================================================================
+FIN DU RAPPORT
+================================================================================

@@ -139,7 +139,7 @@ switch ($action) {
         $praticienRemplacant = !empty($_POST['PRA_NUM_REMPLACANT']) ? (int) $_POST['PRA_NUM_REMPLACANT'] : null;
         $med1 = !empty($_POST['MED_DEPOTLEGAL1']) ? $_POST['MED_DEPOTLEGAL1'] : null;
         $med2 = !empty($_POST['MED_DEPOTLEGAL2']) ? $_POST['MED_DEPOTLEGAL2'] : null;
-        
+
         // Récupérer le coefficient de confiance du praticien
         $praCoefConfiance = !empty($_POST['PRA_COEFCONFIANCE']) ? (float) $_POST['PRA_COEFCONFIANCE'] : null;
 
@@ -637,7 +637,7 @@ switch ($action) {
             // Délégué régional : rapports de sa région
             $region = $_SESSION['region'];
             $titrePage = "Historique complet des rapports de la région " . $region;
-            
+
             // Récupérer la liste des visiteurs de la région pour le filtre
             $listeVisiteurs = getVisiteursRegion($region);
         } else {
@@ -645,7 +645,7 @@ switch ($action) {
             $secteur = $_SESSION['secteur'];
             $secteurLibelle = getSecteurLibelle($secteur);
             $titrePage = "Historique complet des rapports du secteur " . $secteurLibelle;
-            
+
             // Récupérer la liste des visiteurs du secteur pour le filtre
             $listeVisiteurs = getVisiteursSecteur($secteur);
         }
@@ -702,5 +702,72 @@ switch ($action) {
         }
 
         include("vues/v_historiqueRapportsRegion.php");
+        break;
+
+    // Afficher les statistiques des visites du secteur (Responsable Secteur uniquement)
+    case 'statistiques':
+        // Vérification des droits d'accès (Responsable Secteur uniquement - habilitation 3)
+        if ($_SESSION['habilitation'] != 3) {
+            header('Location: index.php?uc=accueil');
+            exit;
+        }
+
+        $secteur = $_SESSION['secteur'];
+        $secteurLibelle = getSecteurLibelle($secteur);
+        $titrePage = "Statistiques des visites du secteur " . $secteurLibelle;
+
+        // Récupérer la liste des médicaments pour le filtre
+        $listeMedicaments = getTousMedicaments();
+
+        // Initialiser les variables
+        $dateDebut = null;
+        $dateFin = null;
+        $medDepotLegal = null;
+        $statistiques = [];
+        $statsGlobales = null;
+        $rechercheEffectuee = false;
+
+        // Si le formulaire a été soumis
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $dateDebut = !empty($_POST['date_debut']) ? $_POST['date_debut'] : null;
+            $dateFin = !empty($_POST['date_fin']) ? $_POST['date_fin'] : null;
+            $medDepotLegal = !empty($_POST['medicament']) ? $_POST['medicament'] : null;
+
+            // Validation des critères : les deux dates sont obligatoires
+            if (empty($dateDebut) || empty($dateFin)) {
+                $erreurs[] = "Veuillez saisir une date de début et une date de fin pour afficher les statistiques.";
+            }
+
+            // Vérifier que date début <= date fin
+            if (!empty($dateDebut) && !empty($dateFin)) {
+                $dateDebutObj = DateTime::createFromFormat('Y-m-d', $dateDebut);
+                $dateFinObj = DateTime::createFromFormat('Y-m-d', $dateFin);
+
+                if (!$dateDebutObj) {
+                    $erreurs[] = "Le format de la date de début est incorrect.";
+                }
+
+                if (!$dateFinObj) {
+                    $erreurs[] = "Le format de la date de fin est incorrect.";
+                }
+
+                if ($dateDebutObj && $dateFinObj && $dateDebutObj > $dateFinObj) {
+                    $erreurs[] = "La date de début doit être antérieure ou égale à la date de fin.";
+                }
+            }
+
+            // Si pas d'erreurs, effectuer la recherche
+            if (empty($erreurs)) {
+                $rechercheEffectuee = true;
+
+                // Récupérer les statistiques globales
+                $statsGlobales = getStatsGlobalesVisitesSecteur($secteur, $dateDebut, $dateFin);
+
+                // Récupérer les statistiques par médicament
+                $statistiques = getStatistiquesEchantillonsSecteur($secteur, $dateDebut, $dateFin, $medDepotLegal);
+            }
+        }
+
+        include("vues/v_statistiquesVisites.php");
         break;
 }
