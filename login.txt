@@ -1,16 +1,88 @@
-------- Reponsable secteur -------
-user : loidid 
-mdp :  LoiDid!
+RESPONSABLES SECTEUR (Habilitation 3)
+-------------------------------------
+Secteur P (Paris Centre) :
+    user: loidid
+    mdp:  LoiDid!
+    (Loirat Didier - Orléans - Région CE)
 
-------- Visiteur -------
-user : villou
-mdp : VilLou!
+Secteur E (Est) :
+    user: dephi
+    mdp:  DePhil!
+    (De Philippe - Troyes - Région GE)
 
-user (paris): dudfre
-mdp: DudFre!
+Secteur O (Ouest) :
+    user: quijoe
+    mdp:  QuiJoe!
+    (Quiquandon Joel - Quimper - Région BG)
 
-------- Délégué -------
-user : leclud
-mdp : LecLud!
+Secteur S (Sud) :
+    user: chacat
+    mdp:  ChaCat!
+    (Charoze Catherine - Bordeaux - Région AQ)
 
+    user: gesala
+    mdp:  GesAla!
+    (Gest Alain - Figeac - Région OC)
+
+Secteur N (Nord) :
+    user: petjea
+    mdp:  PetJea!
+    (Petit Jean-Louis - Saint-Lô - Région NO)
+
+--------------------------------------
+DÉLÉGUÉS RÉGIONAUX (Habilitation 2)
+--------------------------------------
+
+Secteur E (Est) - Région FC :
+    user: leclud
+    mdp:  LecLud!
+    (Lecornu Ludovic - Besançon)
+
+Secteur O (Ouest) - Région PL :
+    user: debjea
+    mdp:  DebJea!
+    (Debelle Jeanne - Nantes)
+
+Secteur P (Paris Centre) - Région CE :
+    user: onfden
+    mdp:  OnfDen!
+    (Onfroy Den - Tours)
+
+Secteur S (Sud) - Région PA :
+    user: dabfra
+    mdp:  DabFra!
+    (Daburon François - Nice)
+
+Secteur N (Nord) - Région HF :
+    user: lanphi
+    mdp:  LanPhi!
+    (Landre Philippe - Lille)
+
+---------------------------------------------------
+VISITEURS (Habilitation 1) - Un exemple par secteur
+---------------------------------------------------
+Secteur O (Ouest) - Région BG :
+    user: villou
+    mdp:  VilLou!
+    (Villechalane Louis - Brest)
+
+Secteur E (Est) - Région RA :
+    user: anddav
+    mdp:  AndDav!
+    (Andre David - Grenoble)
+
+Secteur S (Sud) - Région OC :
+    user: bedchr
+    mdp:  BedChr!
+    (Bedos Christian - Tarbes)
+
+Secteur P (Paris Centre) - Région IF :
+    user: dudfre
+    mdp:  DudFre!
+    (Dudouit Frederic - Paris)
+
+Secteur N (Nord) - Région HF :
+    user: giryvo
+    mdp:  GirYvo!
+    (Girard Yvon - Amiens)
 

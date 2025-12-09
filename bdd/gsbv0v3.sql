@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3307
--- Généré le : lun. 01 déc. 2025 à 18:51
+-- Généré le : mar. 09 déc. 2025 à 09:44
 -- Version du serveur : 11.5.2-MariaDB
 -- Version de PHP : 8.3.14
 
@@ -60,12 +60,12 @@ INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRE
 ('b25', 'Bunisset', 'Denise', '1 r Lionne', '49100', 'ANGERS', '1994-07-03 00:00:00', 1, 'O', 'PL'),
 ('b28', 'Cacheux', 'Bernard', '114 r Authie', '34000', 'MONTPELLIER', '2000-08-02 00:00:00', 1, 'S', 'OC'),
 ('b34', 'Cadic', 'Eric', '123 r Caponière', '41000', 'BLOIS', '1993-12-06 00:00:00', 1, 'P', 'CE'),
-('b4', 'Charoze', 'Catherine', '100 pl Géants', '33000', 'BORDEAUX', '1997-09-25 00:00:00', 1, 'S', 'AQ'),
+('b4', 'Charoze', 'Catherine', '100 pl Géants', '33000', 'BORDEAUX', '1997-09-25 00:00:00', 3, 'S', 'AQ'),
 ('b50', 'Clepkens', 'Christophe', '12 r Fédérico Garcia Lorca', '13000', 'MARSEILLE', '1998-01-18 00:00:00', 1, 'S', 'PA'),
 ('b59', 'Cottin', 'Vincenne', '36 sq Capucins', '5000', 'GAP', '1995-10-21 00:00:00', 1, 'E', 'RA'),
-('c14', 'Daburon', 'François', '13 r Champs Elysées', '6000', 'NICE', '1989-02-01 00:00:00', 1, 'S', 'PA'),
-('c3', 'De', 'Philippe', '13 r Charles Peguy', '10000', 'TROYES', '1992-05-05 00:00:00', 1, 'E', 'GE'),
-('d13', 'Debelle', 'Jeanne', '134 r Stalingrad', '44000', 'NANTES', '1991-12-05 00:00:00', 1, 'O', 'PL'),
+('c14', 'Daburon', 'François', '13 r Champs Elysées', '6000', 'NICE', '1989-02-01 00:00:00', 2, 'S', 'PA'),
+('c3', 'De', 'Philippe', '13 r Charles Peguy', '10000', 'TROYES', '1992-05-05 00:00:00', 3, 'E', 'GE'),
+('d13', 'Debelle', 'Jeanne', '134 r Stalingrad', '44000', 'NANTES', '1991-12-05 00:00:00', 2, 'O', 'PL'),
 ('d51', 'Debroise', 'Michel', '2 av 6 Juin', '70000', 'VESOUL', '1997-11-18 00:00:00', 1, 'E', 'FC'),
 ('e22', 'Desmarquest', 'Nathalie', '14 r Fédérico Garcia Lorca', '54000', 'NANCY', '1989-03-24 00:00:00', 1, 'E', 'GE'),
 ('e24', 'Desnost', 'Pierre', '16 r Barral de Montferrat', '55000', 'VERDUN', '1993-05-17 00:00:00', 1, 'E', 'GE'),
@@ -75,7 +75,7 @@ INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRE
 ('e52', 'Eynde', 'Valerie', '3 r Henri Moissan', '76000', 'ROUEN', '1991-10-31 00:00:00', 1, 'N', 'NO'),
 ('f21', 'Finck', 'Jacques', 'rte Montreuil Bellay', '74000', 'ANNECY', '1993-06-08 00:00:00', 1, 'E', 'RA'),
 ('f39', 'Fremont', 'Fernande', '4 r Jean Giono', '69000', 'LYON', '1997-02-15 00:00:00', 1, 'E', 'RA'),
-('f4', 'Gest', 'Alain', '30 r Authie', '46000', 'FIGEAC', '1994-05-03 00:00:00', 1, 'S', 'OC'),
+('f4', 'Gest', 'Alain', '30 r Authie', '46000', 'FIGEAC', '1994-05-03 00:00:00', 3, 'S', 'OC'),
 ('g19', 'Gheysen', 'Galassus', '32 bd Mar Foch', '75000', 'PARIS', '1996-01-18 00:00:00', 1, 'P', 'IF'),
 ('g30', 'Girard', 'Yvon', '31 av 6 Juin', '80000', 'AMIENS', '1999-03-27 00:00:00', 1, 'N', 'HF'),
 ('g53', 'Gombert', 'Luc', '32 r Emile Gueymard', '56000', 'VANNES', '1985-10-02 00:00:00', 1, 'O', 'BG'),
@@ -85,7 +85,7 @@ INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRE
 ('h35', 'Jourdren', 'Pierre', '34 av Jean Perrot', '15000', 'AURRILLAC', '1993-08-26 00:00:00', 1, 'E', 'RA'),
 ('h40', 'Juttard', 'Pierre-Raoul', '34 cours Jean Jaurès', '8000', 'SEDAN', '1992-11-01 00:00:00', 1, 'E', 'GE'),
 ('j45', 'Laboure-Morel', 'Saout', '38 cours Berriat', '52000', 'CHAUMONT', '1998-02-25 00:00:00', 1, 'E', 'GE'),
-('j50', 'Landre', 'Philippe', '4 av G?n Laperrine', '59000', 'LILLE', '1992-12-16 00:00:00', 1, 'N', 'HF'),
+('j50', 'Landre', 'Philippe', '4 av G?n Laperrine', '59000', 'LILLE', '1992-12-16 00:00:00', 2, 'N', 'HF'),
 ('j8', 'Langeard', 'Hugues', '39 av Jean Perrot', '93000', 'BAGNOLET', '1998-06-18 00:00:00', 1, 'P', 'IF'),
 ('k4', 'Lanne', 'Bernard', '4 r Bayeux', '30000', 'NIMES', '1996-11-21 00:00:00', 1, 'S', 'OC'),
 ('k53', 'Le', 'Noel', '4 av Beauvert', '68000', 'MULHOUSE', '1983-03-23 00:00:00', 1, 'E', 'GE'),
@@ -103,13 +103,13 @@ INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRE
 ('p40', 'Michel', 'Jean-Claude', '5 r Gabriel Péri', '61000', 'FLERS', '1992-12-14 00:00:00', 1, 'N', 'NO'),
 ('p41', 'Montecot', 'Françoise', '6 r Paul Valéry', '17000', 'SAINTES', '1998-07-27 00:00:00', 1, 'S', 'AQ'),
 ('p42', 'Notini', 'Veronique', '5 r Lieut Chabal', '60000', 'BEAUVAIS', '1994-12-12 00:00:00', 1, 'N', 'HF'),
-('p49', 'Onfroy', 'Den', '5 r Sidonie Jacolin', '37000', 'TOURS', '1977-10-03 00:00:00', 1, 'P', 'CE'),
+('p49', 'Onfroy', 'Den', '5 r Sidonie Jacolin', '37000', 'TOURS', '1977-10-03 00:00:00', 2, 'P', 'CE'),
 ('p6', 'Pascreau', 'Charles', '57 bd Mar Foch', '64000', 'PAU', '1997-03-30 00:00:00', 1, 'S', 'AQ'),
 ('p7', 'Pernot', 'Claude-Noël', '6 r Alexandre 1 de Yougoslavie', '11000', 'NARBONNE', '1990-03-01 00:00:00', 1, 'S', 'OC'),
 ('p8', 'Perrier', 'Maitre', '6 r Aubert Dubayet', '71000', 'CHALON SUR SAONE', '1991-06-23 00:00:00', 1, 'E', 'FC'),
-('q17', 'Petit', 'Jean-Louis', '7 r Ernest Renan', '50000', 'SAINT LO', '1997-09-06 00:00:00', 1, 'N', 'NO'),
+('q17', 'Petit', 'Jean-Louis', '7 r Ernest Renan', '50000', 'SAINT LO', '1997-09-06 00:00:00', 3, 'N', 'NO'),
 ('r24', 'Piquery', 'Patrick', '9 r Vaucelles', '14000', 'CAEN', '1984-07-29 00:00:00', 1, 'N', 'NO'),
-('r58', 'Quiquandon', 'Joel', '7 r Ernest Renan', '29000', 'QUIMPER', '1990-06-30 00:00:00', 1, 'O', 'BG'),
+('r58', 'Quiquandon', 'Joel', '7 r Ernest Renan', '29000', 'QUIMPER', '1990-06-30 00:00:00', 3, 'O', 'BG'),
 ('s10', 'Retailleau', 'Josselin', '88Bis r Saumuroise', '39000', 'DOLE', '1995-11-14 00:00:00', 1, 'E', 'FC'),
 ('s21', 'Retailleau', 'Pascal', '32 bd Ayrault', '23000', 'MONTLUCON', '1992-09-25 00:00:00', 1, 'S', 'AQ'),
 ('t43', 'Souron', 'Maryse', '7B r Gay Lussac', '21000', 'DIJON', '1995-03-09 00:00:00', 1, 'E', 'FC'),
@@ -639,7 +639,11 @@ CREATE TABLE IF NOT EXISTS `offrir` (
 
 INSERT INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) VALUES
 ('3MYC7', 'a17', 1, 18),
+('ADIMOL9', 'a131', 5, 5),
+('ADIMOL9', 'e39', 1, 5),
 ('AMOPIL7', 'a131', 1, 12),
+('AMOPIL7', 'a131', 5, 10),
+('AMOPIL7', 'e39', 1, 10),
 ('AMOXIG12', 'a131', 3, 15),
 ('BACTIG10', 'a17', 1, 20),
 ('CARTION6', 'a131', 2, 20),
@@ -741,7 +745,7 @@ CREATE TABLE IF NOT EXISTS `praticien` (
 INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA_CP`, `PRA_VILLE`, `PRA_COEFNOTORIETE`, `PRA_COEFCONFIANCE`, `TYP_CODE`) VALUES
 (1, 'Alain', 'Notini', '114 r Authie', '85000', 'LA ROCHE SUR YON', 290.03, 754, 'MH'),
 (2, 'Albert', 'Gosselin', '13 r Devon', '41000', 'BLOIS', 307.49, 623, 'MV'),
-(3, 'André', 'Delahaye', '36 av 6 Juin', '25000', 'BESANCON', 185.79, 892, 'PS'),
+(3, 'Tata', 'Toto', '9 rue de test', '25000', 'Besançon', 185.79, 892, 'MV'),
 (4, 'André', 'Leroux', '47 av Robert Schuman', '60000', 'BEAUVAIS', 172.04, 318, 'PH'),
 (5, 'Anne', 'Desmoulins', '31 r St Jean', '30000', 'NIMES', 94.75, 445, 'PO'),
 (6, 'Anne', 'Mouel', '27 r Auvergne', '80000', 'AMIENS', 45.2, 567, 'MH'),
@@ -754,7 +758,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (13, 'Catherine', 'Morel', '21 r Chateaubriand', '75000', 'PARIS', 379.57, 845, 'PS'),
 (14, 'Chantal', 'Guivarch', '4 av G?n Laperrine', '45000', 'ORLEANS', 114.56, 267, 'PH'),
 (15, 'Christophe', 'Bessin-Grosdoit', '92 r Falaise', '6000', 'NICE', 222.06, 591, 'PO'),
-(16, 'Claire', 'Rossa', '14 av Thiers', '6000', 'NICE', 529.78, 712, 'MH'),
+(16, 'Claire', 'Rossa', '14 av Thiers', '6000', 'NICE', 529.78, 404, 'MH'),
 (17, 'Denis', 'Cauchy', '5 av Ste Thérèse', '11000', 'NARBONNE', 458.82, 834, 'MV'),
 (18, 'Dominique', 'Gaffé', '9 av 1ère Armée Française', '35000', 'RENNES', 213.4, 476, 'PS'),
 (19, 'Dominique', 'Guenon', '98 bd Mar Lyautey', '44000', 'NANTES', 175.89, 198, 'PH'),
@@ -769,7 +773,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (28, 'Frédéric', 'Lemée', '29 av 6 Juin', '56000', 'VANNES', 326.4, 445, 'PS'),
 (29, 'Frédéric', 'Martin', 'Bât A 90 r Bayeux', '70000', 'VESOUL', 506.06, 778, 'PH'),
 (30, 'Frédérique', 'Marie', '172 r Caponière', '70000', 'VESOUL', 313.31, 512, 'PO'),
-(31, 'Geneviève', 'Rosenstech', '27 r Auvergne', '75000', 'PARIS', 366.82, 667, 'MH'),
+(31, 'Geneviève', 'Rosenstech', '27 r Auvergne', '75000', 'PARIS', 366.82, 425, 'MH'),
 (32, 'Ghislaine', 'Pontavice', '8 r Gaillon', '86000', 'POITIERS', 265.58, 334, 'MV'),
 (33, 'Guillaume', 'Leveneur-Mosquet', '47 av Robert Schuman', '64000', 'PAU', 184.97, 876, 'PS'),
 (34, 'Guy', 'Blanchais', '30 r Authie', '8000', 'SEDAN', 502.48, 543, 'PH'),
@@ -964,19 +968,21 @@ CREATE TABLE IF NOT EXISTS `rapport_visite` (
 -- Déchargement des données de la table `rapport_visite`
 --
 
-INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP_BILAN`, `RAP_MOTIF`, `ETAT_CODE`, `MED_DEPOTLEGAL1`, `MED_DEPOTLEGAL2`, `MOT_CODE`, `PRA_NUM`) VALUES
-('a131', 1, '2002-04-18', 'Médecin curieux, à recontacter en décembre pour Réunion.', NULL, NULL, NULL, NULL, NULL, 23),
-('a131', 2, '2003-03-23', 'RAS.\r\nChangement de tel : 05 89 89 89 89.', NULL, NULL, NULL, NULL, NULL, 41),
-('a131', 3, '2021-12-03', 'Médecin ?nerv?, ancien boxeur !', NULL, NULL, NULL, NULL, NULL, 7),
-('a131', 4, '2025-11-22', 'dqsdf', NULL, 2, NULL, NULL, 3, 63),
-('a17', 1, '2003-05-21', 'Changement de direction, red?finition de la politique médicamenteuse, recours au générique.', NULL, NULL, NULL, NULL, NULL, 4),
-('d51', 306, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1),
-('d51', 318, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1),
-('d51', 708, '2025-11-21', 'Rapport de test pour vérification', 'Test', 2, NULL, NULL, 1, 1),
-('l56', 1, '2025-11-20', 'sdgsfg', NULL, 2, NULL, NULL, 1, 15),
-('l56', 2, '2025-11-21', 'tt', NULL, 2, NULL, NULL, 2, 82),
-('l56', 3, '2025-11-21', 'test', NULL, 2, NULL, NULL, 2, 82),
-('l56', 4, '2025-11-21', 'test', NULL, 2, NULL, NULL, 4, 74);
+INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP_BILAN`, `RAP_MOTIF`, `ETAT_CODE`, `MED_DEPOTLEGAL1`, `MED_DEPOTLEGAL2`, `MOT_CODE`, `PRA_NUM`, `PRA_NUM_REMPLACANT`) VALUES
+('a131', 1, '2002-04-18', 'Médecin curieux, à recontacter en décembre pour Réunion.', NULL, NULL, NULL, NULL, NULL, 23, NULL),
+('a131', 2, '2003-03-23', 'RAS.\r\nChangement de tel : 05 89 89 89 89.', NULL, NULL, NULL, NULL, NULL, 41, NULL),
+('a131', 3, '2021-12-03', 'Médecin ?nerv?, ancien boxeur !', NULL, NULL, NULL, NULL, NULL, 7, NULL),
+('a131', 4, '2025-11-22', 'dqsdf', NULL, 2, NULL, NULL, 3, 63, NULL),
+('a131', 5, '2025-12-09', 'test', NULL, 2, 'ADIMOL9', 'ADIMOL9', 2, 16, NULL),
+('a17', 1, '2003-05-21', 'Changement de direction, red?finition de la politique médicamenteuse, recours au générique.', NULL, NULL, NULL, NULL, NULL, 4, NULL),
+('d51', 306, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1, NULL),
+('d51', 318, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1, NULL),
+('d51', 708, '2025-11-21', 'Rapport de test pour vérification', 'Test', 2, NULL, NULL, 1, 1, NULL),
+('e39', 1, '2025-12-09', 'test', NULL, 2, 'ADIMOL9', 'AMOPIL7', 2, 31, NULL),
+('l56', 1, '2025-11-20', 'sdgsfg', NULL, 2, NULL, NULL, 1, 15, NULL),
+('l56', 2, '2025-11-21', 'tt', NULL, 2, NULL, NULL, 2, 82, NULL),
+('l56', 3, '2025-11-21', 'test', NULL, 2, NULL, NULL, 2, 82, NULL),
+('l56', 4, '2025-11-21', 'test', NULL, 2, NULL, NULL, 4, 74, NULL);
 
 -- --------------------------------------------------------
 
