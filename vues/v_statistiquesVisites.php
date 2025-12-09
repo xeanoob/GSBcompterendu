@@ -82,37 +82,6 @@ if (isset($_SESSION['message_succes_stats'])) {
 
         <!-- Résultats des statistiques -->
         <?php if ($rechercheEffectuee) : ?>
-            
-            <!-- Statistiques globales -->
-            <?php if ($statsGlobales) : ?>
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white text-dark border-bottom">
-                        <h5 class="mb-0">Statistiques globales du secteur</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row text-center">
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded">
-                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_VISITES']; ?></h2>
-                                    <p class="text-muted mb-0">Visites effectuées</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded">
-                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_VISITEURS']; ?></h2>
-                                    <p class="text-muted mb-0">Visiteurs actifs</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="p-3 bg-light rounded">
-                                    <h2 class="text-dark mb-0"><?php echo $statsGlobales['NB_PRATICIENS']; ?></h2>
-                                    <p class="text-muted mb-0">Praticiens visités</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
 
             <!-- Tableau des statistiques des médicaments -->
             <div class="card shadow-sm">
@@ -122,7 +91,6 @@ if (isset($_SESSION['message_succes_stats'])) {
                 <div class="card-body">
                     <?php if (!empty($statistiques)) : ?>
                         <p class="text-muted mb-3">
-                            <i class="bi bi-info-circle me-1"></i>
                             Période du <?php echo date('d/m/Y', strtotime($dateDebut)); ?> 
                             au <?php echo date('d/m/Y', strtotime($dateFin)); ?>
                             <?php if ($medDepotLegal) : ?>
@@ -131,14 +99,14 @@ if (isset($_SESSION['message_succes_stats'])) {
                         </p>
                         <div class="table-responsive">
                             <table class="table table-striped table-hover align-middle">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Médicament</th>
-                                        <th scope="col">Famille</th>
-                                        <th scope="col" class="text-center">Quantité totale</th>
-                                        <th scope="col" class="text-center">Nb de visites</th>
-                                        <th scope="col" class="text-center">Moyenne/visite</th>
+                                <thead>
+                                    <tr style="font-weight: normal;">
+                                        <td>#</td>
+                                        <td>Médicament</td>
+                                        <td>Famille</td>
+                                        <td class="text-center">Quantité totale</td>
+                                        <td class="text-center">Nb de visites</td>
+                                        <td class="text-center">Moyenne/visite</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -154,38 +122,28 @@ if (isset($_SESSION['message_succes_stats'])) {
                                         <tr>
                                             <td><?php echo $rang++; ?></td>
                                             <td>
-                                                <strong><?php echo htmlspecialchars($stat['MED_NOMCOMMERCIAL']); ?></strong>
+                                                <?php echo htmlspecialchars($stat['MED_NOMCOMMERCIAL']); ?>
                                                 <br><small class="text-muted"><?php echo htmlspecialchars($stat['MED_DEPOTLEGAL']); ?></small>
                                             </td>
                                             <td><?php echo htmlspecialchars($stat['FAM_LIBELLE']); ?></td>
-                                            <td class="text-center">
-                                                <span class="badge bg-info fs-6"><?php echo $stat['TOTAL_QUANTITE']; ?></span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge bg-secondary fs-6"><?php echo $stat['NB_VISITES']; ?></span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge bg-warning text-dark fs-6"><?php echo $moyenne; ?></span>
-                                            </td>
+                                            <td class="text-center"><?php echo $stat['TOTAL_QUANTITE']; ?></td>
+                                            <td class="text-center"><?php echo $stat['NB_VISITES']; ?></td>
+                                            <td class="text-center"><?php echo $moyenne; ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
-                                <tfoot class="table-secondary">
-                                    <tr>
-                                        <th colspan="3" class="text-end">TOTAUX :</th>
-                                        <th class="text-center">
-                                            <span class="badge bg-primary fs-6"><?php echo $totalQuantite; ?></span>
-                                        </th>
-                                        <th class="text-center">
-                                            <span class="badge bg-primary fs-6"><?php echo $totalVisites; ?></span>
-                                        </th>
-                                        <th class="text-center">
+                                <tfoot>
+                                    <tr style="font-weight: normal;">
+                                        <td colspan="3" class="text-end">TOTAUX :</td>
+                                        <td class="text-center"><?php echo $totalQuantite; ?></td>
+                                        <td class="text-center"><?php echo $totalVisites; ?></td>
+                                        <td class="text-center">
                                             <?php if ($totalVisites > 0) : ?>
-                                                <span class="badge bg-primary fs-6"><?php echo round($totalQuantite / $totalVisites, 1); ?></span>
+                                                <?php echo round($totalQuantite / $totalVisites, 1); ?>
                                             <?php else : ?>
-                                                <span class="badge bg-secondary fs-6">-</span>
+                                                -
                                             <?php endif; ?>
-                                        </th>
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>
