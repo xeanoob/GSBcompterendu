@@ -206,7 +206,7 @@ function getRapportVisite($matricule, $numRapport)
 {
     try {
         $pdo = connexionPDO();
-        $sql = 'SELECT r.*, p.PRA_NOM, p.PRA_PRENOM, 
+        $sql = 'SELECT r.*, p.PRA_NOM, p.PRA_PRENOM, p.PRA_COEFCONFIANCE, 
                        m.MOT_LIBELLE, e.ETAT_LIBELLE,
                        med1.MED_NOMCOMMERCIAL as MED1_NOM,
                        med2.MED_NOMCOMMERCIAL as MED2_NOM,
@@ -416,7 +416,7 @@ function getRapportVisiteComplet($matricule, $numRapport)
     try {
         $pdo = connexionPDO();
         $sql = 'SELECT r.*,
-                       p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM, p.PRA_ADRESSE, p.PRA_CP, p.PRA_VILLE,
+                       p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM, p.PRA_ADRESSE, p.PRA_CP, p.PRA_VILLE, p.PRA_COEFCONFIANCE,
                        m.MOT_LIBELLE,
                        e.ETAT_LIBELLE,
                        med1.MED_NOMCOMMERCIAL as MED1_NOM,

@@ -61,6 +61,13 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
+                    <strong>Coefficient de confiance du praticien :</strong><br>
+                    <?= htmlspecialchars($rapport['PRA_COEFCONFIANCE'] ?? 'Non renseigné') ?>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
                     <strong>Motif de la visite :</strong><br>
                     <?= htmlspecialchars($rapport['MOT_LIBELLE'] ?? 'Non renseigné') ?>
                     <?php if (!empty($rapport['RAP_MOTIF'])) : ?>
