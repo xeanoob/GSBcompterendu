@@ -58,7 +58,7 @@
                 <strong>Coefficient de notoriété :</strong><br>
                 <?php
                 if (isset($praticien['PRA_COEFNOTORIETE'])) {
-                    echo '<span class="badge bg-info">' . htmlspecialchars($praticien['PRA_COEFNOTORIETE']) . '</span>';
+                    echo '<span>' . htmlspecialchars($praticien['PRA_COEFNOTORIETE']) . '</span>';
                 } else {
                     echo 'Non renseigné';
                 }
@@ -69,7 +69,7 @@
                 <strong>Coefficient de confiance :</strong><br>
                 <?php
                 if (isset($praticien['PRA_COEFCONFIANCE'])) {
-                    echo '<span class="badge bg-info">' . htmlspecialchars($praticien['PRA_COEFCONFIANCE']) . '</span>';
+                    echo '<span>' . htmlspecialchars($praticien['PRA_COEFCONFIANCE']) . '</span>';
                 } else {
                     echo 'Non renseigné';
                 }

@@ -95,7 +95,6 @@
                 <ul class="list-unstyled mb-0">
                     <?php if (!empty($rapport['MED_DEPOTLEGAL1'])) : ?>
                         <li class="mb-2">
-                            <span class="badge bg-primary">1</span>
                             <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL1'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
                                 <?= htmlspecialchars(($rapport['MED1_NOM'] ?? '') . ' (' . $rapport['MED_DEPOTLEGAL1'] . ')') ?>
                             </a>
@@ -103,7 +102,6 @@
                     <?php endif; ?>
                     <?php if (!empty($rapport['MED_DEPOTLEGAL2'])) : ?>
                         <li>
-                            <span class="badge bg-primary">2</span>
                             <a href="index.php?uc=rapports&action=detailMedicament&med=<?= $rapport['MED_DEPOTLEGAL2'] ?><?= (isset($retourNouveaux) && $retourNouveaux) ? '&retour=nouveaux' : '' ?>" class="text-decoration-none">
                                 <?= htmlspecialchars(($rapport['MED2_NOM'] ?? '') . ' (' . $rapport['MED_DEPOTLEGAL2'] . ')') ?>
                             </a>
@@ -142,9 +140,7 @@
                                         <?= htmlspecialchars($ech['MED_DEPOTLEGAL']) ?>
                                     </td>
                                     <td class="text-end">
-                                        <span class="badge bg-secondary">
-                                            <?= htmlspecialchars($ech['OFF_QTE']) ?>
-                                        </span>
+                                        <?= htmlspecialchars($ech['OFF_QTE']) ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
