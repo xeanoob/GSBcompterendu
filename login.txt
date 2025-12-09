@@ -5,7 +5,10 @@ mdp :  LoiDid!
 ------- Visiteur -------
 user : villou
 mdp : VilLou!
+user : dudfre
+mdp: DudFre!
 
 ------- Délégué -------
 user : leclud
 mdp : LecLud!
+

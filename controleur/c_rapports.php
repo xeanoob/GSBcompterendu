@@ -760,8 +760,7 @@ switch ($action) {
             if (empty($erreurs)) {
                 $rechercheEffectuee = true;
 
-                // Récupérer les statistiques globales
-                $statsGlobales = getStatsGlobalesVisitesSecteur($secteur, $dateDebut, $dateFin);
+               
 
                 // Récupérer les statistiques par médicament
                 $statistiques = getStatistiquesEchantillonsSecteur($secteur, $dateDebut, $dateFin, $medDepotLegal);
