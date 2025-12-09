@@ -28,16 +28,29 @@
             <form method="post" action="index.php?uc=praticiens&action=afficher">
                 <div class="mb-3 d-flex justify-content-end align-items-center">
                     <span class="me-2">Trier par :</span>
-                    <div class="btn-group" role="group">
-                        <a href="index.php?uc=praticiens&action=selection&tri=nom" 
+                    <div class="btn-group me-3" role="group">
+                        <a href="index.php?uc=praticiens&action=selection&tri=nom<?= isset($filtre) && $filtre === 'moi' ? '&filtre=moi' : '' ?>" 
                            class="btn btn-sm <?= (!isset($tri) || $tri === 'nom') ? 'btn-info' : 'btn-outline-info' ?>">
                             Nom
                         </a>
-                        <a href="index.php?uc=praticiens&action=selection&tri=num" 
+                        <a href="index.php?uc=praticiens&action=selection&tri=num<?= isset($filtre) && $filtre === 'moi' ? '&filtre=moi' : '' ?>" 
                            class="btn btn-sm <?= (isset($tri) && $tri === 'num') ? 'btn-info' : 'btn-outline-info' ?>">
                             Numéro
                         </a>
                     </div>
+                    <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
+                        <span class="me-2">Afficher :</span>
+                        <div class="btn-group" role="group">
+                            <a href="index.php?uc=praticiens&action=selection&tri=<?= $tri ?? 'nom' ?>" 
+                               class="btn btn-sm <?= (!isset($filtre) || $filtre !== 'moi') ? 'btn-secondary' : 'btn-outline-secondary' ?>">
+                                Tous
+                            </a>
+                            <a href="index.php?uc=praticiens&action=selection&tri=<?= $tri ?? 'nom' ?>&filtre=moi" 
+                               class="btn btn-sm <?= (isset($filtre) && $filtre === 'moi') ? 'btn-success' : 'btn-outline-success' ?>">
+                                Modifiables
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <label class="form-label" for="listePraticiens">Praticiens disponibles :</label>
@@ -112,6 +125,10 @@
                     <div class="col-md-4">
                         <strong>Coef. notoriété :</strong><br>
                         <?= htmlspecialchars($praticien['PRA_COEFNOTORIETE'] ?? 'Non renseigné') ?>
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Coef. confiance :</strong><br>
+                        <?= htmlspecialchars($praticien['PRA_COEFCONFIANCE'] ?? 'Non renseigné') ?>
                     </div>
                 </div>
 
@@ -217,6 +234,11 @@
                             <label for="PRA_COEFNOTORIETE" class="form-label">Coef. notoriété</label>
                             <input type="number" step="0.01" min="0" name="PRA_COEFNOTORIETE" id="PRA_COEFNOTORIETE" class="form-control"
                                    value="<?= htmlspecialchars($praticien['PRA_COEFNOTORIETE'] ?? '') ?>">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="PRA_COEFCONFIANCE" class="form-label">Coef. confiance</label>
+                            <input type="number" step="0.01" min="0" name="PRA_COEFCONFIANCE" id="PRA_COEFCONFIANCE" class="form-control"
+                                   value="<?= htmlspecialchars($praticien['PRA_COEFCONFIANCE'] ?? '') ?>">
                         </div>
                     </div>
 
