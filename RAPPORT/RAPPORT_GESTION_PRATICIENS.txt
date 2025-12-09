@@ -1,0 +1,232 @@
+================================================================================
+    RAPPORT D'IMPLÉMENTATION - GESTION DES PRATICIENS
+    Modifications apportées à la fonctionnalité de gestion des praticiens
+================================================================================
+
+DATE : 09/12/2024
+OBJECTIFS :
+    1. Ajouter le coefficient de confiance (affichage et modification)
+    2. Permettre à tous de voir tous les praticiens
+    3. Restreindre les modifications par région/secteur selon l'habilitation
+    4. Ajouter un filtre "Modifiables" pour voir uniquement ses praticiens
+
+================================================================================
+                    PARTIE 1 : COEFFICIENT DE CONFIANCE
+================================================================================
+
+1. BASE DE DONNÉES
+------------------
+Table : praticien
+Colonne ajoutée : PRA_COEFCONFIANCE (float, NULL par défaut)
+
+Script SQL d'ajout :
+    ALTER TABLE praticien ADD PRA_COEFCONFIANCE float DEFAULT NULL;
+
+--------------------------------------------------------------------------------
+
+2. MODÈLE (praticien.modele.inc.php)
+------------------------------------
+
+A) Fonction getPraticienByNum() - MODIFIÉE
+   Ajout de PRA_COEFCONFIANCE dans la requête SELECT :
+
+   AVANT :
+   $sql = 'SELECT PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, 
+                  PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE
+           FROM praticien
+           WHERE PRA_NUM = :num';
+
+   APRÈS :
+   $sql = 'SELECT PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, 
+                  PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, PRA_COEFCONFIANCE, TYP_CODE
+           FROM praticien
+           WHERE PRA_NUM = :num';
+
+B) Fonction ajouterPraticien() - MODIFIÉE
+   Signature AVANT : ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
+   Signature APRÈS : ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance = null)
+
+   Requête INSERT mise à jour avec PRA_COEFCONFIANCE
+
+C) Fonction modifierPraticien() - MODIFIÉE
+   Signature AVANT : modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type)
+   Signature APRÈS : modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance = null)
+
+   Requête UPDATE mise à jour avec PRA_COEFCONFIANCE
+
+--------------------------------------------------------------------------------
+
+3. CONTRÔLEUR (c_praticiens.php)
+--------------------------------
+
+A) Récupération du champ - AJOUTÉ
+   $coefConfiance = trim($_POST['PRA_COEFCONFIANCE'] ?? '');
+
+B) Tableau praticien pour réaffichage - MODIFIÉ
+   Ajout de 'PRA_COEFCONFIANCE' => $coefConfiance
+
+C) Appels aux fonctions - MODIFIÉS
+   ajouterPraticien(..., $coefConfiance)
+   modifierPraticien(..., $coefConfiance)
+
+--------------------------------------------------------------------------------
+
+4. VUE (v_gererPraticien.php)
+-----------------------------
+
+A) Mode Consultation - AJOUTÉ
+   <div class="col-md-4">
+       <strong>Coef. confiance :</strong><br>
+       <?= htmlspecialchars($praticien['PRA_COEFCONFIANCE'] ?? 'Non renseigné') ?>
+   </div>
+
+B) Mode Modification/Création - AJOUTÉ
+   <div class="col-md-4">
+       <label for="PRA_COEFCONFIANCE" class="form-label">Coef. confiance</label>
+       <input type="number" step="0.01" min="0" name="PRA_COEFCONFIANCE" 
+              id="PRA_COEFCONFIANCE" class="form-control"
+              value="<?= htmlspecialchars($praticien['PRA_COEFCONFIANCE'] ?? '') ?>">
+   </div>
+
+
+================================================================================
+                    PARTIE 2 : DROITS D'ACCÈS ET FILTRAGE
+================================================================================
+
+1. MODÈLE (praticien.modele.inc.php)
+------------------------------------
+
+A) Fonction getAllPraticiens() - MODIFIÉE
+   Signature AVANT : getAllPraticiens($regCode = null, $tri = 'nom')
+   Signature APRÈS : getAllPraticiens($regCode = null, $tri = 'nom', $secCode = null)
+
+   Ajout du filtrage par secteur :
+   if ($secCode !== null) {
+       $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+               FROM praticien p
+               WHERE SUBSTRING(p.PRA_CP, 1, 2) IN (
+                   SELECT d.NoDEPT FROM departement d
+                   INNER JOIN region r ON d.REG_CODE = r.REG_CODE
+                   WHERE r.SEC_CODE = :secCode
+               )
+               ORDER BY ' . $orderBy;
+   }
+
+B) Fonction isPraticienDansSecteur() - NOUVELLE
+   Vérifie si un praticien appartient à un secteur donné.
+
+   function isPraticienDansSecteur($praticienNum, $secCode)
+   {
+       $sql = 'SELECT COUNT(*) as nb
+               FROM praticien p
+               WHERE p.PRA_NUM = :num 
+               AND SUBSTRING(p.PRA_CP, 1, 2) IN (
+                   SELECT d.NoDEPT FROM departement d
+                   INNER JOIN region r ON d.REG_CODE = r.REG_CODE
+                   WHERE r.SEC_CODE = :secCode
+               )';
+       ...
+       return $result['nb'] > 0;
+   }
+
+--------------------------------------------------------------------------------
+
+2. CONTRÔLEUR (c_praticiens.php)
+--------------------------------
+
+A) Gestion du filtre - AJOUTÉ
+   $filtre = $_REQUEST['filtre'] ?? 'tous';
+
+   if ($filtre === 'moi') {
+       if ($_SESSION['habilitation'] == 2 && $regionUtilisateur) {
+           // Délégué : praticiens de sa région
+           $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
+       } elseif ($_SESSION['habilitation'] == 3 && $secteurUtilisateur) {
+           // Responsable secteur : praticiens de son secteur
+           $listePraticiens = getAllPraticiens(null, $tri, $secteurUtilisateur);
+       }
+   } else {
+       $listePraticiens = getAllPraticiens(null, $tri);
+   }
+
+B) Vérification des droits de modification - MODIFIÉ
+
+   // Délégué (2) : peut modifier uniquement les praticiens de sa région
+   if ($habilitation == 2 && $regionUtilisateur) {
+       if (!isPraticienDansRegion($num, $regionUtilisateur)) {
+           $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
+       }
+   }
+
+   // Responsable Secteur (3) : peut modifier uniquement les praticiens de son secteur
+   if ($habilitation == 3 && $secteurUtilisateur) {
+       if (!isPraticienDansSecteur($num, $secteurUtilisateur)) {
+           $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre secteur.";
+       }
+   }
+
+C) Vérification du code postal lors de la modification - MODIFIÉ
+   - Pour le délégué : le nouveau CP doit rester dans sa région
+   - Pour le responsable secteur : le nouveau CP doit rester dans son secteur
+
+--------------------------------------------------------------------------------
+
+3. VUE (v_gererPraticien.php)
+-----------------------------
+
+Ajout des boutons de filtre (visible uniquement pour délégués et responsables) :
+
+<?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
+    <span class="me-2">Afficher :</span>
+    <div class="btn-group" role="group">
+        <a href="...&filtre=tous" class="btn btn-sm btn-secondary">
+            Tous
+        </a>
+        <a href="...&filtre=moi" class="btn btn-sm btn-success">
+            Modifiables
+        </a>
+    </div>
+<?php endif; ?>
+
+
+================================================================================
+                    RÉSUMÉ DES DROITS D'ACCÈS
+================================================================================
+
++------------------------+------------------+---------------------------+
+|       RÔLE             |   CONSULTATION   |       MODIFICATION        |
++------------------------+------------------+---------------------------+
+| Visiteur (1)           | Tous             | Aucun                     |
++------------------------+------------------+---------------------------+
+| Délégué (2)            | Tous             | Praticiens de sa région   |
++------------------------+------------------+---------------------------+
+| Responsable Secteur (3)| Tous             | Praticiens de son secteur |
++------------------------+------------------+---------------------------+
+
+
+================================================================================
+                    FICHIERS MODIFIÉS
+================================================================================
+
+1. modele/praticien.modele.inc.php
+   - getAllPraticiens() : ajout paramètre $secCode
+   - getPraticienByNum() : ajout PRA_COEFCONFIANCE dans SELECT
+   - ajouterPraticien() : ajout paramètre $coefConfiance
+   - modifierPraticien() : ajout paramètre $coefConfiance
+   - isPraticienDansSecteur() : nouvelle fonction
+
+2. controleur/c_praticiens.php
+   - Gestion du filtre 'moi'
+   - Récupération de PRA_COEFCONFIANCE
+   - Vérification des droits par région/secteur
+   - Passage de $coefConfiance aux fonctions
+
+3. vues/v_gererPraticien.php
+   - Affichage du coef. confiance en consultation
+   - Champ de saisie pour coef. confiance
+   - Boutons de filtre "Tous" / "Modifiables"
+
+
+================================================================================
+                    FIN DU RAPPORT
+================================================================================

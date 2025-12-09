@@ -11,12 +11,30 @@ if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
 // variables communes
 // Récupérer la région de l'utilisateur connecté
 $regionUtilisateur = $_SESSION['region'] ?? null;
+$secteurUtilisateur = $_SESSION['secteur'] ?? null;
 
 // Récupérer le paramètre de tri (par défaut 'nom')
 $tri = $_REQUEST['tri'] ?? 'nom';
 
-// Filtrer les praticiens par région si l'utilisateur a une région assignée
-$listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
+// Récupérer le filtre (tous ou modifiables)
+$filtre = $_REQUEST['filtre'] ?? 'tous';
+
+// Charger les praticiens selon le filtre
+if ($filtre === 'moi') {
+    // Afficher uniquement les praticiens modifiables
+    if ($_SESSION['habilitation'] == 2 && $regionUtilisateur) {
+        // Délégué : praticiens de sa région
+        $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
+    } elseif ($_SESSION['habilitation'] == 3 && $secteurUtilisateur) {
+        // Responsable secteur : praticiens de son secteur
+        $listePraticiens = getAllPraticiens(null, $tri, $secteurUtilisateur);
+    } else {
+        $listePraticiens = getAllPraticiens(null, $tri);
+    }
+} else {
+    // Afficher tous les praticiens
+    $listePraticiens = getAllPraticiens(null, $tri);
+}
 $listeTypes = getAllTypesPraticien();
 $listeSpecialites = getAllSpecialites();
 $specialitesPraticien = [];
@@ -127,6 +145,7 @@ switch ($action) {
         $cp = trim(strip_tags($_POST['PRA_CP'] ?? ''));
         $ville = trim(strip_tags($_POST['PRA_VILLE'] ?? ''));
         $coef = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
+        $coefConfiance = trim($_POST['PRA_COEFCONFIANCE'] ?? '');
         $type = trim($_POST['TYP_CODE'] ?? '');
 
         // Récupération des spécialités sélectionnées (facultatives)
@@ -180,6 +199,7 @@ switch ($action) {
             'PRA_CP' => $cp,
             'PRA_VILLE' => $ville,
             'PRA_COEFNOTORIETE' => $coef,
+            'PRA_COEFCONFIANCE' => $coefConfiance,
             'TYP_CODE' => $type
         ];
 
@@ -192,22 +212,38 @@ switch ($action) {
         // Pas d'erreur → enregistrement
         if ($mode === 'creation') {
             // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
-            $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type);
+            $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance);
             $messageSucces = "Le praticien a été créé avec succès (n°$num).";
             $mode = 'modification';
         } else {
-            // En mode modification, vérifier que le praticien appartient à la région
-            if ($regionUtilisateur && !isPraticienDansRegion($num, $regionUtilisateur)) {
-                $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
-                include("vues/v_gererPraticien.php");
-                break;
+            // En mode modification, vérifier les droits selon l'habilitation
+            $habilitation = $_SESSION['habilitation'];
+            
+            // Délégué (2) : peut modifier uniquement les praticiens de sa région
+            if ($habilitation == 2 && $regionUtilisateur) {
+                if (!isPraticienDansRegion($num, $regionUtilisateur)) {
+                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
+                    include("vues/v_gererPraticien.php");
+                    break;
+                }
+            }
+            
+            // Responsable Secteur (3) : peut modifier uniquement les praticiens de son secteur
+            if ($habilitation == 3 && $secteurUtilisateur) {
+                if (!isPraticienDansSecteur($num, $secteurUtilisateur)) {
+                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre secteur.";
+                    include("vues/v_gererPraticien.php");
+                    break;
+                }
             }
 
-            // Vérifier que le nouveau code postal (si modifié) reste dans la même région
+            // Vérifier que le nouveau code postal (si modifié) reste dans la zone autorisée
             $praticienActuel = getPraticienByNum($num);
             if ($praticienActuel && $cp !== $praticienActuel['PRA_CP']) {
                 $codeDept = (int) substr($cp, 0, 2);
-                if ($regionUtilisateur) {
+                
+                // Pour le délégué : vérifier la région
+                if ($habilitation == 2 && $regionUtilisateur) {
                     try {
                         $pdo = connexionPDO();
                         $sqlCheck = 'SELECT REG_CODE FROM departement WHERE NoDEPT = :dept';
@@ -227,9 +263,33 @@ switch ($action) {
                         break;
                     }
                 }
+                
+                // Pour le responsable secteur : vérifier le secteur
+                if ($habilitation == 3 && $secteurUtilisateur) {
+                    try {
+                        $pdo = connexionPDO();
+                        $sqlCheck = 'SELECT r.SEC_CODE FROM departement d
+                                     INNER JOIN region r ON d.REG_CODE = r.REG_CODE
+                                     WHERE d.NoDEPT = :dept';
+                        $stmtCheck = $pdo->prepare($sqlCheck);
+                        $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
+                        $stmtCheck->execute();
+                        $deptSecteur = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+                        if (!$deptSecteur || $deptSecteur['SEC_CODE'] !== $secteurUtilisateur) {
+                            $erreurs[] = "Le nouveau code postal doit rester dans votre secteur.";
+                            include("vues/v_gererPraticien.php");
+                            break;
+                        }
+                    } catch (PDOException $e) {
+                        $erreurs[] = "Erreur lors de la vérification du secteur.";
+                        include("vues/v_gererPraticien.php");
+                        break;
+                    }
+                }
             }
 
-            modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type);
+            modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance);
             $messageSucces = "Les informations du praticien ont été mises à jour.";
             $mode = 'modification';
         }

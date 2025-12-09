@@ -6,9 +6,11 @@ include_once 'bd.inc.php';
  * Récupère la liste des praticiens (numéro + nom + prénom)
  * pour alimenter la liste déroulante.
  * @param string|null $regCode Code de région pour filtrer (optionnel)
+ * @param string $tri Tri par 'nom' ou 'num'
+ * @param string|null $secCode Code de secteur pour filtrer (optionnel)
  * @return array Liste des praticiens
  */
-function getAllPraticiens($regCode = null, $tri = 'nom')
+function getAllPraticiens($regCode = null, $tri = 'nom', $secCode = null)
 {
     try {
         $pdo = connexionPDO();
@@ -18,24 +20,33 @@ function getAllPraticiens($regCode = null, $tri = 'nom')
             $orderBy = 'p.PRA_NUM';
         }
 
-        if ($regCode !== null) {
-            // Filtrage par région basé sur le code postal (2 premiers chiffres = département)
-            /**$sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+        if ($secCode !== null) {
+            // Filtrage par secteur (pour Responsable Secteur)
+            $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
                     FROM praticien p
-                    LEFT JOIN departement d ON CAST(SUBSTRING(p.PRA_CP, 1, 2) AS UNSIGNED) = d.NoDEPT
-                    WHERE d.REG_CODE = :regCode
+                    WHERE SUBSTRING(p.PRA_CP, 1, 2) IN (
+                        SELECT d.NoDEPT FROM departement d
+                        INNER JOIN region r ON d.REG_CODE = r.REG_CODE
+                        WHERE r.SEC_CODE = :secCode
+                    )
                     ORDER BY ' . $orderBy;
-                    */
-                    $sql='SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } elseif ($regCode !== null) {
+            // Filtrage par région
+            $sql = 'SELECT p.PRA_NUM, p.PRA_NOM, p.PRA_PRENOM 
                     FROM praticien p
-                    where SUBSTRING(p.PRA_CP,1,2) IN 
+                    WHERE SUBSTRING(p.PRA_CP, 1, 2) IN 
                     (SELECT NoDEPT FROM departement WHERE REG_CODE LIKE :regCode)
-                    ORDER BY PRA_NOM;';
+                    ORDER BY ' . $orderBy;
             $stmt = $pdo->prepare($sql);
             $stmt->bindValue(':regCode', $regCode, PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
+            // Tous les praticiens
             $sql = 'SELECT PRA_NUM, PRA_NOM, PRA_PRENOM 
                     FROM praticien p
                     ORDER BY ' . $orderBy;
@@ -56,7 +67,7 @@ function getPraticienByNum($num)
     try {
         $pdo = connexionPDO();
         $sql = 'SELECT PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, 
-                       PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE
+                       PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, PRA_COEFCONFIANCE, TYP_CODE
                 FROM praticien
                 WHERE PRA_NUM = :num';
         $stmt = $pdo->prepare($sql);
@@ -93,7 +104,7 @@ function getAllTypesPraticien()
  * Le numéro PRA_NUM est généré automatiquement par AUTO_INCREMENT.
  * @return int Le numéro du praticien créé
  */
-function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
+function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance = null)
 {
     try {
         $pdo = connexionPDO();
@@ -105,8 +116,8 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
         $prochainNum = $ligne['maxNum'] + 1;
 
         $sql = 'INSERT INTO praticien
-                (PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, TYP_CODE)
-                VALUES (:num, :prenom, :nom, :adresse, :cp, :ville, :coef, :type)';
+                (PRA_NUM, PRA_PRENOM, PRA_NOM, PRA_ADRESSE, PRA_CP, PRA_VILLE, PRA_COEFNOTORIETE, PRA_COEFCONFIANCE, TYP_CODE)
+                VALUES (:num, :prenom, :nom, :adresse, :cp, :ville, :coef, :coefConfiance, :type)';
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':num', $prochainNum, PDO::PARAM_INT);
         $stmt->bindValue(':prenom', $prenom, PDO::PARAM_STR);
@@ -115,6 +126,7 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
         $stmt->bindValue(':cp', $cp, PDO::PARAM_STR);
         $stmt->bindValue(':ville', $ville, PDO::PARAM_STR);
         $stmt->bindValue(':coef', $coef, PDO::PARAM_STR);
+        $stmt->bindValue(':coefConfiance', $coefConfiance !== '' ? $coefConfiance : null, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
 
@@ -128,7 +140,7 @@ function ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type)
 /**
  * Met à jour un praticien existant.
  */
-function modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type)
+function modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance = null)
 {
     try {
         $pdo = connexionPDO();
@@ -139,6 +151,7 @@ function modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $t
                     PRA_CP = :cp,
                     PRA_VILLE = :ville,
                     PRA_COEFNOTORIETE = :coef,
+                    PRA_COEFCONFIANCE = :coefConfiance,
                     TYP_CODE = :type
                 WHERE PRA_NUM = :num';
         $stmt = $pdo->prepare($sql);
@@ -149,6 +162,7 @@ function modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $t
         $stmt->bindValue(':cp', $cp, PDO::PARAM_STR);
         $stmt->bindValue(':ville', $ville, PDO::PARAM_STR);
         $stmt->bindValue(':coef', $coef, PDO::PARAM_STR);
+        $stmt->bindValue(':coefConfiance', $coefConfiance !== '' ? $coefConfiance : null, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
     } catch (PDOException $e) {
@@ -319,3 +333,32 @@ function mettreAJourCoefConfiance($praticienNum, $coefConfiance)
     }
 }
 
+/**
+ * Vérifie si un praticien appartient à un secteur donné
+ * @param int $praticienNum Numéro du praticien
+ * @param string $secCode Code du secteur
+ * @return bool True si le praticien est dans le secteur, False sinon
+ */
+function isPraticienDansSecteur($praticienNum, $secCode)
+{
+    try {
+        $pdo = connexionPDO();
+        $sql = 'SELECT COUNT(*) as nb
+                FROM praticien p
+                WHERE p.PRA_NUM = :num 
+                AND SUBSTRING(p.PRA_CP, 1, 2) IN (
+                    SELECT d.NoDEPT FROM departement d
+                    INNER JOIN region r ON d.REG_CODE = r.REG_CODE
+                    WHERE r.SEC_CODE = :secCode
+                )';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':num', $praticienNum, PDO::PARAM_INT);
+        $stmt->bindValue(':secCode', $secCode, PDO::PARAM_STR);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['nb'] > 0;
+    } catch (PDOException $e) {
+        print "Erreur ! : " . $e->getMessage();
+        return false;
+    }
+}
