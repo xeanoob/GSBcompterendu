@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3307
--- Généré le : mar. 09 déc. 2025 à 09:44
--- Version du serveur : 11.5.2-MariaDB
--- Version de PHP : 8.3.14
+-- Host: 127.0.0.1:3307
+-- Generation Time: Dec 10, 2025 at 01:24 PM
+-- Server version: 11.5.2-MariaDB
+-- PHP Version: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `gsbv0v3`
+-- Database: `gsbv0v3`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `collaborateur`
+-- Table structure for table `collaborateur`
 --
 
 DROP TABLE IF EXISTS `collaborateur`;
@@ -46,81 +46,81 @@ CREATE TABLE IF NOT EXISTS `collaborateur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `collaborateur`
+-- Dumping data for table `collaborateur`
 --
 
 INSERT INTO `collaborateur` (`COL_MATRICULE`, `COL_NOM`, `COL_PRENOM`, `COL_ADRESSE`, `COL_CP`, `COL_VILLE`, `COL_DATEEMBAUCHE`, `HAB_ID`, `SEC_CODE`, `REG_CODE`) VALUES
-('a131', 'Villechalane', 'Louis', '8 cours Lafontaine', '29000', 'BREST', '1992-12-11 00:00:00', 1, 'O', 'BG'),
-('a17', 'Andre', 'David', '1 r Aimon de Chissée', '38100', 'GRENOBLE', '1991-08-26 00:00:00', 1, 'E', 'RA'),
-('a55', 'Bedos', 'Christian', '1 r Bénédictins', '65000', 'TARBES', '1987-07-17 00:00:00', 1, 'S', 'OC'),
-('a93', 'Tusseau', 'Louis', '22 r Renou', '86000', 'POITIERS', '1999-01-02 00:00:00', 1, 'S', 'AQ'),
-('b13', 'Bentot', 'Pascal', '11 av 6 Juin', '67000', 'STRASBOURG', '1996-03-11 00:00:00', 1, 'E', 'GE'),
-('b16', 'Bioret', 'Luc', '1 r Linne', '35000', 'RENNES', '1997-03-21 00:00:00', 1, 'O', 'BG'),
-('b19', 'Bunisset', 'Francis', '10 r Nicolas Chorier', '85000', 'LA ROCHE SUR YON', '1999-01-31 00:00:00', 1, 'O', 'PL'),
-('b25', 'Bunisset', 'Denise', '1 r Lionne', '49100', 'ANGERS', '1994-07-03 00:00:00', 1, 'O', 'PL'),
-('b28', 'Cacheux', 'Bernard', '114 r Authie', '34000', 'MONTPELLIER', '2000-08-02 00:00:00', 1, 'S', 'OC'),
-('b34', 'Cadic', 'Eric', '123 r Caponière', '41000', 'BLOIS', '1993-12-06 00:00:00', 1, 'P', 'CE'),
+('a131', 'Villechalane', 'Louis', '8 cours Lafontaine', '29000', 'BREST', '1992-12-11 00:00:00', 1, NULL, 'BG'),
+('a17', 'Andre', 'David', '1 r Aimon de Chissée', '38100', 'GRENOBLE', '1991-08-26 00:00:00', 1, NULL, 'RA'),
+('a55', 'Bedos', 'Christian', '1 r Bénédictins', '65000', 'TARBES', '1987-07-17 00:00:00', 1, NULL, 'OC'),
+('a93', 'Tusseau', 'Louis', '22 r Renou', '86000', 'POITIERS', '1999-01-02 00:00:00', 1, NULL, 'AQ'),
+('b13', 'Bentot', 'Pascal', '11 av 6 Juin', '67000', 'STRASBOURG', '1996-03-11 00:00:00', 1, NULL, 'GE'),
+('b16', 'Bioret', 'Luc', '1 r Linne', '35000', 'RENNES', '1997-03-21 00:00:00', 1, NULL, 'BG'),
+('b19', 'Bunisset', 'Francis', '10 r Nicolas Chorier', '85000', 'LA ROCHE SUR YON', '1999-01-31 00:00:00', 1, NULL, 'PL'),
+('b25', 'Bunisset', 'Denise', '1 r Lionne', '49100', 'ANGERS', '1994-07-03 00:00:00', 1, NULL, 'PL'),
+('b28', 'Cacheux', 'Bernard', '114 r Authie', '34000', 'MONTPELLIER', '2000-08-02 00:00:00', 1, NULL, 'OC'),
+('b34', 'Cadic', 'Eric', '123 r Caponière', '41000', 'BLOIS', '1993-12-06 00:00:00', 1, NULL, 'CE'),
 ('b4', 'Charoze', 'Catherine', '100 pl Géants', '33000', 'BORDEAUX', '1997-09-25 00:00:00', 3, 'S', 'AQ'),
-('b50', 'Clepkens', 'Christophe', '12 r Fédérico Garcia Lorca', '13000', 'MARSEILLE', '1998-01-18 00:00:00', 1, 'S', 'PA'),
-('b59', 'Cottin', 'Vincenne', '36 sq Capucins', '5000', 'GAP', '1995-10-21 00:00:00', 1, 'E', 'RA'),
-('c14', 'Daburon', 'François', '13 r Champs Elysées', '6000', 'NICE', '1989-02-01 00:00:00', 2, 'S', 'PA'),
-('c3', 'De', 'Philippe', '13 r Charles Peguy', '10000', 'TROYES', '1992-05-05 00:00:00', 3, 'E', 'GE'),
-('d13', 'Debelle', 'Jeanne', '134 r Stalingrad', '44000', 'NANTES', '1991-12-05 00:00:00', 2, 'O', 'PL'),
-('d51', 'Debroise', 'Michel', '2 av 6 Juin', '70000', 'VESOUL', '1997-11-18 00:00:00', 1, 'E', 'FC'),
-('e22', 'Desmarquest', 'Nathalie', '14 r Fédérico Garcia Lorca', '54000', 'NANCY', '1989-03-24 00:00:00', 1, 'E', 'GE'),
-('e24', 'Desnost', 'Pierre', '16 r Barral de Montferrat', '55000', 'VERDUN', '1993-05-17 00:00:00', 1, 'E', 'GE'),
-('e39', 'Dudouit', 'Frederic', '18 quai Xavier Jouvin', '75000', 'PARIS', '1988-04-26 00:00:00', 1, 'P', 'IF'),
-('e49', 'Duncombe', 'Claude', '19 av Alsace Lorraine', '9000', 'FOIX', '1996-02-19 00:00:00', 1, 'S', 'OC'),
-('e5', 'Enault-Pascreau', 'Celine', '25B r Stalingrad', '40000', 'MONT DE MARSAN', '1990-11-27 00:00:00', 1, 'S', 'AQ'),
-('e52', 'Eynde', 'Valerie', '3 r Henri Moissan', '76000', 'ROUEN', '1991-10-31 00:00:00', 1, 'N', 'NO'),
-('f21', 'Finck', 'Jacques', 'rte Montreuil Bellay', '74000', 'ANNECY', '1993-06-08 00:00:00', 1, 'E', 'RA'),
-('f39', 'Fremont', 'Fernande', '4 r Jean Giono', '69000', 'LYON', '1997-02-15 00:00:00', 1, 'E', 'RA'),
-('f4', 'Gest', 'Alain', '30 r Authie', '46000', 'FIGEAC', '1994-05-03 00:00:00', 3, 'S', 'OC'),
-('g19', 'Gheysen', 'Galassus', '32 bd Mar Foch', '75000', 'PARIS', '1996-01-18 00:00:00', 1, 'P', 'IF'),
-('g30', 'Girard', 'Yvon', '31 av 6 Juin', '80000', 'AMIENS', '1999-03-27 00:00:00', 1, 'N', 'HF'),
-('g53', 'Gombert', 'Luc', '32 r Emile Gueymard', '56000', 'VANNES', '1985-10-02 00:00:00', 1, 'O', 'BG'),
-('g7', 'Guindon', 'Caroline', '40 r Mar Montgomery', '87000', 'LIMOGES', '1996-01-13 00:00:00', 1, 'S', 'AQ'),
-('h13', 'Guindon', 'François', '44 r Picotière', '19000', 'TULLE', '1993-05-08 00:00:00', 1, 'S', 'AQ'),
-('h30', 'Igigabel', 'Guy', '33 gal Arlequin', '94000', 'CRETEIL', '1998-04-26 00:00:00', 1, 'P', 'IF'),
-('h35', 'Jourdren', 'Pierre', '34 av Jean Perrot', '15000', 'AURRILLAC', '1993-08-26 00:00:00', 1, 'E', 'RA'),
-('h40', 'Juttard', 'Pierre-Raoul', '34 cours Jean Jaurès', '8000', 'SEDAN', '1992-11-01 00:00:00', 1, 'E', 'GE'),
-('j45', 'Laboure-Morel', 'Saout', '38 cours Berriat', '52000', 'CHAUMONT', '1998-02-25 00:00:00', 1, 'E', 'GE'),
-('j50', 'Landre', 'Philippe', '4 av G?n Laperrine', '59000', 'LILLE', '1992-12-16 00:00:00', 2, 'N', 'HF'),
-('j8', 'Langeard', 'Hugues', '39 av Jean Perrot', '93000', 'BAGNOLET', '1998-06-18 00:00:00', 1, 'P', 'IF'),
-('k4', 'Lanne', 'Bernard', '4 r Bayeux', '30000', 'NIMES', '1996-11-21 00:00:00', 1, 'S', 'OC'),
-('k53', 'Le', 'Noel', '4 av Beauvert', '68000', 'MULHOUSE', '1983-03-23 00:00:00', 1, 'E', 'GE'),
-('l14', 'Le', 'Jean', '39 r Raspail', '53000', 'LAVAL', '1995-02-02 00:00:00', 1, 'O', 'PL'),
-('l23', 'Leclercq', 'Servane', '11 r Quinconce', '18000', 'BOURGES', '1995-06-05 00:00:00', 1, 'S', 'AQ'),
-('l46', 'Lecornu', 'Jean-Bernard', '4 bd Mar Foch', '72000', 'LA FERTE BERNARD', '1997-01-24 00:00:00', 1, 'O', 'PL'),
-('l56', 'Lecornu', 'Ludovic', '4 r Abel Servien', '25000', 'BESANCON', '1996-02-27 00:00:00', 2, 'E', 'FC'),
-('m35', 'Lejard', 'Agnès', '4 r Anthoard', '82000', 'MONTAUBAN', '1987-10-06 00:00:00', 1, 'S', 'OC'),
-('m45', 'Lesaulnier', 'Pascal', '47 r Thiers', '57000', 'METZ', '1990-10-13 00:00:00', 1, 'E', 'GE'),
-('n42', 'Letessier', 'Stephane', '5 chem Capuche', '27000', 'EVREUX', '1996-03-06 00:00:00', 1, 'N', 'NO'),
+('b50', 'Clepkens', 'Christophe', '12 r Fédérico Garcia Lorca', '13000', 'MARSEILLE', '1998-01-18 00:00:00', 1, NULL, 'PA'),
+('b59', 'Cottin', 'Vincenne', '36 sq Capucins', '5000', 'GAP', '1995-10-21 00:00:00', 1, NULL, 'RA'),
+('c14', 'Daburon', 'François', '13 r Champs Elysées', '6000', 'NICE', '1989-02-01 00:00:00', 1, NULL, 'PA'),
+('c3', 'De', 'Philippe', '13 r Charles Peguy', '10000', 'TROYES', '1992-05-05 00:00:00', 1, NULL, 'GE'),
+('d13', 'Debelle', 'Jeanne', '134 r Stalingrad', '44000', 'NANTES', '1991-12-05 00:00:00', 1, NULL, 'PL'),
+('d51', 'Debroise', 'Michel', '2 av 6 Juin', '70000', 'VESOUL', '1997-11-18 00:00:00', 1, NULL, 'FC'),
+('e22', 'Desmarquest', 'Nathalie', '14 r Fédérico Garcia Lorca', '54000', 'NANCY', '1989-03-24 00:00:00', 1, NULL, 'GE'),
+('e24', 'Desnost', 'Pierre', '16 r Barral de Montferrat', '55000', 'VERDUN', '1993-05-17 00:00:00', 1, NULL, 'GE'),
+('e39', 'Dudouit', 'Frederic', '18 quai Xavier Jouvin', '75000', 'PARIS', '1988-04-26 00:00:00', 1, NULL, 'IF'),
+('e49', 'Duncombe', 'Claude', '19 av Alsace Lorraine', '9000', 'FOIX', '1996-02-19 00:00:00', 1, NULL, 'OC'),
+('e5', 'Enault-Pascreau', 'Celine', '25B r Stalingrad', '40000', 'MONT DE MARSAN', '1990-11-27 00:00:00', 1, NULL, 'AQ'),
+('e52', 'Eynde', 'Valerie', '3 r Henri Moissan', '76000', 'ROUEN', '1991-10-31 00:00:00', 1, NULL, 'NO'),
+('f21', 'Finck', 'Jacques', 'rte Montreuil Bellay', '74000', 'ANNECY', '1993-06-08 00:00:00', 1, NULL, 'RA'),
+('f39', 'Fremont', 'Fernande', '4 r Jean Giono', '69000', 'LYON', '1997-02-15 00:00:00', 1, NULL, 'RA'),
+('f4', 'Gest', 'Alain', '30 r Authie', '46000', 'FIGEAC', '1994-05-03 00:00:00', 1, NULL, 'OC'),
+('g19', 'Gheysen', 'Galassus', '32 bd Mar Foch', '75000', 'PARIS', '1996-01-18 00:00:00', 1, NULL, 'IF'),
+('g30', 'Girard', 'Yvon', '31 av 6 Juin', '80000', 'AMIENS', '1999-03-27 00:00:00', 1, NULL, 'HF'),
+('g53', 'Gombert', 'Luc', '32 r Emile Gueymard', '56000', 'VANNES', '1985-10-02 00:00:00', 1, NULL, 'BG'),
+('g7', 'Guindon', 'Caroline', '40 r Mar Montgomery', '87000', 'LIMOGES', '1996-01-13 00:00:00', 1, NULL, 'AQ'),
+('h13', 'Guindon', 'François', '44 r Picotière', '19000', 'TULLE', '1993-05-08 00:00:00', 1, NULL, 'AQ'),
+('h30', 'Igigabel', 'Guy', '33 gal Arlequin', '94000', 'CRETEIL', '1998-04-26 00:00:00', 1, NULL, 'IF'),
+('h35', 'Jourdren', 'Pierre', '34 av Jean Perrot', '15000', 'AURRILLAC', '1993-08-26 00:00:00', 1, NULL, 'RA'),
+('h40', 'Juttard', 'Pierre-Raoul', '34 cours Jean Jaurès', '8000', 'SEDAN', '1992-11-01 00:00:00', 1, NULL, 'GE'),
+('j45', 'Laboure-Morel', 'Saout', '38 cours Berriat', '52000', 'CHAUMONT', '1998-02-25 00:00:00', 1, NULL, 'GE'),
+('j50', 'Landre', 'Philippe', '4 av G?n Laperrine', '59000', 'LILLE', '1992-12-16 00:00:00', 1, NULL, 'HF'),
+('j8', 'Langeard', 'Hugues', '39 av Jean Perrot', '93000', 'BAGNOLET', '1998-06-18 00:00:00', 1, NULL, 'IF'),
+('k4', 'Lanne', 'Bernard', '4 r Bayeux', '30000', 'NIMES', '1996-11-21 00:00:00', 1, NULL, 'OC'),
+('k53', 'Le', 'Noel', '4 av Beauvert', '68000', 'MULHOUSE', '1983-03-23 00:00:00', 1, NULL, 'GE'),
+('l14', 'Le', 'Jean', '39 r Raspail', '53000', 'LAVAL', '1995-02-02 00:00:00', 1, NULL, 'PL'),
+('l23', 'Leclercq', 'Servane', '11 r Quinconce', '18000', 'BOURGES', '1995-06-05 00:00:00', 1, NULL, 'AQ'),
+('l46', 'Lecornu', 'Jean-Bernard', '4 bd Mar Foch', '72000', 'LA FERTE BERNARD', '1997-01-24 00:00:00', 1, NULL, 'PL'),
+('l56', 'Lecornu', 'Ludovic', '4 r Abel Servien', '25000', 'BESANCON', '1996-02-27 00:00:00', 2, NULL, 'FC'),
+('m35', 'Lejard', 'Agnès', '4 r Anthoard', '82000', 'MONTAUBAN', '1987-10-06 00:00:00', 1, NULL, 'OC'),
+('m45', 'Lesaulnier', 'Pascal', '47 r Thiers', '57000', 'METZ', '1990-10-13 00:00:00', 1, NULL, 'GE'),
+('n42', 'Letessier', 'Stephane', '5 chem Capuche', '27000', 'EVREUX', '1996-03-06 00:00:00', 1, NULL, 'NO'),
 ('n58', 'Loirat', 'Didier', 'Les Pêchers cité Bourg la Croix', '45000', 'ORLEANS', '1992-08-30 00:00:00', 3, 'P', 'CE'),
-('n59', 'Maffezzoli', 'Thibaud', '5 r Chateaubriand', '2000', 'LAON', '1994-12-19 00:00:00', 1, 'N', 'HF'),
-('o26', 'Mancini', 'Anne', '5 r D\'Agier', '48000', 'MENDE', '1995-01-05 00:00:00', 1, 'S', 'OC'),
-('p32', 'Marcouiller', 'Gerard', '7 pl St Gilles', '91000', 'ISSY LES MOULINEAUX', '1992-12-24 00:00:00', 1, 'P', 'IF'),
-('p40', 'Michel', 'Jean-Claude', '5 r Gabriel Péri', '61000', 'FLERS', '1992-12-14 00:00:00', 1, 'N', 'NO'),
-('p41', 'Montecot', 'Françoise', '6 r Paul Valéry', '17000', 'SAINTES', '1998-07-27 00:00:00', 1, 'S', 'AQ'),
-('p42', 'Notini', 'Veronique', '5 r Lieut Chabal', '60000', 'BEAUVAIS', '1994-12-12 00:00:00', 1, 'N', 'HF'),
-('p49', 'Onfroy', 'Den', '5 r Sidonie Jacolin', '37000', 'TOURS', '1977-10-03 00:00:00', 2, 'P', 'CE'),
-('p6', 'Pascreau', 'Charles', '57 bd Mar Foch', '64000', 'PAU', '1997-03-30 00:00:00', 1, 'S', 'AQ'),
-('p7', 'Pernot', 'Claude-Noël', '6 r Alexandre 1 de Yougoslavie', '11000', 'NARBONNE', '1990-03-01 00:00:00', 1, 'S', 'OC'),
-('p8', 'Perrier', 'Maitre', '6 r Aubert Dubayet', '71000', 'CHALON SUR SAONE', '1991-06-23 00:00:00', 1, 'E', 'FC'),
+('n59', 'Maffezzoli', 'Thibaud', '5 r Chateaubriand', '2000', 'LAON', '1994-12-19 00:00:00', 1, NULL, 'HF'),
+('o26', 'Mancini', 'Anne', '5 r D\'Agier', '48000', 'MENDE', '1995-01-05 00:00:00', 1, NULL, 'OC'),
+('p32', 'Marcouiller', 'Gerard', '7 pl St Gilles', '91000', 'ISSY LES MOULINEAUX', '1992-12-24 00:00:00', 1, NULL, 'IF'),
+('p40', 'Michel', 'Jean-Claude', '5 r Gabriel Péri', '61000', 'FLERS', '1992-12-14 00:00:00', 1, NULL, 'NO'),
+('p41', 'Montecot', 'Françoise', '6 r Paul Valéry', '17000', 'SAINTES', '1998-07-27 00:00:00', 1, NULL, 'AQ'),
+('p42', 'Notini', 'Veronique', '5 r Lieut Chabal', '60000', 'BEAUVAIS', '1994-12-12 00:00:00', 1, NULL, 'HF'),
+('p49', 'Onfroy', 'Den', '5 r Sidonie Jacolin', '37000', 'TOURS', '1977-10-03 00:00:00', 1, NULL, 'CE'),
+('p6', 'Pascreau', 'Charles', '57 bd Mar Foch', '64000', 'PAU', '1997-03-30 00:00:00', 1, NULL, 'AQ'),
+('p7', 'Pernot', 'Claude-Noël', '6 r Alexandre 1 de Yougoslavie', '11000', 'NARBONNE', '1990-03-01 00:00:00', 1, NULL, 'OC'),
+('p8', 'Perrier', 'Maitre', '6 r Aubert Dubayet', '71000', 'CHALON SUR SAONE', '1991-06-23 00:00:00', 1, NULL, 'FC'),
 ('q17', 'Petit', 'Jean-Louis', '7 r Ernest Renan', '50000', 'SAINT LO', '1997-09-06 00:00:00', 3, 'N', 'NO'),
-('r24', 'Piquery', 'Patrick', '9 r Vaucelles', '14000', 'CAEN', '1984-07-29 00:00:00', 1, 'N', 'NO'),
+('r24', 'Piquery', 'Patrick', '9 r Vaucelles', '14000', 'CAEN', '1984-07-29 00:00:00', 1, NULL, 'NO'),
 ('r58', 'Quiquandon', 'Joel', '7 r Ernest Renan', '29000', 'QUIMPER', '1990-06-30 00:00:00', 3, 'O', 'BG'),
-('s10', 'Retailleau', 'Josselin', '88Bis r Saumuroise', '39000', 'DOLE', '1995-11-14 00:00:00', 1, 'E', 'FC'),
-('s21', 'Retailleau', 'Pascal', '32 bd Ayrault', '23000', 'MONTLUCON', '1992-09-25 00:00:00', 1, 'S', 'AQ'),
-('t43', 'Souron', 'Maryse', '7B r Gay Lussac', '21000', 'DIJON', '1995-03-09 00:00:00', 1, 'E', 'FC'),
-('t47', 'Tiphagne', 'Patrick', '7B r Gay Lussac', '62000', 'ARRAS', '1997-08-29 00:00:00', 1, 'N', 'HF'),
-('t55', 'Trehet', 'Alain', '7D chem Barral', '12000', 'RODEZ', '1994-11-29 00:00:00', 1, 'S', 'OC'),
-('t60', 'Tusseau', 'Josselin', '63 r Bon Repos', '28000', 'CHARTRES', '1991-03-29 00:00:00', 1, 'P', 'CE');
+('s10', 'Retailleau', 'Josselin', '88Bis r Saumuroise', '39000', 'DOLE', '1995-11-14 00:00:00', 1, NULL, 'FC'),
+('s21', 'Retailleau', 'Pascal', '32 bd Ayrault', '23000', 'MONTLUCON', '1992-09-25 00:00:00', 1, NULL, 'AQ'),
+('t43', 'Souron', 'Maryse', '7B r Gay Lussac', '21000', 'DIJON', '1995-03-09 00:00:00', 1, NULL, 'FC'),
+('t47', 'Tiphagne', 'Patrick', '7B r Gay Lussac', '62000', 'ARRAS', '1997-08-29 00:00:00', 1, NULL, 'HF'),
+('t55', 'Trehet', 'Alain', '7D chem Barral', '12000', 'RODEZ', '1994-11-29 00:00:00', 1, NULL, 'OC'),
+('t60', 'Tusseau', 'Josselin', '63 r Bon Repos', '28000', 'CHARTRES', '1991-03-29 00:00:00', 1, NULL, 'CE');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `departement`
+-- Table structure for table `departement`
 --
 
 DROP TABLE IF EXISTS `departement`;
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `departement` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `departement`
+-- Dumping data for table `departement`
 --
 
 INSERT INTO `departement` (`NoDEPT`, `Departement`, `REG_CODE`) VALUES
@@ -235,7 +235,7 @@ INSERT INTO `departement` (`NoDEPT`, `Departement`, `REG_CODE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `dosage`
+-- Table structure for table `dosage`
 --
 
 DROP TABLE IF EXISTS `dosage`;
@@ -247,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `dosage` (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Déchargement des données de la table `dosage`
+-- Dumping data for table `dosage`
 --
 
 INSERT INTO `dosage` (`DOS_CODE`, `DOS_QUANTITE`, `DOS_UNITE`) VALUES
@@ -265,7 +265,7 @@ INSERT INTO `dosage` (`DOS_CODE`, `DOS_QUANTITE`, `DOS_UNITE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `etat`
+-- Table structure for table `etat`
 --
 
 DROP TABLE IF EXISTS `etat`;
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `etat` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Déchargement des données de la table `etat`
+-- Dumping data for table `etat`
 --
 
 INSERT INTO `etat` (`ETAT_CODE`, `ETAT_LIBELLE`) VALUES
@@ -288,7 +288,7 @@ INSERT INTO `etat` (`ETAT_CODE`, `ETAT_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `famille`
+-- Table structure for table `famille`
 --
 
 DROP TABLE IF EXISTS `famille`;
@@ -299,7 +299,7 @@ CREATE TABLE IF NOT EXISTS `famille` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `famille`
+-- Dumping data for table `famille`
 --
 
 INSERT INTO `famille` (`FAM_CODE`, `FAM_LIBELLE`) VALUES
@@ -327,7 +327,7 @@ INSERT INTO `famille` (`FAM_CODE`, `FAM_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `formuler`
+-- Table structure for table `formuler`
 --
 
 DROP TABLE IF EXISTS `formuler`;
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS `formuler` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `formuler`
+-- Dumping data for table `formuler`
 --
 
 INSERT INTO `formuler` (`MED_DEPOTLEGAL`, `PRE_CODE`) VALUES
@@ -383,7 +383,7 @@ INSERT INTO `formuler` (`MED_DEPOTLEGAL`, `PRE_CODE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `habilitation`
+-- Table structure for table `habilitation`
 --
 
 DROP TABLE IF EXISTS `habilitation`;
@@ -394,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `habilitation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `habilitation`
+-- Dumping data for table `habilitation`
 --
 
 INSERT INTO `habilitation` (`HAB_ID`, `HAB_LIB`) VALUES
@@ -405,7 +405,7 @@ INSERT INTO `habilitation` (`HAB_ID`, `HAB_LIB`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `interagir`
+-- Table structure for table `interagir`
 --
 
 DROP TABLE IF EXISTS `interagir`;
@@ -417,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `interagir` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `interagir`
+-- Dumping data for table `interagir`
 --
 
 INSERT INTO `interagir` (`MED_DEPOTLEGAL`, `MED_DEPOTLEGAL2`) VALUES
@@ -455,7 +455,7 @@ INSERT INTO `interagir` (`MED_DEPOTLEGAL`, `MED_DEPOTLEGAL2`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `login`
+-- Table structure for table `login`
 --
 
 DROP TABLE IF EXISTS `login`;
@@ -469,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `login` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `login`
+-- Dumping data for table `login`
 --
 
 INSERT INTO `login` (`LOG_ID`, `LOG_LOGIN`, `LOG_MOTDEPASSE`, `COL_MATRICULE`) VALUES
@@ -543,7 +543,7 @@ INSERT INTO `login` (`LOG_ID`, `LOG_LOGIN`, `LOG_MOTDEPASSE`, `COL_MATRICULE`) V
 -- --------------------------------------------------------
 
 --
--- Structure de la table `medicament`
+-- Table structure for table `medicament`
 --
 
 DROP TABLE IF EXISTS `medicament`;
@@ -560,7 +560,7 @@ CREATE TABLE IF NOT EXISTS `medicament` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `medicament`
+-- Dumping data for table `medicament`
 --
 
 INSERT INTO `medicament` (`MED_DEPOTLEGAL`, `MED_NOMCOMMERCIAL`, `MED_COMPOSITION`, `MED_EFFETS`, `MED_CONTREINDIC`, `MED_PRIXECHANTILLON`, `FAM_CODE`) VALUES
@@ -596,7 +596,7 @@ INSERT INTO `medicament` (`MED_DEPOTLEGAL`, `MED_NOMCOMMERCIAL`, `MED_COMPOSITIO
 -- --------------------------------------------------------
 
 --
--- Structure de la table `motif_visite`
+-- Table structure for table `motif_visite`
 --
 
 DROP TABLE IF EXISTS `motif_visite`;
@@ -607,7 +607,7 @@ CREATE TABLE IF NOT EXISTS `motif_visite` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Déchargement des données de la table `motif_visite`
+-- Dumping data for table `motif_visite`
 --
 
 INSERT INTO `motif_visite` (`MOT_CODE`, `MOT_LIBELLE`) VALUES
@@ -620,7 +620,7 @@ INSERT INTO `motif_visite` (`MOT_CODE`, `MOT_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `offrir`
+-- Table structure for table `offrir`
 --
 
 DROP TABLE IF EXISTS `offrir`;
@@ -634,16 +634,15 @@ CREATE TABLE IF NOT EXISTS `offrir` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `offrir`
+-- Dumping data for table `offrir`
 --
 
 INSERT INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) VALUES
 ('3MYC7', 'a17', 1, 18),
-('ADIMOL9', 'a131', 5, 5),
-('ADIMOL9', 'e39', 1, 5),
 ('AMOPIL7', 'a131', 1, 12),
-('AMOPIL7', 'a131', 5, 10),
-('AMOPIL7', 'e39', 1, 10),
+('AMOPIL7', 'l56', 6, 1),
+('AMOPIL7', 'l56', 7, 1),
+('AMOPIL7', 'l56', 8, 1),
 ('AMOXIG12', 'a131', 3, 15),
 ('BACTIG10', 'a17', 1, 20),
 ('CARTION6', 'a131', 2, 20),
@@ -665,7 +664,7 @@ INSERT INTO `offrir` (`MED_DEPOTLEGAL`, `VIS_MATRICULE`, `RAP_NUM`, `OFF_QTE`) V
 -- --------------------------------------------------------
 
 --
--- Structure de la table `posseder`
+-- Table structure for table `posseder`
 --
 
 DROP TABLE IF EXISTS `posseder`;
@@ -679,7 +678,7 @@ CREATE TABLE IF NOT EXISTS `posseder` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `posseder`
+-- Dumping data for table `posseder`
 --
 
 INSERT INTO `posseder` (`SPE_CODE`, `PRA_NUM`, `POS_DIPLOME`, `POS_COEFPRESCRIPTIO`) VALUES
@@ -720,7 +719,7 @@ INSERT INTO `posseder` (`SPE_CODE`, `PRA_NUM`, `POS_DIPLOME`, `POS_COEFPRESCRIPT
 -- --------------------------------------------------------
 
 --
--- Structure de la table `praticien`
+-- Table structure for table `praticien`
 --
 
 DROP TABLE IF EXISTS `praticien`;
@@ -739,13 +738,13 @@ CREATE TABLE IF NOT EXISTS `praticien` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `praticien`
+-- Dumping data for table `praticien`
 --
 
 INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA_CP`, `PRA_VILLE`, `PRA_COEFNOTORIETE`, `PRA_COEFCONFIANCE`, `TYP_CODE`) VALUES
 (1, 'Alain', 'Notini', '114 r Authie', '85000', 'LA ROCHE SUR YON', 290.03, 754, 'MH'),
 (2, 'Albert', 'Gosselin', '13 r Devon', '41000', 'BLOIS', 307.49, 623, 'MV'),
-(3, 'Tata', 'Toto', '9 rue de test', '25000', 'Besançon', 185.79, 892, 'MV'),
+(3, 'André', 'Delahaye', '36 av 6 Juin', '25000', 'BESANCON', 185.79, 892, 'PS'),
 (4, 'André', 'Leroux', '47 av Robert Schuman', '60000', 'BEAUVAIS', 172.04, 318, 'PH'),
 (5, 'Anne', 'Desmoulins', '31 r St Jean', '30000', 'NIMES', 94.75, 445, 'PO'),
 (6, 'Anne', 'Mouel', '27 r Auvergne', '80000', 'AMIENS', 45.2, 567, 'MH'),
@@ -758,7 +757,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (13, 'Catherine', 'Morel', '21 r Chateaubriand', '75000', 'PARIS', 379.57, 845, 'PS'),
 (14, 'Chantal', 'Guivarch', '4 av G?n Laperrine', '45000', 'ORLEANS', 114.56, 267, 'PH'),
 (15, 'Christophe', 'Bessin-Grosdoit', '92 r Falaise', '6000', 'NICE', 222.06, 591, 'PO'),
-(16, 'Claire', 'Rossa', '14 av Thiers', '6000', 'NICE', 529.78, 404, 'MH'),
+(16, 'Claire', 'Rossa', '14 av Thiers', '6000', 'NICE', 529.78, 712, 'MH'),
 (17, 'Denis', 'Cauchy', '5 av Ste Thérèse', '11000', 'NARBONNE', 458.82, 834, 'MV'),
 (18, 'Dominique', 'Gaffé', '9 av 1ère Armée Française', '35000', 'RENNES', 213.4, 476, 'PS'),
 (19, 'Dominique', 'Guenon', '98 bd Mar Lyautey', '44000', 'NANTES', 175.89, 198, 'PH'),
@@ -773,7 +772,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (28, 'Frédéric', 'Lemée', '29 av 6 Juin', '56000', 'VANNES', 326.4, 445, 'PS'),
 (29, 'Frédéric', 'Martin', 'Bât A 90 r Bayeux', '70000', 'VESOUL', 506.06, 778, 'PH'),
 (30, 'Frédérique', 'Marie', '172 r Caponière', '70000', 'VESOUL', 313.31, 512, 'PO'),
-(31, 'Geneviève', 'Rosenstech', '27 r Auvergne', '75000', 'PARIS', 366.82, 425, 'MH'),
+(31, 'Geneviève', 'Rosenstech', '27 r Auvergne', '75000', 'PARIS', 366.82, 667, 'MH'),
 (32, 'Ghislaine', 'Pontavice', '8 r Gaillon', '86000', 'POITIERS', 265.58, 334, 'MV'),
 (33, 'Guillaume', 'Leveneur-Mosquet', '47 av Robert Schuman', '64000', 'PAU', 184.97, 876, 'PS'),
 (34, 'Guy', 'Blanchais', '30 r Authie', '8000', 'SEDAN', 502.48, 543, 'PH'),
@@ -783,7 +782,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (38, 'Jean-Claude', 'Marie', '26 r Hérouville', '69000', 'LYON', 120.1, 623, 'PS'),
 (39, 'Jean-François', 'Maury', '5 r Pierre Girard', '71000', 'CHALON SUR SAONE', 13.73, 298, 'PH'),
 (40, 'Jean-Louis', 'Dennel', '7 pl St Gilles', '28000', 'CHARTRES', 550.69, 834, 'PO'),
-(41, 'Jean-Pierre', 'Ain', '4 résid Olympia', '2000', 'LAON', 5.59, 123, 'MH'),
+(41, 'Jean-Pierre', 'Ain', '4 résid Olympia', '2000', 'LAON', 5.59, 4, 'MH'),
 (42, 'Jean-Pierre', 'Chemery', '51 pl Ancienne Boucherie', '14000', 'CAEN', 396.58, 756, 'MV'),
 (43, 'Jean-Pierre', 'Comoz', '35 r Auguste Lechesne', '18000', 'BOURGES', 340.35, 589, 'PS'),
 (44, 'Jean-Pierre', 'Desfaudais', '7 pl St Gilles', '29000', 'BREST', 71.76, 401, 'PH'),
@@ -824,7 +823,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 (79, 'Sylvie', 'Rault', '15 bd Richemond', '2000', 'SOISSON', 526.6, 867, 'PH'),
 (80, 'Sylvie', 'Renouf', '98 bd Mar Lyautey', '88000', 'EPINAL', 425.24, 678, 'PO'),
 (81, 'Thierry', 'Alliet-Grach', '14 av Thiers', '7000', 'PRIVAS', 451.31, 912, 'MH'),
-(82, 'Thierry', 'Bayard', '92 r Falaise', '42000', 'SAINT ETIENNE', 271.71, 445, 'MV'),
+(82, 'Thierry', 'Bayard', '92 r Falaise', '42000', 'SAINT ETIENNE', 271.71, 545, 'MV'),
 (83, 'Thierry', 'Gauchet', '7 r Desmoueux', '38100', 'GRENOBLE', 406.1, 756, 'PS'),
 (84, 'Tristan', 'Bobichon', '219 r Caponière', '9000', 'FOIX', 218.36, 389, 'PH'),
 (85, 'V?ronique', 'Duchemin-Laniel', '130 r St Jean', '33000', 'LIBOURNE', 265.61, 601, 'PO'),
@@ -835,7 +834,7 @@ INSERT INTO `praticien` (`PRA_NUM`, `PRA_PRENOM`, `PRA_NOM`, `PRA_ADRESSE`, `PRA
 -- --------------------------------------------------------
 
 --
--- Structure de la table `prescrire`
+-- Table structure for table `prescrire`
 --
 
 DROP TABLE IF EXISTS `prescrire`;
@@ -850,7 +849,7 @@ CREATE TABLE IF NOT EXISTS `prescrire` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `prescrire`
+-- Dumping data for table `prescrire`
 --
 
 INSERT INTO `prescrire` (`MED_DEPOTLEGAL`, `TIN_Code`, `DOS_CODE`, `PRE_POSOLOGIE`) VALUES
@@ -911,7 +910,7 @@ INSERT INTO `prescrire` (`MED_DEPOTLEGAL`, `TIN_Code`, `DOS_CODE`, `PRE_POSOLOGI
 -- --------------------------------------------------------
 
 --
--- Structure de la table `presentation`
+-- Table structure for table `presentation`
 --
 
 DROP TABLE IF EXISTS `presentation`;
@@ -922,7 +921,7 @@ CREATE TABLE IF NOT EXISTS `presentation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `presentation`
+-- Dumping data for table `presentation`
 --
 
 INSERT INTO `presentation` (`PRE_CODE`, `PRE_LIBELLE`) VALUES
@@ -940,7 +939,7 @@ INSERT INTO `presentation` (`PRE_CODE`, `PRE_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `rapport_visite`
+-- Table structure for table `rapport_visite`
 --
 
 DROP TABLE IF EXISTS `rapport_visite`;
@@ -965,7 +964,7 @@ CREATE TABLE IF NOT EXISTS `rapport_visite` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `rapport_visite`
+-- Dumping data for table `rapport_visite`
 --
 
 INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP_BILAN`, `RAP_MOTIF`, `ETAT_CODE`, `MED_DEPOTLEGAL1`, `MED_DEPOTLEGAL2`, `MOT_CODE`, `PRA_NUM`, `PRA_NUM_REMPLACANT`) VALUES
@@ -973,21 +972,27 @@ INSERT INTO `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`, `RAP_DATEVISITE`, `RAP
 ('a131', 2, '2003-03-23', 'RAS.\r\nChangement de tel : 05 89 89 89 89.', NULL, NULL, NULL, NULL, NULL, 41, NULL),
 ('a131', 3, '2021-12-03', 'Médecin ?nerv?, ancien boxeur !', NULL, NULL, NULL, NULL, NULL, 7, NULL),
 ('a131', 4, '2025-11-22', 'dqsdf', NULL, 2, NULL, NULL, 3, 63, NULL),
-('a131', 5, '2025-12-09', 'test', NULL, 2, 'ADIMOL9', 'ADIMOL9', 2, 16, NULL),
+('a131', 5, '2025-12-09', 'fff', NULL, 1, NULL, NULL, 1, 34, NULL),
+('a131', 6, '2025-12-09', 'ee', NULL, 2, 'AMOX45', 'BITALV', 2, 41, NULL),
+('a131', 7, '2025-12-09', 'g', NULL, 2, 'INSXT5', NULL, 1, 81, NULL),
 ('a17', 1, '2003-05-21', 'Changement de direction, red?finition de la politique médicamenteuse, recours au générique.', NULL, NULL, NULL, NULL, NULL, 4, NULL),
 ('d51', 306, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1, NULL),
 ('d51', 318, '2025-11-21', 'Rapport de test pour vérification', 'Test', 3, NULL, NULL, 1, 1, NULL),
 ('d51', 708, '2025-11-21', 'Rapport de test pour vérification', 'Test', 2, NULL, NULL, 1, 1, NULL),
-('e39', 1, '2025-12-09', 'test', NULL, 2, 'ADIMOL9', 'AMOPIL7', 2, 31, NULL),
 ('l56', 1, '2025-11-20', 'sdgsfg', NULL, 2, NULL, NULL, 1, 15, NULL),
 ('l56', 2, '2025-11-21', 'tt', NULL, 2, NULL, NULL, 2, 82, NULL),
 ('l56', 3, '2025-11-21', 'test', NULL, 2, NULL, NULL, 2, 82, NULL),
-('l56', 4, '2025-11-21', 'test', NULL, 2, NULL, NULL, 4, 74, NULL);
+('l56', 4, '2025-11-21', 'test', NULL, 2, NULL, NULL, 4, 74, NULL),
+('l56', 5, '2025-12-03', 'sdf', NULL, 2, NULL, NULL, 2, 81, 82),
+('l56', 6, '2025-12-09', 'test', NULL, 1, 'JOVAI8', 'EQUILARX6', 1, 41, 26),
+('l56', 7, '2025-12-09', 'test', NULL, 2, 'JOVAI8', 'EQUILARX6', 1, 41, 26),
+('l56', 8, '2025-12-10', 'test', NULL, 2, 'JOVAI8', 'EQUILARX6', 1, 41, 26),
+('l56', 9, '2025-12-10', 'test', 'test', 1, NULL, NULL, 5, 41, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `region`
+-- Table structure for table `region`
 --
 
 DROP TABLE IF EXISTS `region`;
@@ -1000,7 +1005,7 @@ CREATE TABLE IF NOT EXISTS `region` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `region`
+-- Dumping data for table `region`
 --
 
 INSERT INTO `region` (`REG_CODE`, `REG_NOM`, `SEC_CODE`) VALUES
@@ -1027,7 +1032,7 @@ INSERT INTO `region` (`REG_CODE`, `REG_NOM`, `SEC_CODE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `secteur`
+-- Table structure for table `secteur`
 --
 
 DROP TABLE IF EXISTS `secteur`;
@@ -1038,7 +1043,7 @@ CREATE TABLE IF NOT EXISTS `secteur` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `secteur`
+-- Dumping data for table `secteur`
 --
 
 INSERT INTO `secteur` (`SEC_CODE`, `SEC_LIBELLE`) VALUES
@@ -1051,7 +1056,7 @@ INSERT INTO `secteur` (`SEC_CODE`, `SEC_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `specialite`
+-- Table structure for table `specialite`
 --
 
 DROP TABLE IF EXISTS `specialite`;
@@ -1062,7 +1067,7 @@ CREATE TABLE IF NOT EXISTS `specialite` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `specialite`
+-- Dumping data for table `specialite`
 --
 
 INSERT INTO `specialite` (`SPE_CODE`, `SPE_LIBELLE`) VALUES
@@ -1114,7 +1119,7 @@ INSERT INTO `specialite` (`SPE_CODE`, `SPE_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `travailler`
+-- Table structure for table `travailler`
 --
 
 DROP TABLE IF EXISTS `travailler`;
@@ -1129,7 +1134,7 @@ CREATE TABLE IF NOT EXISTS `travailler` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `type_frais`
+-- Table structure for table `type_frais`
 --
 
 DROP TABLE IF EXISTS `type_frais`;
@@ -1143,7 +1148,7 @@ CREATE TABLE IF NOT EXISTS `type_frais` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `type_individu`
+-- Table structure for table `type_individu`
 --
 
 DROP TABLE IF EXISTS `type_individu`;
@@ -1154,7 +1159,7 @@ CREATE TABLE IF NOT EXISTS `type_individu` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Déchargement des données de la table `type_individu`
+-- Dumping data for table `type_individu`
 --
 
 INSERT INTO `type_individu` (`TIN_Code`, `TIN_LIBELLE`) VALUES
@@ -1167,7 +1172,7 @@ INSERT INTO `type_individu` (`TIN_Code`, `TIN_LIBELLE`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `type_praticien`
+-- Table structure for table `type_praticien`
 --
 
 DROP TABLE IF EXISTS `type_praticien`;
@@ -1179,7 +1184,7 @@ CREATE TABLE IF NOT EXISTS `type_praticien` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin;
 
 --
--- Déchargement des données de la table `type_praticien`
+-- Dumping data for table `type_praticien`
 --
 
 INSERT INTO `type_praticien` (`TYP_CODE`, `TYP_LIBELLE`, `TYP_LIEU`) VALUES
@@ -1190,11 +1195,11 @@ INSERT INTO `type_praticien` (`TYP_CODE`, `TYP_LIBELLE`, `TYP_LIEU`) VALUES
 ('PS', 'Personnel de sant?', 'Centre paramédical');
 
 --
--- Contraintes pour les tables déchargées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `collaborateur`
+-- Constraints for table `collaborateur`
 --
 ALTER TABLE `collaborateur`
   ADD CONSTRAINT `collaborateur_habilitation0_FK` FOREIGN KEY (`HAB_ID`) REFERENCES `habilitation` (`HAB_ID`),
@@ -1202,59 +1207,59 @@ ALTER TABLE `collaborateur`
   ADD CONSTRAINT `collaborateur_secteur0_FK` FOREIGN KEY (`SEC_CODE`) REFERENCES `secteur` (`SEC_CODE`);
 
 --
--- Contraintes pour la table `departement`
+-- Constraints for table `departement`
 --
 ALTER TABLE `departement`
   ADD CONSTRAINT `FK_region` FOREIGN KEY (`REG_CODE`) REFERENCES `region` (`REG_CODE`);
 
 --
--- Contraintes pour la table `formuler`
+-- Constraints for table `formuler`
 --
 ALTER TABLE `formuler`
   ADD CONSTRAINT `FORMULER_medicament0_FK` FOREIGN KEY (`MED_DEPOTLEGAL`) REFERENCES `medicament` (`MED_DEPOTLEGAL`),
   ADD CONSTRAINT `FORMULER_presentation1_FK` FOREIGN KEY (`PRE_CODE`) REFERENCES `presentation` (`PRE_CODE`);
 
 --
--- Contraintes pour la table `interagir`
+-- Constraints for table `interagir`
 --
 ALTER TABLE `interagir`
   ADD CONSTRAINT `interagir_med1_FK` FOREIGN KEY (`MED_DEPOTLEGAL`) REFERENCES `medicament` (`MED_DEPOTLEGAL`) ON UPDATE CASCADE,
   ADD CONSTRAINT `interagir_med2_FK` FOREIGN KEY (`MED_DEPOTLEGAL2`) REFERENCES `medicament` (`MED_DEPOTLEGAL`) ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `login`
+-- Constraints for table `login`
 --
 ALTER TABLE `login`
   ADD CONSTRAINT `login_collaborateur0_FK` FOREIGN KEY (`COL_MATRICULE`) REFERENCES `collaborateur` (`COL_MATRICULE`);
 
 --
--- Contraintes pour la table `medicament`
+-- Constraints for table `medicament`
 --
 ALTER TABLE `medicament`
   ADD CONSTRAINT `medicament_famille0_FK` FOREIGN KEY (`FAM_CODE`) REFERENCES `famille` (`FAM_CODE`);
 
 --
--- Contraintes pour la table `offrir`
+-- Constraints for table `offrir`
 --
 ALTER TABLE `offrir`
   ADD CONSTRAINT `offrir_medicament_FK` FOREIGN KEY (`MED_DEPOTLEGAL`) REFERENCES `medicament` (`MED_DEPOTLEGAL`) ON UPDATE CASCADE,
   ADD CONSTRAINT `offrir_rv_FK` FOREIGN KEY (`VIS_MATRICULE`,`RAP_NUM`) REFERENCES `rapport_visite` (`VIS_MATRICULE`, `RAP_NUM`) ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `posseder`
+-- Constraints for table `posseder`
 --
 ALTER TABLE `posseder`
   ADD CONSTRAINT `fk_posseder_praticien` FOREIGN KEY (`PRA_NUM`) REFERENCES `praticien` (`PRA_NUM`),
   ADD CONSTRAINT `fk_posseder_specialite` FOREIGN KEY (`SPE_CODE`) REFERENCES `specialite` (`SPE_CODE`);
 
 --
--- Contraintes pour la table `praticien`
+-- Constraints for table `praticien`
 --
 ALTER TABLE `praticien`
   ADD CONSTRAINT `praticien_type_praticien0_FK` FOREIGN KEY (`TYP_CODE`) REFERENCES `type_praticien` (`TYP_CODE`);
 
 --
--- Contraintes pour la table `prescrire`
+-- Constraints for table `prescrire`
 --
 ALTER TABLE `prescrire`
   ADD CONSTRAINT `prescrire_dosage_FK` FOREIGN KEY (`DOS_CODE`) REFERENCES `dosage` (`DOS_CODE`) ON UPDATE CASCADE,
@@ -1262,7 +1267,7 @@ ALTER TABLE `prescrire`
   ADD CONSTRAINT `prescrire_tind_FK` FOREIGN KEY (`TIN_Code`) REFERENCES `type_individu` (`TIN_Code`) ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `rapport_visite`
+-- Constraints for table `rapport_visite`
 --
 ALTER TABLE `rapport_visite`
   ADD CONSTRAINT `rapport_visite_collaborateur0_FK` FOREIGN KEY (`VIS_MATRICULE`) REFERENCES `collaborateur` (`COL_MATRICULE`),
@@ -1273,13 +1278,13 @@ ALTER TABLE `rapport_visite`
   ADD CONSTRAINT `rapport_visite_praticien2_FK` FOREIGN KEY (`PRA_NUM`) REFERENCES `praticien` (`PRA_NUM`);
 
 --
--- Contraintes pour la table `region`
+-- Constraints for table `region`
 --
 ALTER TABLE `region`
   ADD CONSTRAINT `region_secteur0_FK` FOREIGN KEY (`SEC_CODE`) REFERENCES `secteur` (`SEC_CODE`);
 
 --
--- Contraintes pour la table `travailler`
+-- Constraints for table `travailler`
 --
 ALTER TABLE `travailler`
   ADD CONSTRAINT `travailler_collaborateur_FK` FOREIGN KEY (`VIS_MATRICULE`) REFERENCES `collaborateur` (`COL_MATRICULE`) ON UPDATE CASCADE,
