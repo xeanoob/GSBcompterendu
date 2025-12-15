@@ -126,18 +126,16 @@ switch ($action) {
             exit;
         }
 
-        // Bouton "Annuler" → exception 4-b
+        // Bouton "Annuler" → retour à la sélection
         if (isset($_POST['btn']) && $_POST['btn'] === 'annuler') {
             $messageSucces = "La saisie a été annulée.";
-            $mode = 'aucun';
-            $praticien = null;
             include("vues/v_gererPraticien.php");
             break;
         }
 
         $mode = isset($_POST['mode']) ? $_POST['mode'] : 'creation';
 
-        // Récupération des champs du formulaire avec sanitization
+        // 1. Récupération des champs du formulaire
         $num = isset($_POST['PRA_NUM']) ? (int) $_POST['PRA_NUM'] : 0;
         $prenom = trim(strip_tags($_POST['PRA_PRENOM'] ?? ''));
         $nom = trim(strip_tags($_POST['PRA_NOM'] ?? ''));
@@ -147,50 +145,65 @@ switch ($action) {
         $coef = trim($_POST['PRA_COEFNOTORIETE'] ?? '');
         $coefConfiance = trim($_POST['PRA_COEFCONFIANCE'] ?? '');
         $type = trim($_POST['TYP_CODE'] ?? '');
-
-        // Récupération des spécialités sélectionnées (facultatives)
         $specialitesSelectionnees = $_POST['specialites'] ?? [];
 
-        // Contrôle des champs obligatoires (exception 5-a)
-        // En mode modification, le numéro doit être fourni. En mode création, il sera auto-généré.
+        // 2. Validation des champs obligatoires
         if ($mode === 'modification' && $num <= 0) {
-            $erreurs[] = "Le numéro du praticien est obligatoire et doit être positif.";
+            $erreurs[] = "Le numéro du praticien est obligatoire.";
         }
         if ($nom === '')
-            $erreurs[] = "Le nom du praticien est obligatoire.";
+            $erreurs[] = "Le nom est obligatoire.";
         if ($prenom === '')
-            $erreurs[] = "Le prénom du praticien est obligatoire.";
+            $erreurs[] = "Le prénom est obligatoire.";
         if ($cp === '')
             $erreurs[] = "Le code postal est obligatoire.";
         if ($ville === '')
             $erreurs[] = "La ville est obligatoire.";
         if ($type === '')
-            $erreurs[] = "Le type de praticien est obligatoire.";
+            $erreurs[] = "Le type est obligatoire.";
 
-        // Validations supplémentaires
-        if (!preg_match('/^\d{5}$/', $cp)) {
-            $erreurs[] = "Le code postal doit contenir exactement 5 chiffres.";
+        // Validation du format code postal
+        if ($cp !== '' && !preg_match('/^\d{5}$/', $cp)) {
+            $erreurs[] = "Le code postal doit contenir 5 chiffres.";
         }
 
-        if ($coef !== '' && !is_numeric($coef)) {
-            $erreurs[] = "Le coefficient de notoriété doit être une valeur numérique.";
-        } elseif ($coef < 0) {
-            $erreurs[] = "Le coefficient de notoriété ne peut pas être négatif.";
+        // Validation coefficient notoriété
+        if ($coef !== '' && (!is_numeric($coef) || $coef < 0)) {
+            $erreurs[] = "Le coefficient de notoriété doit être un nombre positif.";
         }
 
-        // Vérification que le type existe
-        $typeExiste = false;
+        // Vérification du type
+        $typeValide = false;
         foreach ($listeTypes as $t) {
             if ($t['TYP_CODE'] == $type) {
-                $typeExiste = true;
+                $typeValide = true;
                 break;
             }
         }
-        if (!$typeExiste && $type !== '') {
-            $erreurs[] = "Le type de praticien sélectionné est invalide.";
+        if ($type !== '' && !$typeValide) {
+            $erreurs[] = "Le type sélectionné est invalide.";
         }
 
-        // On reconstruit un tableau praticien pour réafficher le formulaire en cas d'erreur
+        // 3. Vérification des droits de modification (région/secteur)
+        if ($mode === 'modification' && empty($erreurs)) {
+            $habilitation = $_SESSION['habilitation'];
+
+            // Vérifier appartenance région (Délégué)
+            if ($habilitation == 2 && $regionUtilisateur) {
+                if (!isPraticienDansRegion($num, $regionUtilisateur)) {
+                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
+                }
+            }
+
+            // Vérifier appartenance secteur (Responsable)
+            if ($habilitation == 3 && $secteurUtilisateur) {
+                if (!isPraticienDansSecteur($num, $secteurUtilisateur)) {
+                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre secteur.";
+                }
+            }
+        }
+
+        // Reconstruire praticien pour réaffichage en cas d'erreur
         $praticien = [
             'PRA_NUM' => $num,
             'PRA_PRENOM' => $prenom,
@@ -203,117 +216,33 @@ switch ($action) {
             'TYP_CODE' => $type
         ];
 
+        // 4. Si erreurs, réafficher le formulaire
         if (!empty($erreurs)) {
-            // On revient à l’étape de saisie avec les messages d’erreurs
             include("vues/v_gererPraticien.php");
             break;
         }
 
-        // Pas d'erreur → enregistrement
+        // 5. Enregistrement (pas d'erreur)
         if ($mode === 'creation') {
-            // Création : le numéro sera généré automatiquement par AUTO_INCREMENT
             $num = ajouterPraticien($prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance);
-            $messageSucces = "Le praticien a été créé avec succès (n°$num).";
+            $messageSucces = "Praticien créé avec succès (n°$num).";
             $mode = 'modification';
         } else {
-            // En mode modification, vérifier les droits selon l'habilitation
-            $habilitation = $_SESSION['habilitation'];
-            
-            // Délégué (2) : peut modifier uniquement les praticiens de sa région
-            if ($habilitation == 2 && $regionUtilisateur) {
-                if (!isPraticienDansRegion($num, $regionUtilisateur)) {
-                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre région.";
-                    include("vues/v_gererPraticien.php");
-                    break;
-                }
-            }
-            
-            // Responsable Secteur (3) : peut modifier uniquement les praticiens de son secteur
-            if ($habilitation == 3 && $secteurUtilisateur) {
-                if (!isPraticienDansSecteur($num, $secteurUtilisateur)) {
-                    $erreurs[] = "Vous ne pouvez modifier que les praticiens de votre secteur.";
-                    include("vues/v_gererPraticien.php");
-                    break;
-                }
-            }
-
-            // Vérifier que le nouveau code postal (si modifié) reste dans la zone autorisée
-            $praticienActuel = getPraticienByNum($num);
-            if ($praticienActuel && $cp !== $praticienActuel['PRA_CP']) {
-                $codeDept = (int) substr($cp, 0, 2);
-                
-                // Pour le délégué : vérifier la région
-                if ($habilitation == 2 && $regionUtilisateur) {
-                    try {
-                        $pdo = connexionPDO();
-                        $sqlCheck = 'SELECT REG_CODE FROM departement WHERE NoDEPT = :dept';
-                        $stmtCheck = $pdo->prepare($sqlCheck);
-                        $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
-                        $stmtCheck->execute();
-                        $deptRegion = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-                        if (!$deptRegion || $deptRegion['REG_CODE'] !== $regionUtilisateur) {
-                            $erreurs[] = "Le nouveau code postal doit rester dans votre région.";
-                            include("vues/v_gererPraticien.php");
-                            break;
-                        }
-                    } catch (PDOException $e) {
-                        $erreurs[] = "Erreur lors de la vérification de la région.";
-                        include("vues/v_gererPraticien.php");
-                        break;
-                    }
-                }
-                
-                // Pour le responsable secteur : vérifier le secteur
-                if ($habilitation == 3 && $secteurUtilisateur) {
-                    try {
-                        $pdo = connexionPDO();
-                        $sqlCheck = 'SELECT r.SEC_CODE FROM departement d
-                                     INNER JOIN region r ON d.REG_CODE = r.REG_CODE
-                                     WHERE d.NoDEPT = :dept';
-                        $stmtCheck = $pdo->prepare($sqlCheck);
-                        $stmtCheck->bindValue(':dept', $codeDept, PDO::PARAM_INT);
-                        $stmtCheck->execute();
-                        $deptSecteur = $stmtCheck->fetch(PDO::FETCH_ASSOC);
-
-                        if (!$deptSecteur || $deptSecteur['SEC_CODE'] !== $secteurUtilisateur) {
-                            $erreurs[] = "Le nouveau code postal doit rester dans votre secteur.";
-                            include("vues/v_gererPraticien.php");
-                            break;
-                        }
-                    } catch (PDOException $e) {
-                        $erreurs[] = "Erreur lors de la vérification du secteur.";
-                        include("vues/v_gererPraticien.php");
-                        break;
-                    }
-                }
-            }
-
             modifierPraticien($num, $prenom, $nom, $adresse, $cp, $ville, $coef, $type, $coefConfiance);
-            $messageSucces = "Les informations du praticien ont été mises à jour.";
-            $mode = 'modification';
+            $messageSucces = "Praticien modifié avec succès.";
         }
 
-        // Gestion des spécialités (pour création ET modification)
-        // On supprime d'abord toutes les spécialités existantes
+        // 6. Gestion des spécialités
         supprimerToutesSpecialitesPraticien($num);
-
-        // On ajoute les spécialités sélectionnées
-        if (!empty($specialitesSelectionnees) && is_array($specialitesSelectionnees)) {
+        if (!empty($specialitesSelectionnees)) {
             foreach ($specialitesSelectionnees as $speCode) {
                 ajouterSpecialitePraticien($num, $speCode);
             }
-
-            if (count($specialitesSelectionnees) > 0) {
-                $messageSucces .= " " . count($specialitesSelectionnees) . " spécialité(s) associée(s).";
-            }
+            $messageSucces .= " " . count($specialitesSelectionnees) . " spécialité(s) associée(s).";
         }
 
-        // On recharge la liste (au cas où)
+        // 7. Recharger les données
         $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
-        $listeTypes = getAllTypesPraticien();
-        $listeSpecialites = getAllSpecialites();
-        // On récupère les infos à jour depuis la base
         $praticien = getPraticienByNum($num);
         $specialitesPraticien = getSpecialitesPraticien($num);
 
