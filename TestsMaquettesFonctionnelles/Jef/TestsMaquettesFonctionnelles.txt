@@ -1,0 +1,118 @@
+8. exporter la base de données:
+
+description :
+En tant qu'utilisateur je veux garder mes données Access.
+
+9. Modifier la base de données:
+
+description :
+En tant qu'utilisateur je veux que la base réponde a mes nouveaux besoins
+
+9.1 Conception MCD avec analyse
+
+9.2 Passage en MLD
+
+9.3 Migration
+
+9.4 Modification de la base MYSQL
+
+9.5 Peupler la base
+
+10. Gérer praticien:
+
+- Affiche le diplôme
+
+- Affiche les praticiens par regions
+
+USR 1 Consulter praticien:
+
+description :
+En tant que visiteur médical ou déléguée
+je veux afficher les infos sur un praticien
+
+- Requête Sql pour obtenir les id et nom des praticiens
+- rêquete sql
+
+- page PHP avec liste déroulante des praticients
+- création de la page avec liste
+
+- page PHP qui affiche le résultat
+- création de la page qui renvoie le résultat
+
+USR 3 Consulter ses rapports de visite:
+
+description:
+En tant que visiteur médical ou déléguée
+je veux afficher les infos sur les rapports de visites
+
+- requête sql pour obtenir les id et nom des rapport de visite, date, praticien
+- Rêquete Sql
+
+- page php avec une saisie
+- date de debut
+- date de fin
+- Liste déroulante avec noms des praticiens (éventuelle)
+
+- page php affiche la liste des rapports de visites
+- numéro de rapport
+- numéro et nom du praticien visité
+- motif de la visite
+- date de la visite
+- codes et noms des médicaments présentés
+- triée par date de visite
+
+- page php erreur
+- aucun rapport pour cette période = message d'erreur
+- retourne a la page php saisie
+
+- page php sélectionne détail du rapport de visite
+- aucun rapport pour cette période = message d'erreur
+- retourne a la page php saisie
+
+- page php sélectionne détail du rapport de visite
+- affiche les informations en détail du praticien
+- retour a la liste des rapports via un bouton
+
+- page php sélectionne détail du médicament
+- affiche les informations en détail du médicament
+- retour a la liste des rapports via un bouton
+
+USR 5 Consulter les nouveaux rapports:
+
+description: 
+En tant que déléguée
+je veux afficher les nouveaux rapports
+
+- requête sql 
+- Rêquete Sql detail rapports
+- Rêquete Sql detail medicament
+- Rêquete Sql detail praticien
+- Rêquete nom du visiteur
+
+- page Contrôleur php condition affichage nouveaux rapports 
+- en fonction de la régions
+- a l’état validé
+- non consulté
+- trié par visiteur et date de visite
+
+- page php liste éléments afficher nouveaux rapports
+- nom du visiteur
+- numéro de rapport
+- numéro du praticien
+- nom du praticien
+- médicaments présentés
+
+- page php sélectionne détail du rapport de visite
+- affiche le rapport en détails
+
+- page php sélectionne détail du praticien
+- affiche les informations en détail du praticien
+
+- page php sélectionne détail du médicament
+- affiche les informations en détail du médicament
+
+- bouton retour
+- mettre un bouton dans chaque page
+- quand activé ouvrir la page liste et fermé la page active
+- requête sql saisie de "consulté par le délégué"
+
