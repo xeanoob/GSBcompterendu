@@ -1,4 +1,4 @@
-# Analyse du sujet – GSB Compte-rendu de visite
+# Sujet BTS SIO - GSB Compte-rendu de visite
 
 ## Contexte général
 
