@@ -2,6 +2,8 @@
 
 ## Contexte général
 
+Ce projet a été réalisé **en binôme** dans le cadre de notre **dernière année de BTS SIO (Services Informatiques aux Organisations), option SLAM (Solutions Logicielles et Applications Métiers)**.
+
 Le projet **GSB (Galaxy Swiss Bourdin)** est une application web PHP destinée à un **laboratoire pharmaceutique**. Elle permet aux collaborateurs (visiteurs médicaux, délégués régionaux, responsables de secteur) de gérer les **comptes-rendus de visites** effectuées auprès de praticiens (médecins, pharmaciens…).
 
 L'application est hébergée localement via **WAMP** et utilise une base de données **MySQL** (`gsbv0v3`).
@@ -144,4 +146,11 @@ Ce projet est une **application de gestion de comptes-rendus de visites médical
 3. **Les rapports de visite** (saisie, consultation, historique, statistiques)
 4. **La consultation des médicaments**
 
-Le module « **Gérer praticien** » est au cœur du sujet que vous avez ouvert, avec un système de droits d'accès géographique (région/secteur) et une gestion des spécialités en relation N:N.
+Le module « **Gérer praticien** » est au cœur du sujet, avec un système de droits d'accès géographique (région/secteur) et une gestion des spécialités en relation N:N.
+
+---
+
+## Réalisé par
+
+- **Jef Ly**
+- **Ambroise Boutrin**
