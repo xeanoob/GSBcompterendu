@@ -41,13 +41,13 @@
                     <?php if ($_SESSION['habilitation'] == 2 || $_SESSION['habilitation'] == 3) : ?>
                         <span class="me-2">Afficher :</span>
                         <div class="btn-group" role="group">
-                            <a href="index.php?uc=praticiens&action=selection&tri=<?= $tri ?? 'nom' ?>" 
-                               class="btn btn-sm <?= (!isset($filtre) || $filtre !== 'moi') ? 'btn-secondary' : 'btn-outline-secondary' ?>">
+                            <a href="index.php?uc=praticiens&action=selection&tri=<?= $tri ?? 'nom' ?>&filtre=tous" 
+                               class="btn btn-sm <?= (isset($filtre) && $filtre === 'tous') ? 'btn-secondary' : 'btn-outline-secondary' ?>">
                                 Tous
                             </a>
                             <a href="index.php?uc=praticiens&action=selection&tri=<?= $tri ?? 'nom' ?>&filtre=moi" 
                                class="btn btn-sm <?= (isset($filtre) && $filtre === 'moi') ? 'btn-success' : 'btn-outline-success' ?>">
-                                Modifiables
+                                <?= ($_SESSION['habilitation'] == 3) ? 'Mon Secteur' : 'Ma Région' ?>
                             </a>
                         </div>
                     <?php endif; ?>
@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Exception 4-b : aucune spécialité sélectionnée
         if (specialitesChecked.length === 0) {
             e.preventDefault();
-            if (confirm("ℹ️ Vous n'avez sélectionné aucune spécialité pour ce praticien.\n\nVoulez-vous enregistrer sans spécialité ? (cliquez Annuler pour revenir au formulaire)")) {
+            if (confirm("Vous n'avez sélectionné aucune spécialité pour ce praticien.\n\nVoulez-vous enregistrer sans spécialité ? (cliquez Annuler pour revenir au formulaire)")) {
                 form.submit();
             }
             // Si l'utilisateur refuse → retour en 3 (formulaire reste affiché)
