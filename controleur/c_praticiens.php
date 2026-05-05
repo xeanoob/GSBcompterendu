@@ -16,23 +16,35 @@ $secteurUtilisateur = $_SESSION['secteur'] ?? null;
 // Récupérer le paramètre de tri (par défaut 'nom')
 $tri = $_REQUEST['tri'] ?? 'nom';
 
-// Récupérer le filtre (tous ou modifiables)
-$filtre = $_REQUEST['filtre'] ?? 'tous';
+// Récupérer le filtre (par défaut : region/secteur pour délégués/responsables, tous pour visiteurs)
+$filtre = $_REQUEST['filtre'] ?? null;
 
-// Charger les praticiens selon le filtre
-if ($filtre === 'moi') {
-    // Afficher uniquement les praticiens modifiables
+// Par défaut : filtrer selon le rôle (cas d'utilisation étape 2 : liste = praticiens de la région)
+if ($filtre === null) {
     if ($_SESSION['habilitation'] == 2 && $regionUtilisateur) {
-        // Délégué : praticiens de sa région
+        // Délégué : sa région par défaut
+        $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
+        $filtre = 'moi';
+    } elseif ($_SESSION['habilitation'] == 3 && $secteurUtilisateur) {
+        // Responsable secteur : son secteur par défaut
+        $listePraticiens = getAllPraticiens(null, $tri, $secteurUtilisateur);
+        $filtre = 'moi';
+    } else {
+        // Visiteur : tous les praticiens
+        $listePraticiens = getAllPraticiens(null, $tri);
+        $filtre = 'tous';
+    }
+} elseif ($filtre === 'moi') {
+    // Filtre explicite sur région/secteur
+    if ($_SESSION['habilitation'] == 2 && $regionUtilisateur) {
         $listePraticiens = getAllPraticiens($regionUtilisateur, $tri);
     } elseif ($_SESSION['habilitation'] == 3 && $secteurUtilisateur) {
-        // Responsable secteur : praticiens de son secteur
         $listePraticiens = getAllPraticiens(null, $tri, $secteurUtilisateur);
     } else {
         $listePraticiens = getAllPraticiens(null, $tri);
     }
 } else {
-    // Afficher tous les praticiens
+    // Filtre explicite "tous"
     $listePraticiens = getAllPraticiens(null, $tri);
 }
 $listeTypes = getAllTypesPraticien();

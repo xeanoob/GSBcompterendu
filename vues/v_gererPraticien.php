@@ -310,3 +310,38 @@
     </div>
 
 </section>
+
+<script>
+// Exception 2-a.2 : Type absent → demande de confirmation avant soumission
+// Exception 4-b : Spécialités absentes → demande de confirmation avant soumission
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form[action*="enregistrer"]');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        const typSelect = document.getElementById('TYP_CODE');
+        const specialitesChecked = document.querySelectorAll('input[name="specialites[]"]:checked');
+
+        // Exception 2-a.2 : le type n'est pas sélectionné
+        if (typSelect && typSelect.value === '') {
+            e.preventDefault();
+            if (confirm("⚠️ Vous n'avez pas sélectionné de type de praticien.\n\nVoulez-vous continuer sans type ? (cliquez Annuler pour revenir au formulaire)")) {
+                // L'utilisateur confirme malgré l'absence de type → on re-soumet
+                // Le serveur affichera l'erreur obligatoire (type requis en BDD)
+                form.submit();
+            }
+            return;
+        }
+
+        // Exception 4-b : aucune spécialité sélectionnée
+        if (specialitesChecked.length === 0) {
+            e.preventDefault();
+            if (confirm("ℹ️ Vous n'avez sélectionné aucune spécialité pour ce praticien.\n\nVoulez-vous enregistrer sans spécialité ? (cliquez Annuler pour revenir au formulaire)")) {
+                form.submit();
+            }
+            // Si l'utilisateur refuse → retour en 3 (formulaire reste affiché)
+            return;
+        }
+    });
+});
+</script>
