@@ -184,12 +184,12 @@ switch ($action) {
             $erreurs[] = "Le coefficient de notoriété doit être un nombre positif.";
         }
 
-        // Validation coefficient confiance (0-100)
+        // Validation coefficient confiance (0-1000)
         if ($coefConfiance !== '') {
             if (!is_numeric($coefConfiance)) {
                 $erreurs[] = "Le coefficient de confiance doit être un nombre.";
-            } elseif ($coefConfiance < 0 || $coefConfiance > 100) {
-                $erreurs[] = "Le coefficient de confiance doit être compris entre 0 et 100.";
+            } elseif ($coefConfiance < 0 || $coefConfiance > 1000) {
+                $erreurs[] = "Le coefficient de confiance doit être compris entre 0 et 1000.";
             }
         }
 

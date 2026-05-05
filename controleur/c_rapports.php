@@ -200,8 +200,8 @@ switch ($action) {
         if ($praCoefConfiance !== null) {
             if ($praCoefConfiance < 0) {
                 $erreurs[] = "Le coefficient de confiance ne peut pas être négatif.";
-            } elseif ($praCoefConfiance > 100) {
-                $erreurs[] = "Le coefficient de confiance ne peut pas dépasser 100.";
+            } elseif ($praCoefConfiance > 1000) {
+                $erreurs[] = "Le coefficient de confiance ne peut pas dépasser 1000.";
             }
         }
 

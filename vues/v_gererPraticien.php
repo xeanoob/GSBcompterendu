@@ -236,9 +236,9 @@
                                    value="<?= htmlspecialchars($praticien['PRA_COEFNOTORIETE'] ?? '') ?>">
                         </div>
                         <div class="col-md-4">
-                            <label for="PRA_COEFCONFIANCE" class="form-label">Coef. confiance (0-100)</label>
-                            <input type="number" step="0.01" min="0" max="100" name="PRA_COEFCONFIANCE" id="PRA_COEFCONFIANCE" class="form-control"
-                                   placeholder="0-100"
+                            <label for="PRA_COEFCONFIANCE" class="form-label">Coef. confiance (0-1000)</label>
+                            <input type="number" step="0.01" min="0" max="1000" name="PRA_COEFCONFIANCE" id="PRA_COEFCONFIANCE" class="form-control"
+                                   placeholder="0-1000"
                                    value="<?= htmlspecialchars($praticien['PRA_COEFCONFIANCE'] ?? '') ?>">
                         </div>
                     </div>
