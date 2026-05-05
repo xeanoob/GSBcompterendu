@@ -1,4 +1,11 @@
 <?php
+
+// Vérifier que l'utilisateur est connecté
+if (empty($_SESSION['login'])) {
+    header('Location: index.php?uc=connexion');
+    exit;
+}
+
 if (!isset($_REQUEST['action']) || empty($_REQUEST['action'])) {
 	$action = "formulairemedoc";
 } else {
