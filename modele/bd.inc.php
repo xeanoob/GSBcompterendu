@@ -2,9 +2,9 @@
 
 function connexionPDO()
 {
-    $login = 'japon';
-    $mdp = 'japon';
-    $bd = 'japon_gsbcompterendu';
+    $login = 'root';
+    $mdp = '';
+    $bd = 'gsbv0v3';
     $serveur = 'localhost';
 
     try {

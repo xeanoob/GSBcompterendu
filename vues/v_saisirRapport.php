@@ -91,11 +91,11 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="PRA_COEFCONFIANCE" class="form-label">Coefficient de confiance</label>
+                    <label for="PRA_COEFCONFIANCE" class="form-label">Coefficient de confiance (0-100)</label>
                     <input type="number" name="PRA_COEFCONFIANCE" id="PRA_COEFCONFIANCE" 
                            class="form-control" 
-                           min="0" max="1000" step="0.01"
-                           placeholder="Coefficient"
+                           min="0" max="100" step="0.01"
+                           placeholder="0-100"
                            value="<?= htmlspecialchars($rapport['PRA_COEFCONFIANCE'] ?? '') ?>">
                 </div>
 
